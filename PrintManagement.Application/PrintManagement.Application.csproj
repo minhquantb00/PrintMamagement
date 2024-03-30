@@ -20,10 +20,4 @@
     <ProjectReference Include="..\PrintManagement.Domain\PrintManagement.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Payloads\Mappers\" />
-    <Folder Include="Payloads\RequestModels\" />
-    <Folder Include="Payloads\ResponseModels\" />
-  </ItemGroup>
-
 </Project>

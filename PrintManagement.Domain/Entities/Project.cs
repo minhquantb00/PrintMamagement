@@ -12,10 +12,10 @@ namespace PrintManagement.Domain.Entities
         public string ProjectName { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
-        public int LeaderId { get; set; }
+        public Guid LeaderId { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public virtual Customer? Customer { get; set; }
         public double? Progress { get; set; } = 0;
         public ProjectStatusEnum? ProjectStatus { get; set; } = ProjectStatusEnum.Initialization;

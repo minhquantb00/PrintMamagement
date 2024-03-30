@@ -9,10 +9,10 @@ namespace PrintManagement.Domain.Entities
 {
     public class Delivery : BaseEntity
     {
-        public int ProjectId { get; set; }
+        public Guid ProjectId { get; set; }
         public virtual Project? Project { get; set; }
-        public int ShippingMethodId { get; set; }
-        public int CustomerId { get; set; }
+        public Guid ShippingMethodId { get; set; }
+        public Guid CustomerId { get; set; }
         public virtual Customer? Customer { get; set; }
         public string DeliveryAddress { get; set; }
         public DateTime EstimateDeliveryTime { get; set; }

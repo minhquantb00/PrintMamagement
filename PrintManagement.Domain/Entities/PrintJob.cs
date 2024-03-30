@@ -9,7 +9,8 @@ namespace PrintManagement.Domain.Entities
 {
     public class PrintJob : BaseEntity
     {
-        public int DesignId { get; set; }
+        public Guid DesignId { get; set; }
+        public virtual Design? Design { get; set; }
         public PrintJobStatusEnum? PrintJobStatus { get; set; }
         public virtual ICollection<ResourceForPrintJob>? ResourceForPrints { get; set; }
     }

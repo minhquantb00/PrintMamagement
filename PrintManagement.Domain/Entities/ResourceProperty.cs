@@ -8,7 +8,7 @@ namespace PrintManagement.Domain.Entities
 {
     public class ResourceProperty : BaseEntity
     {
-        public int ResourceId { get; set; }
+        public Guid ResourceId { get; set; }
         public virtual Resource? Resource { get; set; }
         public string ResourcePropertyName { get; set; }
         public int Quantity { get; set; }

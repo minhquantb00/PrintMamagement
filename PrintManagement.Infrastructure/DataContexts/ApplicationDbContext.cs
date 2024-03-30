@@ -11,7 +11,24 @@ namespace PrintManagement.Infrastructure.DataContexts
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
     {
-
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
+        public ApplicationDbContext() { }
+        public virtual DbSet<Bill> Bills { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<CustomerFeedback> CustomerFeedbacks { get; set; }
+        public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<Design> Designs { get; set; }
+        public virtual DbSet<ImportCoupon> ImportCoupons { get; set; }
+        public virtual DbSet<KeyPerformanceIndicators> KeyPerformanceIndicators { get; set; }
+        public virtual DbSet<PrintJob> PrintJobs { get; set; }
+        public virtual DbSet<Project> Projects { get; set; }
+        public virtual DbSet<Resource> Resources { get; set; }
+        public virtual DbSet<ResourceProperty> ResourceProperties { get; set; }
+        public virtual DbSet<ResourcePropertyDetail> ResourcePropertyDetails { get; set; }
+        public virtual DbSet<ResourceForPrintJob> ResourceForPrintJobs { get; set; }
+        public virtual DbSet<ShippingMethod> ShippingMethods { get; set; }
 
 
         public async Task<int> CommitChangesAsync()

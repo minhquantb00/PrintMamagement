@@ -23,7 +23,6 @@
   <ItemGroup>
     <Folder Include="InterfaceServices\" />
     <Folder Include="ImplementServices\" />
-    <Folder Include="Constants\" />
   </ItemGroup>
 
 </Project>

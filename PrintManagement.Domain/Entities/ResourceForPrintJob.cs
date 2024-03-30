@@ -8,9 +8,9 @@ namespace PrintManagement.Domain.Entities
 {
     public class ResourceForPrintJob : BaseEntity
     {
-        public int ResourceId { get; set; }
+        public Guid ResourceId { get; set; }
         public virtual Resource? Resource { get; set; }
-        public int PrintJobId { get; set; }
+        public Guid PrintJobId { get; set; }
         public virtual PrintJob? PrintJob { get; set; }
     }
 }

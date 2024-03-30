@@ -9,7 +9,7 @@ namespace PrintManagement.Domain.Entities
 {
     public class KeyPerformanceIndicators : BaseEntity
     {
-        public int EmployeeId { get; set; }
+        public Guid EmployeeId { get; set; }
         public string IndicatorName { get; set; }
         public int Target { get; set; }
         public int ActuallyAchieved { get; set; } = 0;

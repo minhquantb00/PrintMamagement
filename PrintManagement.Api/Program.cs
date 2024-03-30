@@ -1,3 +1,4 @@
+using Duende.IdentityServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,13 +10,17 @@ using PrintManagement.Domain.Entities;
 using PrintManagement.Infrastructure.Configurations;
 using PrintManagement.Infrastructure.DataContexts;
 using System;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var configuration = builder.Configuration;
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString(Constant.AppSettingKeys.DEFAULT_CONNECTION)));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString(Constant.AppSettingKeys.DEFAULT_CONNECTION)));
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigin", builder =>
@@ -44,6 +49,25 @@ builder.Services.Configure<IdentityOptions>(
     opts => opts.SignIn.RequireConfirmedEmail = true
     );
 
+builder.Services.AddAuthentication()
+                        .AddMicrosoftAccount(microsoftOptions =>
+                        {
+                            microsoftOptions.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                            microsoftOptions.ClientId = "91eac13f-f506-42ad-92e9-c270b16c6e83";
+                            microsoftOptions.ClientSecret = ".X55Ljxf/ut?[FwsMouFYT9KGIG5Y3iU";
+                        })
+                        .AddFacebook(facebookOptions =>
+                        {
+                            facebookOptions.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                            facebookOptions.AppId = "614218869377179";
+                            facebookOptions.AppSecret = "7b81c3365e3a20ef205a05980b5204dd";
+                        })
+                        .AddGoogle(options =>
+                        {
+                            options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                            options.ClientId = "585809915555-74bvojk3mbf3gsqasp3hgmauhhc5e2pc.apps.googleusercontent.com";
+                            options.ClientSecret = "L2417ys8xO7nbE3d4zxg7yvX";
+                        });
 
 builder.Services.AddAuthentication(options =>
 {
@@ -67,7 +91,6 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]))
     };
 });
-
 var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -110,6 +133,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 app.UseCors("AllowOrigin");

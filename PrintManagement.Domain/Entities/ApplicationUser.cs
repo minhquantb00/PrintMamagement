@@ -15,5 +15,7 @@ namespace PrintManagement.Domain.Entities
         public DateTime CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
         public bool IsActive { get; set; } = true;
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiry { get; set; }
     }
 }

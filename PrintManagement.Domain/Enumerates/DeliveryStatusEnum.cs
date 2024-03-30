@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Domain.Enumerates
 {
-    internal class DeliveryStatusEnum
+    public enum DeliveryStatusEnum
     {
+        Waiting = 0,
+        Delivering = 1,
+        Delivered = 2
     }
 }

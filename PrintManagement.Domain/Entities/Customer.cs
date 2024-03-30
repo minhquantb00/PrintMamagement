@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Domain.Entities
 {
-    internal class Customer
+    public class Customer : BaseEntity
     {
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public virtual ICollection<Project>? Projects { get; set; }
+        public virtual ICollection<Bill>? Bills { get; set; }
+        public virtual ICollection<Delivery>? Delivery { get; set; }
     }
 }

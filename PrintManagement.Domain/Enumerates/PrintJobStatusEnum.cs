@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Domain.Enumerates
 {
-    public enum KPIEnum
+    public enum PrintJobStatusEnum
     {
-        Month = 0,
-        Quater = 1,
-        Year = 2
+        Pending = 0,
+        Printing = 1,
+        Paused = 2,
+        Completed = 3
     }
 }

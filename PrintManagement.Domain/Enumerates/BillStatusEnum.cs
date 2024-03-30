@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Domain.Enumerates
 {
-    public enum KPIEnum
+    public enum BillStatusEnum
     {
-        Month = 0,
-        Quater = 1,
-        Year = 2
+        UnPaid = 0,
+        Paid = 1
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrintManagement.Domain.Enumerates;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,16 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Domain.Entities
 {
-    internal class Delivery
+    public class Delivery : BaseEntity
     {
+        public int ProjectId { get; set; }
+        public virtual Project? Project { get; set; }
+        public int ShippingMethodId { get; set; }
+        public int CustomerId { get; set; }
+        public virtual Customer? Customer { get; set; }
+        public string DeliveryAddress { get; set; }
+        public DateTime EstimateDeliveryTime { get; set; }
+        public DateTime? ActualDeliveryTime { get; set; }
+        public DeliveryStatusEnum? DeliveryStatus { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Infrastructure.DataContexts
 {
-    internal class IApplicationDbContext
+    public interface IApplicationDbContext : IDbContext
     {
     }
 }

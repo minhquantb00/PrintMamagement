@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Domain.Entities
 {
-    public class ResourceProperty : BaseEntity
+    public class ResourceForPrintJob : BaseEntity
     {
         public int ResourceId { get; set; }
         public virtual Resource? Resource { get; set; }
-        public string ResourcePropertyName { get; set; }
-        public int Quantity { get; set; }
-        public virtual ICollection<ResourcePropertyDetail>? ResourcePropertyDetails { get; set; }
+        public int PrintJobId { get; set; }
+        public virtual PrintJob? PrintJob { get; set; }
     }
 }

@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Domain.Enumerates
 {
-    internal class ResourceStatusEnum
+    public enum ResourceStatusEnum
     {
+        ReadyToUse = 0, // Sẵn sàng sử dụng
+        NeedMaintenance = 1, // Cần bảo trì
+        Broken = 2 // Đã hỏng
     }
 }

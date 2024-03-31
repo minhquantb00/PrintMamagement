@@ -155,7 +155,7 @@ namespace PrintManagement.Infrastructure.ImplementRepositories.ImplementBase
             return await DBSet.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<TEntity> GetByIDAsync(int id)
+        public async Task<TEntity> GetByIDAsync(Guid id)
         {
             return await DBSet.FindAsync(id);
         }

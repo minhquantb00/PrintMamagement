@@ -19,7 +19,5 @@ namespace PrintManagement.Domain.Entities
         public DateTime CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
         public string PhoneNumber { get; set; }
-        public Guid UserStatusId { get; set; }
-        public virtual UserStatus? UserStatus { get; set; }
     }
 }

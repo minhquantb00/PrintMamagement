@@ -12,6 +12,6 @@ namespace PrintManagement.Application.InterfaceServices
 {
     public interface IAuthService
     {
-
+        Task<ResponseObject<DataResponseUser>> Register(Request_Register request);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrintManagement.Domain.Enumerates;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,5 +24,6 @@ namespace PrintManagement.Application.Payloads.RequestModels.UserRequests
         [Required(ErrorMessage = "PhoneNumber is required")]
         public string PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public GenderEnum? Gender { get; set; }
     }
 }

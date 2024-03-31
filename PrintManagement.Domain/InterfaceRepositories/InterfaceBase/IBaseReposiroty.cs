@@ -21,7 +21,7 @@ namespace PrintManagement.Domain.InterfaceRepositories.InterfaceBase
         Task<TEntity> UpdateAsync(int id, TEntity entity);
         Task<TEntity> UpdateAsync(TEntity entity, params Object[] keyValues);
         Task<IQueryable<TEntity>> UpdateAsync(IQueryable<TEntity> entities);
-        Task<TEntity> GetByIDAsync(int id);
+        Task<TEntity> GetByIDAsync(Guid id);
         Task<List<TEntity>> ExecuteStoredProcedureAsync(string spName, params object[] parameters);
         Task<List<TEntity>> ExecuteStoredProcedureWithSqlParamListAsync(string spName, List<SqlParameter> parameters);
         Task<IQueryable<TEntity>> SqlQueryAsync(string query, params object[] parameters);

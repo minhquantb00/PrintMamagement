@@ -35,7 +35,24 @@ namespace PrintManagement.Infrastructure.DataContexts
         public virtual DbSet<ResourcePropertyDetail> ResourcePropertyDetails { get; set; }
         public virtual DbSet<ResourceForPrintJob> ResourceForPrintJobs { get; set; }
         public virtual DbSet<ShippingMethod> ShippingMethods { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            SeedRoles(builder);
 
+
+        }
+
+        private static void SeedRoles(ModelBuilder builder)
+        {
+            builder.Entity<Role>().HasData
+                (
+                    new Role() { RoleCode = "Admin", RoleName = "Quản trị viên" },
+                    new Role() { RoleCode = "Leader", RoleName = "Người đứng đầu" },
+                    new Role() { RoleCode = "Designer", RoleName = "Người thiết kế" },
+                    new Role() { RoleCode = "Employee", RoleName = "Nhân viên" }
+                );
+        }
 
         public async Task<int> CommitChangesAsync()
         {

@@ -22,5 +22,10 @@ namespace PrintManagement.Application.Constants
             public const string DEFAULT_CONTROLLER_ROUTE_WITHOUT_ACTION = "api/[controller]";
             public const string DEFAULT_ACTION_ROUTE = "[action]";
         }
+        public class ContextItem
+        {
+            public const string USER = "User";
+            public const string PERMISSIONS = "Permissions";
+        }
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Infrastructure.DataContexts
 {
-    public class ApplicationDbContext :  DbContext, IApplicationDbContext
+    public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -47,10 +47,10 @@ namespace PrintManagement.Infrastructure.DataContexts
         {
             builder.Entity<Role>().HasData
                 (
-                    new Role() { RoleCode = "Admin", RoleName = "Quản trị viên" },
-                    new Role() { RoleCode = "Leader", RoleName = "Người đứng đầu" },
-                    new Role() { RoleCode = "Designer", RoleName = "Người thiết kế" },
-                    new Role() { RoleCode = "Employee", RoleName = "Nhân viên" }
+                    new Role() { Id = Guid.NewGuid(), RoleCode = "Admin", RoleName = "Quản trị viên" },
+                    new Role() { Id = Guid.NewGuid(), RoleCode = "Leader", RoleName = "Người đứng đầu" },
+                    new Role() { Id = Guid.NewGuid(), RoleCode = "Designer", RoleName = "Người thiết kế" },
+                    new Role() { Id = Guid.NewGuid(), RoleCode = "Employee", RoleName = "Nhân viên" }
                 );
         }
 

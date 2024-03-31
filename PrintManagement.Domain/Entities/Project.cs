@@ -13,6 +13,7 @@ namespace PrintManagement.Domain.Entities
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public Guid LeaderId { get; set; }
+        public virtual User? Leader { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }
         public Guid CustomerId { get; set; }

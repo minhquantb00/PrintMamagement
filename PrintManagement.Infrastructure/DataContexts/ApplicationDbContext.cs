@@ -10,12 +10,17 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Infrastructure.DataContexts
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
+    public class ApplicationDbContext :  DbContext, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
         public ApplicationDbContext() { }
+        public virtual DbSet<ConfirmEmail> ConfirmEmails { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Permissions> Permissions { get; set; }
         public virtual DbSet<Bill> Bills { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerFeedback> CustomerFeedbacks { get; set; }

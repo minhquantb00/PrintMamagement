@@ -12,7 +12,8 @@ namespace PrintManagement.Domain.Entities
         public Guid ProjectId { get; set; }
         public virtual Project? Project { get; set; }
         public Guid DesignerId { get; set; }
-        public string FilePath { get; set; }
+        public virtual User? Designer { get; set; }
+        public string DesignImage { get; set; }
         public DateTime DesignTime { get; set; }
         public DesignStatusEnum? DesignStatus { get; set; }
         public Guid ApproverId { get; set; } // Người duyệt thiết kế

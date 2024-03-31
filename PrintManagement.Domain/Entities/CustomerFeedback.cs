@@ -13,6 +13,7 @@ namespace PrintManagement.Domain.Entities
         public string FeedbackContent { get; set; }
         public string ResponseByCompany { get; set; }
         public Guid UserFeedbackId { get; set; }
+        public virtual User? UserFeedback { get; set; }
         public DateTime FeedbackTime { get; set; }
         public DateTime? ResponseTime { get; set; }
     }

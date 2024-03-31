@@ -18,5 +18,10 @@ namespace PrintManagement.Application.Payloads.RequestModels.UserRequests
 
         [Required(ErrorMessage = "Password is required")]
         public string? Password { get; set; }
+        [Required(ErrorMessage = "FullName is required")]
+        public string FullName { get; set; }
+        [Required(ErrorMessage = "PhoneNumber is required")]
+        public string PhoneNumber { get; set; }
+        public DateTime DateOfBirth { get; set; }
     }
 }

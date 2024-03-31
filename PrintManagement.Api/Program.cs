@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PrintManagement.Application.Constants;
+using PrintManagement.Application.Handle.HandleEmail;
 using PrintManagement.Domain.Entities;
-using PrintManagement.Infrastructure.Configurations;
 using PrintManagement.Infrastructure.DataContexts;
 using System;
 using System.Reflection;
@@ -31,13 +31,6 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-{
-    // Other identity options
-    options.Tokens.ProviderMap["Email"] = new TokenProviderDescriptor(typeof(EmailTokenProvider<ApplicationUser>));
-}).AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {

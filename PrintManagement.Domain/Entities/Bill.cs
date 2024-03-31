@@ -19,5 +19,6 @@ namespace PrintManagement.Domain.Entities
         public DateTime CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
         public Guid EmployeeId { get; set; }
+        public virtual User? Employee { get; set; }
     }
 }

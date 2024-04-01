@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Domain.Entities;
 using System;
@@ -14,6 +15,7 @@ namespace PrintManagement.Application.Payloads.Mappers
         public AutoMapperProfile()
         {
             CreateMap<User, DataResponseUser>();
+            CreateMap<Customer, DataResponseCustomer>();
         }
     }
 }

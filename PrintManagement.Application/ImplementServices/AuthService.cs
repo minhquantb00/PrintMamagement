@@ -70,7 +70,7 @@ namespace PrintManagement.Application.ImplementServices
             RefreshToken rf = new RefreshToken
             {
                 UserId = user.Id,
-                ExpiryTime = DateTime.Now.AddDays(refreshTokenValidity),
+                ExpiryTime = DateTime.UtcNow.AddHours(refreshTokenValidity),
                 Token = refreshToken
             };
 
@@ -339,7 +339,7 @@ namespace PrintManagement.Application.ImplementServices
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
             _ = int.TryParse(_configuration["JWT:TokenValidityInMinutes"], out int tokenValidityInMinutes);
-            var expirationTimeUtc = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
+            var expirationTimeUtc = DateTime.UtcNow.AddHours(tokenValidityInMinutes);
             var localTimeZone = TimeZoneInfo.Local;
             var expirationTimeInLocalTimeZone = TimeZoneInfo.ConvertTimeFromUtc(expirationTimeUtc, localTimeZone);
 
@@ -378,11 +378,6 @@ namespace PrintManagement.Application.ImplementServices
             return principal;
 
         }
-
-        
-
-
-
         #endregion
     }
 }

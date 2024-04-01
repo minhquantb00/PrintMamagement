@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Application.Payloads.ResponseModels.DataUser
 {
-    public class DataResponseUser
+    public class DataResponseUser : DataResponseBase
     {
         public string Email { get; set; }
         public string FullName { get; set; }

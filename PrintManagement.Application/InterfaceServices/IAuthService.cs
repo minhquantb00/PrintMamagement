@@ -1,4 +1,5 @@
 ﻿using PrintManagement.Application.Payloads.RequestModels.UserRequests;
+using PrintManagement.Application.Payloads.ResponseModels.DataLogin;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 using PrintManagement.Domain.Entities;
@@ -13,5 +14,7 @@ namespace PrintManagement.Application.InterfaceServices
     public interface IAuthService
     {
         Task<ResponseObject<DataResponseUser>> Register(Request_Register request);
+        Task<ResponseObject<DataResponseLogin>> Login(Request_Login request);
+        Task<ResponseObject<DataResponseLogin>> GetJwtTokenAsync(User user);
     }
 }

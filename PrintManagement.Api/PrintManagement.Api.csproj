@@ -26,10 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PrintManagement.Application\PrintManagement.Application.csproj" />
     <ProjectReference Include="..\PrintManagement.Infrastructure\PrintManagement.Infrastructure.csproj" />
   </ItemGroup>

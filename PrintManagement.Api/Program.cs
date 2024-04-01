@@ -7,8 +7,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PrintManagement.Application.Constants;
 using PrintManagement.Application.Handle.HandleEmail;
+using PrintManagement.Application.ImplementServices;
+using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Domain.Entities;
+using PrintManagement.Domain.InterfaceRepositories.InterfaceBase;
+using PrintManagement.Domain.InterfaceRepositories.InterfaceUser;
 using PrintManagement.Infrastructure.DataContexts;
+using PrintManagement.Infrastructure.ImplementRepositories.ImplementBase;
+using PrintManagement.Infrastructure.ImplementRepositories.ImplementUser;
 using System;
 using System.Reflection;
 using System.Text;
@@ -31,6 +37,13 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+builder.Services.AddScoped<IBaseReposiroty<User>, BaseRepository<User>>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDbContext, ApplicationDbContext>();
+builder.Services.AddScoped<IUserRepository<User>, UserRepository<User>>();
+builder.Services.AddScoped<IBaseReposiroty<RefreshToken>, BaseRepository<RefreshToken>>();
+
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {

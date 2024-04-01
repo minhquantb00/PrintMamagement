@@ -47,10 +47,10 @@ namespace PrintManagement.Infrastructure.DataContexts
         {
             builder.Entity<Role>().HasData
                 (
-                    new Role() { Id = Guid.NewGuid(), RoleCode = "Admin", RoleName = "Quản trị viên" },
-                    new Role() { Id = Guid.NewGuid(), RoleCode = "Leader", RoleName = "Người đứng đầu" },
-                    new Role() { Id = Guid.NewGuid(), RoleCode = "Designer", RoleName = "Người thiết kế" },
-                    new Role() { Id = Guid.NewGuid(), RoleCode = "Employee", RoleName = "Nhân viên" }
+                    new Role() { Id = Guid.NewGuid(), RoleCode = "Admin", RoleName = "Admin" },
+                    new Role() { Id = Guid.NewGuid(), RoleCode = "Leader", RoleName = "Leader" },
+                    new Role() { Id = Guid.NewGuid(), RoleCode = "Designer", RoleName = "Designer" },
+                    new Role() { Id = Guid.NewGuid(), RoleCode = "Employee", RoleName = "Employee" }
                 );
         }
 

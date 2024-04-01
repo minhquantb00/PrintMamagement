@@ -71,7 +71,7 @@ namespace PrintManagement.Infrastructure.ImplementRepositories.ImplementBase
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var dataEntity = await DBSet.FindAsync(id);
             if (dataEntity != null)
@@ -213,6 +213,49 @@ namespace PrintManagement.Infrastructure.ImplementRepositories.ImplementBase
             }
             await _IdbContext.CommitChangesAsync();
             return entities;
+        }
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null)
+        {
+            IQueryable<TEntity> query = predicate != null ? DBSet.Where(predicate) : DBSet;
+            return await query.CountAsync();
+        }
+
+        public async Task<int> CountAsync(List<string> includes, Expression<Func<TEntity, bool>> predicate = null)
+        {
+            IQueryable<TEntity> query = BuildQueryable(includes, predicate);
+            return await query.CountAsync();
+        }
+
+        public async Task<int> CountAsync(string include, Expression<Func<TEntity, bool>> predicate = null)
+        {
+            IQueryable<TEntity> query;
+            if (!string.IsNullOrWhiteSpace(include))
+            {
+                query = BuildQueryable(new List<string> { include }, predicate);
+                return await query.CountAsync();
+            }
+            else
+            {
+                return await CountAsync(predicate);
+            }
+        }
+
+        protected IQueryable<TEntity> BuildQueryable(List<string> includes, Expression<Func<TEntity, bool>> predicate)
+        {
+            IQueryable<TEntity> query = DBSet.AsQueryable();
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+            if (includes != null && includes.Count > 0)
+            {
+                foreach (string include in includes)
+                {
+                    query = query.Include(include.Trim());
+                }
+            }
+
+            return query;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace PrintManagement.Domain.InterfaceRepositories.InterfaceBase
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> CreateAsync(TEntity entity);
         Task<IQueryable<TEntity>> CreateAsync(IQueryable<TEntity> entity);
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(Guid id);
         Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> UpdateAsync(TEntity entity);
         Task<TEntity> UpdateAsync(int id, TEntity entity);
@@ -28,5 +28,8 @@ namespace PrintManagement.Domain.InterfaceRepositories.InterfaceBase
         void ClearTrackedChanges();
         Task ExecuteStoredProcedureNoReturnAsync(string spName, params object[] parameters);
         Task<T> ExecuteStoredProcedureScalarAsync<T>(string procedureName, List<SqlParameter> parameters);
+        Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null);
+        Task<int> CountAsync(List<string> includes, Expression<Func<TEntity, bool>> predicate = null);
+        Task<int> CountAsync(string include, Expression<Func<TEntity, bool>> predicate = null);
     }
 }

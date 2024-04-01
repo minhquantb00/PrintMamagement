@@ -16,5 +16,8 @@ namespace PrintManagement.Application.InterfaceServices
         Task<ResponseObject<DataResponseUser>> Register(Request_Register request);
         Task<ResponseObject<DataResponseLogin>> Login(Request_Login request);
         Task<ResponseObject<DataResponseLogin>> GetJwtTokenAsync(User user);
+        Task<string> ChangePassword(Guid userId, Request_ChangePassword request);
+        Task<string> ForgotPassword(string email);
+        Task<string> ConfirmCreateNewPassword(Request_ConfirmCreateNewPassword request);
     }
 }

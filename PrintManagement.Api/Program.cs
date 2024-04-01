@@ -37,12 +37,13 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
-
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBaseReposiroty<User>, BaseRepository<User>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDbContext, ApplicationDbContext>();
 builder.Services.AddScoped<IUserRepository<User>, UserRepository<User>>();
 builder.Services.AddScoped<IBaseReposiroty<RefreshToken>, BaseRepository<RefreshToken>>();
+builder.Services.AddScoped<IBaseReposiroty<ConfirmEmail>, BaseRepository<ConfirmEmail>>();
 
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>

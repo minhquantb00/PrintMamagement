@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PrintManagement.Application.Payloads.RequestModels.UserRequests
@@ -24,6 +25,7 @@ namespace PrintManagement.Application.Payloads.RequestModels.UserRequests
         [Required(ErrorMessage = "PhoneNumber is required")]
         public string PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public GenderEnum? Gender { get; set; }
     }
 }

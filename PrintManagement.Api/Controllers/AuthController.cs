@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrintManagement.Application.Constants;
 using PrintManagement.Application.InterfaceServices;
@@ -26,6 +28,34 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> Login([FromBody] Request_Login request)
         {
             return Ok(await _authService.Login(request));
+        }
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ChangePassword(Request_ChangePassword request)
+        {
+            var userClaim = HttpContext.User.FindFirst("Id");
+            if (userClaim == null)
+            {
+                return BadRequest("User ID not found in token.");
+            }
+
+            Guid id;
+            bool parseResult = Guid.TryParse(userClaim.Value, out id);
+            if (!parseResult)
+            {
+                return BadRequest("Invalid User ID.");
+            }
+            return Ok(await _authService.ChangePassword(id, request));
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
+        {
+            return Ok(await _authService.ForgotPassword(email));
+        }
+        [HttpPut]
+        public async Task<IActionResult> ConfirmCreateNewPassword([FromBody] Request_ConfirmCreateNewPassword request)
+        {
+            return Ok(await _authService.ConfirmCreateNewPassword(request));
         }
     }
 }

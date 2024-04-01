@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using PrintManagement.Application.Handle.HandleEmail;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataLogin;
@@ -31,18 +32,24 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IConfiguration _configuration;
         private readonly IUserRepository<User> _userRepository;
         private readonly IBaseReposiroty<RefreshToken> _baseRefreshTokenRepository;
-        public AuthService(IBaseReposiroty<User> baseUserRepository, IMapper mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository)
+        private readonly IBaseReposiroty<ConfirmEmail> _confirmEmailRepository;
+        private readonly IEmailService _emailService;
+        public AuthService(IBaseReposiroty<User> baseUserRepository, IMapper mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, 
+            IEmailService emailService)
         {
             _baseUserRepository = baseUserRepository;
             _mapper = mapper;
             _configuration = configuration;
             _userRepository = userRepository;
             _baseRefreshTokenRepository = baseRefreshTokenRepository;
+            _confirmEmailRepository = confirmEmailRepository;
+            _emailService = emailService;
         }
         public async Task<ResponseObject<DataResponseLogin>> GetJwtTokenAsync(User user)
         {
             var authClaims = new List<Claim>
                 {
+                new Claim("Id", user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("Email", user.Email),
                     new Claim("Avatar", user.Avatar),
@@ -88,7 +95,7 @@ namespace PrintManagement.Application.ImplementServices
                     }
                 }
             };
-            
+
         }
         public async Task<ResponseObject<DataResponseLogin>> Login(Request_Login request)
         {
@@ -109,7 +116,7 @@ namespace PrintManagement.Application.ImplementServices
                 {
                     return new ResponseObject<DataResponseLogin>
                     {
-                        Status = StatusCodes.Status400BadRequest, 
+                        Status = StatusCodes.Status400BadRequest,
                         Message = "Incorrect password",
                         Data = null
                     };
@@ -134,11 +141,12 @@ namespace PrintManagement.Application.ImplementServices
                         }
                     }
                 };
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new ResponseObject<DataResponseLogin>
                 {
-                    Status =StatusCodes.Status500InternalServerError,
+                    Status = StatusCodes.Status500InternalServerError,
                     Message = ex.Message,
                     Data = null
                 };
@@ -149,7 +157,7 @@ namespace PrintManagement.Application.ImplementServices
         {
             try
             {
-                if(await _userRepository.GetUserByEmail(request.Email) != null)
+                if (await _userRepository.GetUserByEmail(request.Email) != null)
                 {
                     return new ResponseObject<DataResponseUser>
                     {
@@ -216,7 +224,7 @@ namespace PrintManagement.Application.ImplementServices
                     Message = "User created successfully",
                     Data = new DataResponseUser
                     {
-                        Id =user.Id,
+                        Id = user.Id,
                         CreateTime = user.CreateTime,
                         DateOfBirth = user.DateOfBirth,
                         Email = user.Email,
@@ -225,7 +233,7 @@ namespace PrintManagement.Application.ImplementServices
                     }
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new ResponseObject<DataResponseUser>
                 {
@@ -235,6 +243,96 @@ namespace PrintManagement.Application.ImplementServices
                 };
             }
         }
+
+
+        public async Task<string> ChangePassword(Guid userId, Request_ChangePassword request)
+        {
+            try
+            {
+                var user = await _baseUserRepository.GetByIDAsync(userId);
+                bool checkPassword = BcryptNet.Verify(request.OldPassword, user.Password);
+                if (!checkPassword)
+                {
+                    return "Incorrect password";
+                }
+                if (!request.NewPassword.Equals(request.ConfirmPassword))
+                {
+                    return "Passwords do not match";
+                }
+                user.Password = BcryptNet.HashPassword(request.NewPassword);
+                await _baseUserRepository.UpdateAsync(user);
+                return "Change password successfully";
+
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+        private string GenerateCodeActive()
+        {
+            return "InkMastery" + "_" + DateTime.Now.Ticks.ToString();
+        }
+        public async Task<string> ForgotPassword(string email)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByEmail(email);
+                if(user == null)
+                {
+                    return "User doesn't exist";
+                }
+                await _confirmEmailRepository.DeleteAsync(x => x.UserId == user.Id);
+                ConfirmEmail confirmEmail = new ConfirmEmail
+                {
+                    ConfirmCode = GenerateCodeActive(),
+                    ExpiryTime = DateTime.Now.AddMinutes(1),
+                    Id = Guid.NewGuid(),
+                    IsConfirm = false,
+                    UserId = user.Id
+                };
+                confirmEmail = await _confirmEmailRepository.CreateAsync(confirmEmail);
+                var message = new EmailMessage(new string[] { email }, "Get confirmation code here", $"Confirm code: {confirmEmail.ConfirmCode}");
+                var responseMessage = _emailService.SendEmail(message);
+                return "Confirmation code sent to email! Please check your email";
+            }
+            catch(Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+
+        public async Task<string> ConfirmCreateNewPassword(Request_ConfirmCreateNewPassword request)
+        {
+            try
+            {
+                var confirmEmail = await _confirmEmailRepository.GetAsync(x => x.ConfirmCode.Equals(request.ConfirmCode));
+                if(confirmEmail == null)
+                {
+                    return "Invalid verification code";
+                }
+                if(confirmEmail.ExpiryTime < DateTime.Now)
+                {
+                    return "Token has expired";
+                }
+                var user = await _baseUserRepository.GetByIDAsync(confirmEmail.UserId);
+                if (!request.Password.Equals(request.ConfirmPassword))
+                {
+                    return "Passwords do not match";
+                }
+                user.Password = BcryptNet.HashPassword(request.Password);
+                await _baseUserRepository.UpdateAsync(user);
+                confirmEmail.IsConfirm = true;
+                await _confirmEmailRepository.UpdateAsync(confirmEmail);
+                return "Created new password successfully";
+            }
+            catch(Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+
+
 
         #region PrivateMethods
         private JwtSecurityToken GetToken(List<Claim> authClaims)
@@ -280,6 +378,8 @@ namespace PrintManagement.Application.ImplementServices
             return principal;
 
         }
+
+        
 
 
 

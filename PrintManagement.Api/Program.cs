@@ -9,6 +9,7 @@ using PrintManagement.Application.Constants;
 using PrintManagement.Application.Handle.HandleEmail;
 using PrintManagement.Application.ImplementServices;
 using PrintManagement.Application.InterfaceServices;
+using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Domain.Entities;
 using PrintManagement.Domain.InterfaceRepositories.InterfaceBase;
 using PrintManagement.Domain.InterfaceRepositories.InterfaceUser;
@@ -42,11 +43,19 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBaseReposiroty<User>, BaseRepository<User>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDbContext, ApplicationDbContext>();
+builder.Services.AddScoped<ProjectConverter>();
+builder.Services.AddScoped<DesignConverter>();
+builder.Services.AddScoped<UserConverter>();
+builder.Services.AddScoped<CustomerConverter>();
+builder.Services.AddScoped<CustomerFeedbackConverter>();
 builder.Services.AddScoped<IUserRepository<User>, UserRepository<User>>();
 builder.Services.AddScoped<IBaseReposiroty<RefreshToken>, BaseRepository<RefreshToken>>();
 builder.Services.AddScoped<IBaseReposiroty<ConfirmEmail>, BaseRepository<ConfirmEmail>>();
 builder.Services.AddScoped<IBaseReposiroty<Customer>, BaseRepository<Customer>>();  
+builder.Services.AddScoped<IBaseReposiroty<Project>,  BaseRepository<Project>>();
+builder.Services.AddScoped<IBaseReposiroty<Design>,  BaseRepository<Design>>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();  
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {

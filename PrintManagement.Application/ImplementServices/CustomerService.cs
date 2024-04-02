@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using PrintManagement.Application.InterfaceServices;
+using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.CustomerRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
@@ -20,11 +21,13 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Customer> _baseCustomerRepository;
         private readonly IBaseReposiroty<User> _baseUserRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CustomerService(IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor)
+        private readonly CustomerConverter _mapper;
+        public CustomerService(IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, CustomerConverter mapper)
         {
             _baseCustomerRepository = baseCustomerRepository;
             _baseUserRepository = baseUserRepository;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         public async Task<ResponseObject<DataResponseCustomer>> CreateCustomer(Request_CreateCustomer request)
@@ -53,7 +56,7 @@ namespace PrintManagement.Application.ImplementServices
                 {
                     Status = StatusCodes.Status200OK,
                     Message = "Customer created successfully",
-                    Data = null
+                    Data = _mapper.EntityToDTOForCustomer(customer)
                 };
             }
             catch (Exception ex)
@@ -127,13 +130,7 @@ namespace PrintManagement.Application.ImplementServices
         public async Task<DataResponseCustomer> GetCustomerById(Guid id)
         {
             var customer = await _baseCustomerRepository.GetByIDAsync(id);
-            return new DataResponseCustomer
-            {
-                Address = customer.Address,
-                FullName = customer.FullName,
-                Id = customer.Id,
-                PhoneNumber = customer.PhoneNumber
-            };
+            return _mapper.EntityToDTOForCustomer(customer);
         }
 
         public async Task<ResponseObject<DataResponseCustomer>> UpdateCustomer(Request_UpdateCustomer request)
@@ -186,7 +183,7 @@ namespace PrintManagement.Application.ImplementServices
                 {
                     Status = StatusCodes.Status200OK,
                     Message = "Successfully updated successfully",
-                    Data= null
+                    Data= _mapper.EntityToDTOForCustomer(customer)
                 };
             }catch(Exception ex)
             {

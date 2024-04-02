@@ -35,24 +35,25 @@ namespace PrintManagement.Infrastructure.DataContexts
         public virtual DbSet<ResourcePropertyDetail> ResourcePropertyDetails { get; set; }
         public virtual DbSet<ResourceForPrintJob> ResourceForPrintJobs { get; set; }
         public virtual DbSet<ShippingMethod> ShippingMethods { get; set; }
+        public virtual DbSet<DeliveryProject> DeliveryProjects { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            SeedRoles(builder);
+            //SeedRoles(builder);
 
 
         }
 
-        private static void SeedRoles(ModelBuilder builder)
-        {
-            builder.Entity<Role>().HasData
-                (
-                    new Role() { Id = Guid.NewGuid(), RoleCode = "Admin", RoleName = "Admin" },
-                    new Role() { Id = Guid.NewGuid(), RoleCode = "Leader", RoleName = "Leader" },
-                    new Role() { Id = Guid.NewGuid(), RoleCode = "Designer", RoleName = "Designer" },
-                    new Role() { Id = Guid.NewGuid(), RoleCode = "Employee", RoleName = "Employee" }
-                );
-        }
+        //private static void SeedRoles(ModelBuilder builder)
+        //{
+        //    builder.Entity<Role>().HasData
+        //        (
+        //            new Role() { Id = Guid.NewGuid(), RoleCode = "Admin", RoleName = "Admin" },
+        //            new Role() { Id = Guid.NewGuid(), RoleCode = "Leader", RoleName = "Leader" },
+        //            new Role() { Id = Guid.NewGuid(), RoleCode = "Designer", RoleName = "Designer" },
+        //            new Role() { Id = Guid.NewGuid(), RoleCode = "Employee", RoleName = "Employee" }
+        //        );
+        //}
 
         public async Task<int> CommitChangesAsync()
         {

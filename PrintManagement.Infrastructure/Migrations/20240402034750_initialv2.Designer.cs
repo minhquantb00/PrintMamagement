@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrintManagement.Infrastructure.DataContexts;
 
@@ -11,9 +12,10 @@ using PrintManagement.Infrastructure.DataContexts;
 namespace PrintManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402034750_initialv2")]
+    partial class initialv2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,6 +188,9 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("ShippingMethodId")
                         .HasColumnType("uniqueidentifier");
 
@@ -193,33 +198,11 @@ namespace PrintManagement.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
+                    b.HasIndex("ProjectId");
+
                     b.HasIndex("ShippingMethodId");
 
                     b.ToTable("Deliveries");
-                });
-
-            modelBuilder.Entity("PrintManagement.Domain.Entities.DeliveryProject", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("DeliveryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeliveryId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("DeliveryProjects");
                 });
 
             modelBuilder.Entity("PrintManagement.Domain.Entities.Design", b =>
@@ -585,28 +568,28 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("52b7916e-e835-4c21-923f-1c258d189aeb"),
+                            Id = new Guid("f4750ea3-3fa7-4bd4-9356-8154ca767504"),
                             IsActive = true,
                             RoleCode = "Admin",
                             RoleName = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("6aba15d0-e2a5-43ff-89ce-2e551c00c77f"),
+                            Id = new Guid("c473160a-bb6e-4d77-989a-c1cf878abb0e"),
                             IsActive = true,
                             RoleCode = "Leader",
                             RoleName = "Leader"
                         },
                         new
                         {
-                            Id = new Guid("c6580fa6-bf8f-41f9-ab9b-74f9910b4275"),
+                            Id = new Guid("4e1cec2d-f3f0-4387-8e06-8baf2946c940"),
                             IsActive = true,
                             RoleCode = "Designer",
                             RoleName = "Designer"
                         },
                         new
                         {
-                            Id = new Guid("5d596603-296d-4bd9-ae08-3c935268018b"),
+                            Id = new Guid("10573a6c-e034-4da6-bec8-b51f12262f7c"),
                             IsActive = true,
                             RoleCode = "Employee",
                             RoleName = "Employee"
@@ -744,6 +727,12 @@ namespace PrintManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PrintManagement.Domain.Entities.Project", "Project")
+                        .WithMany("Deliveries")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PrintManagement.Domain.Entities.ShippingMethod", null)
                         .WithMany("Deliveries")
                         .HasForeignKey("ShippingMethodId")
@@ -751,23 +740,6 @@ namespace PrintManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("PrintManagement.Domain.Entities.DeliveryProject", b =>
-                {
-                    b.HasOne("PrintManagement.Domain.Entities.Delivery", "Delivery")
-                        .WithMany("DeliveryProjects")
-                        .HasForeignKey("DeliveryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PrintManagement.Domain.Entities.Project", "Project")
-                        .WithMany("DeliveryProjects")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Delivery");
 
                     b.Navigation("Project");
                 });
@@ -929,11 +901,6 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.Navigation("Projects");
                 });
 
-            modelBuilder.Entity("PrintManagement.Domain.Entities.Delivery", b =>
-                {
-                    b.Navigation("DeliveryProjects");
-                });
-
             modelBuilder.Entity("PrintManagement.Domain.Entities.Design", b =>
                 {
                     b.Navigation("PrintJobs");
@@ -948,7 +915,7 @@ namespace PrintManagement.Infrastructure.Migrations
                 {
                     b.Navigation("CustomerFeedbacks");
 
-                    b.Navigation("DeliveryProjects");
+                    b.Navigation("Deliveries");
 
                     b.Navigation("Designs");
                 });

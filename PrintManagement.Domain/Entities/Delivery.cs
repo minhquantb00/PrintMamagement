@@ -9,8 +9,6 @@ namespace PrintManagement.Domain.Entities
 {
     public class Delivery : BaseEntity
     {
-        public Guid ProjectId { get; set; }
-        public virtual Project? Project { get; set; }
         public Guid ShippingMethodId { get; set; }
         public Guid CustomerId { get; set; }
         public virtual Customer? Customer { get; set; }
@@ -18,5 +16,6 @@ namespace PrintManagement.Domain.Entities
         public DateTime EstimateDeliveryTime { get; set; }
         public DateTime? ActualDeliveryTime { get; set; }
         public DeliveryStatusEnum? DeliveryStatus { get; set; }
+        public virtual ICollection<DeliveryProject>? DeliveryProjects { get; set; }
     }
 }

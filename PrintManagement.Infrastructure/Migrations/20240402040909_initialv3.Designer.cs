@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrintManagement.Infrastructure.DataContexts;
 
@@ -11,9 +12,10 @@ using PrintManagement.Infrastructure.DataContexts;
 namespace PrintManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402040909_initialv3")]
+    partial class initialv3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -585,28 +587,28 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("52b7916e-e835-4c21-923f-1c258d189aeb"),
+                            Id = new Guid("4c43c413-fea9-42db-a3f7-758bdce6d0a1"),
                             IsActive = true,
                             RoleCode = "Admin",
                             RoleName = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("6aba15d0-e2a5-43ff-89ce-2e551c00c77f"),
+                            Id = new Guid("57bba7d4-b5ca-4ba4-bf9e-4b10428ca277"),
                             IsActive = true,
                             RoleCode = "Leader",
                             RoleName = "Leader"
                         },
                         new
                         {
-                            Id = new Guid("c6580fa6-bf8f-41f9-ab9b-74f9910b4275"),
+                            Id = new Guid("6b02bac6-1f60-44d9-a748-4446bd977660"),
                             IsActive = true,
                             RoleCode = "Designer",
                             RoleName = "Designer"
                         },
                         new
                         {
-                            Id = new Guid("5d596603-296d-4bd9-ae08-3c935268018b"),
+                            Id = new Guid("ed6578a5-248e-4f48-9db7-c8fdcdbbabf6"),
                             IsActive = true,
                             RoleCode = "Employee",
                             RoleName = "Employee"
@@ -756,13 +758,13 @@ namespace PrintManagement.Infrastructure.Migrations
             modelBuilder.Entity("PrintManagement.Domain.Entities.DeliveryProject", b =>
                 {
                     b.HasOne("PrintManagement.Domain.Entities.Delivery", "Delivery")
-                        .WithMany("DeliveryProjects")
+                        .WithMany()
                         .HasForeignKey("DeliveryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.Project", "Project")
-                        .WithMany("DeliveryProjects")
+                        .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -929,11 +931,6 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.Navigation("Projects");
                 });
 
-            modelBuilder.Entity("PrintManagement.Domain.Entities.Delivery", b =>
-                {
-                    b.Navigation("DeliveryProjects");
-                });
-
             modelBuilder.Entity("PrintManagement.Domain.Entities.Design", b =>
                 {
                     b.Navigation("PrintJobs");
@@ -947,8 +944,6 @@ namespace PrintManagement.Infrastructure.Migrations
             modelBuilder.Entity("PrintManagement.Domain.Entities.Project", b =>
                 {
                     b.Navigation("CustomerFeedbacks");
-
-                    b.Navigation("DeliveryProjects");
 
                     b.Navigation("Designs");
                 });

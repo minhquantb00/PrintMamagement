@@ -11,7 +11,7 @@ namespace PrintManagement.Domain.Entities
         public Guid ProjectId { get; set; }
         public virtual Project? Project { get; set; }
         public string FeedbackContent { get; set; }
-        public string ResponseByCompany { get; set; }
+        public string? ResponseByCompany { get; set; }
         public Guid UserFeedbackId { get; set; }
         public virtual User? UserFeedback { get; set; }
         public DateTime FeedbackTime { get; set; }

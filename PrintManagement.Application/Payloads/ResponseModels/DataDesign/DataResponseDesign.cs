@@ -15,6 +15,6 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataDesign
         public string DesignImage { get; set; }
         public DateTime DesignTime { get; set; }
         public string DesignStatus { get; set; }
-        public DataResponseUser Approver { get; set; } // Người duyệt thiết kế
+        public DataResponseUser? Approver { get; set; } // Người duyệt thiết kế
     }
 }

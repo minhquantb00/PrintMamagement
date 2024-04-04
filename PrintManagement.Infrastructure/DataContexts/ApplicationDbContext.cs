@@ -36,13 +36,13 @@ namespace PrintManagement.Infrastructure.DataContexts
         public virtual DbSet<ResourceForPrintJob> ResourceForPrintJobs { get; set; }
         public virtual DbSet<ShippingMethod> ShippingMethods { get; set; }
         public virtual DbSet<DeliveryProject> DeliveryProjects { get; set; }
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-            //SeedRoles(builder);
+        //protected override void OnModelCreating(ModelBuilder builder)
+        //{
+        //    base.OnModelCreating(builder);
+        //    SeedRoles(builder);
 
 
-        }
+        //}
 
         //private static void SeedRoles(ModelBuilder builder)
         //{

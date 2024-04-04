@@ -143,7 +143,6 @@ namespace PrintManagement.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ResponseByCompany")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ResponseTime")
@@ -585,28 +584,28 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("52b7916e-e835-4c21-923f-1c258d189aeb"),
+                            Id = new Guid("102b5af9-e3ff-4e0f-b4e5-60d74bd89128"),
                             IsActive = true,
                             RoleCode = "Admin",
                             RoleName = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("6aba15d0-e2a5-43ff-89ce-2e551c00c77f"),
+                            Id = new Guid("c5665115-6218-4309-8b6d-a74c9e4fee21"),
                             IsActive = true,
                             RoleCode = "Leader",
                             RoleName = "Leader"
                         },
                         new
                         {
-                            Id = new Guid("c6580fa6-bf8f-41f9-ab9b-74f9910b4275"),
+                            Id = new Guid("86991ac4-bbf4-4fd5-bd17-f6df413b0d11"),
                             IsActive = true,
                             RoleCode = "Designer",
                             RoleName = "Designer"
                         },
                         new
                         {
-                            Id = new Guid("5d596603-296d-4bd9-ae08-3c935268018b"),
+                            Id = new Guid("43b48b97-3a08-4e8a-89a2-9f5553265d60"),
                             IsActive = true,
                             RoleCode = "Employee",
                             RoleName = "Employee"

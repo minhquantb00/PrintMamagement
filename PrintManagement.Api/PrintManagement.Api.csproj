@@ -30,4 +30,8 @@
     <ProjectReference Include="..\PrintManagement.Infrastructure\PrintManagement.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Upload\Files\" />
+  </ItemGroup>
+
 </Project>

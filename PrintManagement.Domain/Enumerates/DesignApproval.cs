@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Domain.Enumerates
 {
-    public enum DesignStatusEnum
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum DesignApproval
     {
-        NotYetApproved = 0,
-        HasBeenApproved = 1,
-        Refuse = 2
+        Agree = 0,
+        Refuse = 1
     }
 }

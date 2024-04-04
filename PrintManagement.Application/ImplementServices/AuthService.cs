@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PrintManagement.Application.Handle.HandleEmail;
 using PrintManagement.Application.InterfaceServices;
+using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataLogin;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
@@ -28,13 +29,13 @@ namespace PrintManagement.Application.ImplementServices
     public class AuthService : IAuthService
     {
         private readonly IBaseReposiroty<User> _baseUserRepository;
-        private readonly IMapper _mapper;
+        private readonly UserConverter _mapper;
         private readonly IConfiguration _configuration;
         private readonly IUserRepository<User> _userRepository;
         private readonly IBaseReposiroty<RefreshToken> _baseRefreshTokenRepository;
         private readonly IBaseReposiroty<ConfirmEmail> _confirmEmailRepository;
         private readonly IEmailService _emailService;
-        public AuthService(IBaseReposiroty<User> baseUserRepository, IMapper mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, 
+        public AuthService(IBaseReposiroty<User> baseUserRepository, UserConverter mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, 
             IEmailService emailService)
         {
             _baseUserRepository = baseUserRepository;
@@ -217,7 +218,7 @@ namespace PrintManagement.Application.ImplementServices
                     UserName = request.Username
                 };
                 user = await _baseUserRepository.CreateAsync(user);
-                await _userRepository.AddUserToRoleAsync(user, new List<string> { "Admin" });
+                await _userRepository.AddUserToRoleAsync(user, new List<string> {"Admin", "Leader", "Designer", "Employee" });
                 return new ResponseObject<DataResponseUser>
                 {
                     Status = StatusCodes.Status200OK,
@@ -329,6 +330,39 @@ namespace PrintManagement.Application.ImplementServices
             catch(Exception ex)
             {
                 return "Error: " + ex.Message;
+            }
+        }
+
+        public async Task<ResponseObject<DataResponseUser>> AddRoleToUser(Guid userId, List<string> roles)
+        {
+            try
+            {
+                var user = await _baseUserRepository.GetByIDAsync(userId);
+                if(user == null)
+                {
+                    return new ResponseObject<DataResponseUser>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "User not found",
+                        Data = null
+                    };
+                }
+                await _userRepository.AddUserToRoleAsync(user, roles);
+                return new ResponseObject<DataResponseUser>
+                {
+                    Status = StatusCodes.Status200OK,
+                    Message = "Add roles to user successfully",
+                    Data = _mapper.EntityToDTOForUser(user)
+                };
+            }
+            catch(Exception ex)
+            {
+                return new ResponseObject<DataResponseUser>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message,
+                    Data = null
+                };
             }
         }
 

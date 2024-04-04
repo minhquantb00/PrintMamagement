@@ -1,6 +1,7 @@
 ﻿using PrintManagement.Domain.Enumerates;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace PrintManagement.Domain.Entities
         public string DesignImage { get; set; }
         public DateTime DesignTime { get; set; }
         public DesignStatusEnum? DesignStatus { get; set; }
+        [MaybeNull]
         public Guid ApproverId { get; set; } // Người duyệt thiết kế
         public virtual ICollection<PrintJob>? PrintJobs { get; set; }
     }

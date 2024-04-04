@@ -19,5 +19,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<string> ChangePassword(Guid userId, Request_ChangePassword request);
         Task<string> ForgotPassword(string email);
         Task<string> ConfirmCreateNewPassword(Request_ConfirmCreateNewPassword request);
+        Task<ResponseObject<DataResponseUser>> AddRoleToUser(Guid userId, List<string> roles);
     }
 }

@@ -28,7 +28,7 @@ namespace PrintManagement.Application.Payloads.Mappers
             _baseDesignRepository = baseDesignRepository;
             _designConverter = designConverter;
         }
-        public DataResponseProject EntityToDTOForProject(Project project)
+        public  DataResponseProject EntityToDTOForProject(Project project)
         {
             var customer = _baseCustomerRepository.GetByIDAsync(project.CustomerId);
             var leader = _baseUserRepository.GetByIDAsync(project.LeaderId);

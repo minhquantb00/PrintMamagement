@@ -1,88 +1,103 @@
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
-import authV2RegisterIllustrationBorderedDark from '@images/pages/auth-v2-register-illustration-bordered-dark.png'
-import authV2RegisterIllustrationBorderedLight from '@images/pages/auth-v2-register-illustration-bordered-light.png'
-import authV2RegisterIllustrationDark from '@images/pages/auth-v2-register-illustration-dark.png'
-import authV2RegisterIllustrationLight from '@images/pages/auth-v2-register-illustration-light.png'
-import authV2MaskDark from '@images/pages/misc-mask-dark.png'
-import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import { useAppAbility } from '@/plugins/casl/useAppAbility'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-import axios from '@axios'
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import { VForm } from "vuetify/components/VForm";
+import authV2RegisterIllustrationBorderedDark from "@images/pages/auth-v2-register-illustration-bordered-dark.png";
+import authV2RegisterIllustrationBorderedLight from "@images/pages/auth-v2-register-illustration-bordered-light.png";
+import authV2RegisterIllustrationDark from "@images/pages/auth-v2-register-illustration-dark.png";
+import authV2RegisterIllustrationLight from "@images/pages/auth-v2-register-illustration-light.png";
+import authV2MaskDark from "@images/pages/misc-mask-dark.png";
+import authV2MaskLight from "@images/pages/misc-mask-light.png";
+import { useAppAbility } from "@/plugins/casl/useAppAbility";
+import AuthProvider from "@/views/pages/authentication/AuthProvider.vue";
+import axios from "@axios";
+import { useGenerateImageVariant } from "@core/composable/useGenerateImageVariant";
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer";
+import { themeConfig } from "@themeConfig";
 import {
   alphaDashValidator,
   emailValidator,
   requiredValidator,
-} from '@validators'
-
-const refVForm = ref()
-const username = ref('johnDoe')
-const email = ref('john@example.com')
-const password = ref('john@VUEXY#123')
-const privacyPolicies = ref(true)
+} from "@validators";
+import dayjs from "dayjs";
+import { ref } from "vue";
+const dateFormat = "YYYY-MM-DD";
+const weekFormat = "MM/DD";
+const monthFormat = "YYYY/MM";
+const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
+const customWeekStartEndFormat = (value) =>
+  `${dayjs(value).startOf("week").format(weekFormat)} ~ ${dayjs(value)
+    .endOf("week")
+    .format(weekFormat)}`;
+const formatDate = ref(dayjs("2003/07/28", dateFormat[0]));
+const options = ref([
+  {
+    value: "jack",
+    label: "Jack",
+  },
+  {
+    value: "lucy",
+    label: "Lucy",
+  },
+  {
+    value: "tom",
+    label: "Tom",
+  },
+]);
+const handleChange = (value) => {
+  console.log(`selected ${value}`);
+};
+const handleBlur = () => {
+  console.log("blur");
+};
+const handleFocus = () => {
+  console.log("focus");
+};
+const filterOption = (input, option) => {
+  return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+const value = ref(undefined);
+const value5 = ref(dayjs("2015/01/01", dateFormat));
+const value6 = ref(dayjs());
+const customFormat = (value) => `custom format: ${value.format(dateFormat)}`;
+const refVForm = ref();
+const username = ref("johnDoe");
+const email = ref("john@example.com");
+const password = ref("john@VUEXY#123");
+const privacyPolicies = ref(true);
 
 // Router
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
 // Ability
-const ability = useAppAbility()
+const ability = useAppAbility();
 
 // Form Errors
 const errors = ref({
   email: undefined,
   password: undefined,
-})
+});
 
-const register = () => {
-  axios.post('/auth/register', {
-    username: username.value,
-    email: email.value,
-    password: password.value,
-  }).then(r => {
-    const { accessToken, userData, userAbilities } = r.data
+const imageVariant = useGenerateImageVariant(
+  authV2RegisterIllustrationLight,
+  authV2RegisterIllustrationDark,
+  authV2RegisterIllustrationBorderedLight,
+  authV2RegisterIllustrationBorderedDark,
+  true
+);
+const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
+const isPasswordVisible = ref(false);
 
-    localStorage.setItem('userAbilities', JSON.stringify(userAbilities))
-    ability.update(userAbilities)
-    localStorage.setItem('userData', JSON.stringify(userData))
-    localStorage.setItem('accessToken', JSON.stringify(accessToken))
-
-    // Redirect to `to` query if exist or redirect to index route
-    router.replace(route.query.to ? String(route.query.to) : '/')
-    
-    return null
-  }).catch(e => {
-    const { errors: formErrors } = e.response.data
-
-    errors.value = formErrors
-    console.error(e.response.data)
-  })
-}
-
-const imageVariant = useGenerateImageVariant(authV2RegisterIllustrationLight, authV2RegisterIllustrationDark, authV2RegisterIllustrationBorderedLight, authV2RegisterIllustrationBorderedDark, true)
-const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
-const isPasswordVisible = ref(false)
-
-const onSubmit = () => {
-  refVForm.value?.validate().then(({ valid: isValid }) => {
-    if (isValid)
-      register()
-  })
-}
+// const onSubmit = () => {
+//   refVForm.value?.validate().then(({ valid: isValid }) => {
+//     if (isValid) register();
+//   });
+// };
 </script>
 
 <template>
-  <VRow
-    no-gutters
-    class="auth-wrapper bg-surface"
-  >
-    <VCol
-      lg="8"
-      class="d-none d-lg-flex"
-    >
+  <a-space direction="vertical" :size="12"> </a-space>
+  <VRow no-gutters class="auth-wrapper bg-surface">
+    <VCol lg="8" class="d-none d-lg-flex">
       <div class="position-relative bg-background rounded-lg w-100 ma-8 me-0">
         <div class="d-flex align-center justify-center w-100 h-100">
           <VImg
@@ -92,73 +107,91 @@ const onSubmit = () => {
           />
         </div>
 
-        <VImg
-          class="auth-footer-mask"
-          :src="authThemeMask"
-        />
+        <VImg class="auth-footer-mask" :src="authThemeMask" />
       </div>
     </VCol>
 
-    <VCol
-      cols="12"
-      lg="4"
-      class="d-flex align-center justify-center"
-    >
-      <VCard
-        flat
-        :max-width="500"
-        class="mt-12 mt-sm-0 pa-4"
-      >
+    <VCol cols="12" lg="4" class="d-flex align-center justify-center">
+      <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
-          <VNodeRenderer
-            :nodes="themeConfig.app.logo"
-            class="mb-6"
-          />
-          <h5 class="text-h5 mb-1">
-            Adventure starts here 🚀
-          </h5>
-          <p class="mb-0">
-            Make your app management easy and fun!
-          </p>
+          <VRow>
+            <VCol cols="1">
+              <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
+            </VCol>
+            <VCol>
+              <h5 class="text-h5 mb-1 ml-2">Print Manager</h5>
+            </VCol>
+          </VRow>
         </VCardText>
 
         <VCardText>
-          <VForm
-            ref="refVForm"
-            @submit.prevent="onSubmit"
-          >
+          <VForm ref="refVForm">
             <VRow>
               <!-- Username -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="username"
+                  v-model="inputRegister.Username"
                   autofocus
-                  :rules="[requiredValidator, alphaDashValidator]"
-                  label="Username"
+                  :rules="[requiredValidator]"
+                  label="Tài khoản"
+                />
+              </VCol>
+              <VCol cols="12">
+                <a-label class="label-date-birth">Ngày sinh</a-label>
+                <!-- <AppDatePicKer v-model="hgsdhdhd"></AppDatePicKer> -->
+                <AppDateTimePicker
+                  v-model="inputRegister.DateOfBirth"
+                  :format="dateFormat"
+                  class="date-picker-input"
                 />
               </VCol>
 
               <!-- email -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="email"
+                  v-model="inputRegister.Email"
                   :rules="[requiredValidator, emailValidator]"
                   label="Email"
                   type="email"
                 />
               </VCol>
-
+              <VCol cols="12">
+                <AppTextField
+                  v-model="inputRegister.FullName"
+                  :rules="[requiredValidator]"
+                  label="Họ và tên"
+                  type="text"
+                />
+              </VCol>
+              <VCol cols="12">
+                <AppTextField
+                  v-model="inputRegister.PhoneNumber"
+                  :rules="[requiredValidator]"
+                  label="Số điện thoại"
+                  type="text"
+                />
+              </VCol>
               <!-- password -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="password"
+                  class="mb-5"
+                  v-model="inputRegister.Password"
                   :rules="[requiredValidator]"
-                  label="Password"
+                  label="Mật khẩu"
                   :type="isPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
-
+                <a-label class="sex"> Giới tính </a-label>
+                <v-select
+                  class="select-ant"
+                  ref="select"
+                  v-model="inputRegister.Gender"
+                  :items="items"
+                >
+                </v-select>
                 <div class="d-flex align-center mt-2 mb-4">
                   <VCheckbox
                     id="privacy-policy"
@@ -168,52 +201,34 @@ const onSubmit = () => {
                   >
                     <template #label>
                       <span class="me-1">
-                        I agree to
-                        <a
-                          href="javascript:void(0)"
-                          class="text-primary"
-                        >privacy policy & terms</a>
+                        Tôi đồng ý với các
+                        <a href="javascript:void(0)" class="text-primary"
+                          >Điều khoản dịch vụ của VUE</a
+                        >
                       </span>
                     </template>
                   </VCheckbox>
                 </div>
 
-                <VBtn
-                  block
-                  type="submit"
-                >
-                  Sign up
-                </VBtn>
+                <VBtn block @click="Register"> Đăng ký </VBtn>
               </VCol>
 
               <!-- create account -->
-              <VCol
-                cols="12"
-                class="text-center text-base"
-              >
-                <span>Already have an account?</span>
-                <RouterLink
-                  class="text-primary ms-2"
-                  :to="{ name: 'login' }"
-                >
-                  Sign in instead
+              <VCol cols="12" class="text-center text-base">
+                <span>Bạn đã có tài khoản?</span>
+                <RouterLink class="text-primary ms-2" :to="{ name: 'login' }">
+                  Đăng nhập
                 </RouterLink>
               </VCol>
 
-              <VCol
-                cols="12"
-                class="d-flex align-center"
-              >
+              <VCol cols="12" class="d-flex align-center">
                 <VDivider />
-                <span class="mx-4">or</span>
+                <span class="mx-4">Hoặc</span>
                 <VDivider />
               </VCol>
 
               <!-- auth providers -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
+              <VCol cols="12" class="text-center">
                 <AuthProvider />
               </VCol>
             </VRow>
@@ -222,12 +237,106 @@ const onSubmit = () => {
       </VCard>
     </VCol>
   </VRow>
+  <v-snackbar
+    v-model="snackbar"
+    color="blue-grey"
+    rounded="pill"
+    class="mb-5"
+  >
+    {{ text }}
+    <template v-slot:actions>
+      <v-btn color="green" variant="text" @click="snackbar = false">
+        Đóng
+      </v-btn>
+    </template>
+    <!-- <template v-slot:activator="{ props }">
+        <v-btn class="ma-2" color="blue-grey" rounded="pill" v-bind="props">open</v-btn>
+      </template> -->
+  </v-snackbar>
 </template>
-
-<style lang="scss">
+<script>
+import { authApi } from "../api/Auth/authApi";
+import { format } from "date-fns";
+export default {
+  data() {
+    return {
+      authApi: authApi(),
+      text: "",
+      snackbar: false,
+      items: ["Male", "Female", "UnKnown"],
+      inputRegister: {
+        Username: "",
+        Email: "",
+        Password: "",
+        FullName: "",
+        PhoneNumber: "",
+        DateOfBirth: "",
+        Gender: "",
+      },
+    };
+  },
+  computed: {
+    dateFormat: "yyyy-MM-dd",
+  },
+  methods: {
+    async Register() {
+      const result = await this.authApi.register(this.inputRegister);
+      console.log(result);
+      if (result == 200) {
+        this.text = "Đăng ký tài khoản thành công";
+        this.snackbar = true;
+        setTimeout(() => {
+          this.reloadPage();
+        }, 1500);
+      } else {
+        this.text = "Đăng ký tài khoản thất bại";
+        this.snackbar = true;
+        setTimeout(() => {
+          this.reloadPage();
+        }, 1500);
+      }
+    },
+    reloadPage() {
+      location.reload();
+    },
+  },
+};
+</script>
+<style lang="scss" scoped>
 @use "@core/scss/template/pages/page-auth.scss";
-</style>
+.date-picker-input {
+  width: 100%;
+  background-color: rgb(47, 51, 73);
+  border: 1px solid rgb(87 90 115);
 
+  height: 40px;
+}
+.date-picker-input input {
+  color: white;
+}
+.label-date-birth {
+  // margin: 10px 0px px 0px;
+  font-size: 13px;
+}
+.select-ant {
+  width: 100% !important;
+  background-color: rgb(47, 51, 73) !important;
+  margin: 5px 0px 0px 0px;
+  height: 40px;
+}
+.sex {
+  font-size: 13px;
+}
+.ant-select-selector {
+  background-color: rgb(47, 51, 73);
+}
+.ant-picker-input {
+  color: #8d8ca8;
+}
+.ant-picker-suffix {
+  color: #8d8ca8 !important;
+}
+</style>
 <route lang="yaml">
 meta:
   layout: blank

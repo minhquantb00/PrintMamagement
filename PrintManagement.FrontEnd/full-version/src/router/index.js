@@ -14,9 +14,8 @@ const router = createRouter({
       redirect: (to) => {
         const userData = JSON.parse(localStorage.getItem("userData") || "{}");
         const userRole = userData && userData.role ? userData.role : null;
-        if (userRole === "employee") return { name: "dashboards-analytics" };
+        if (userRole === "employee,") return { name: "dashboards-analytics" };
         if (userRole === "client") return { name: "access-control" };
-
         return { name: "login", query: to.query };
       },
     },

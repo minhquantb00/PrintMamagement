@@ -12,8 +12,8 @@ using PrintManagement.Infrastructure.DataContexts;
 namespace PrintManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240404053409_init")]
-    partial class init
+    [Migration("20240406131118_upinit1")]
+    partial class upinit1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -586,28 +586,28 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("102b5af9-e3ff-4e0f-b4e5-60d74bd89128"),
+                            Id = new Guid("3b29e3ee-4173-47b2-8f8f-eb8637cdad7c"),
                             IsActive = true,
                             RoleCode = "Admin",
                             RoleName = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("c5665115-6218-4309-8b6d-a74c9e4fee21"),
+                            Id = new Guid("33309333-5dfd-4858-843a-c0fd1d19dadb"),
                             IsActive = true,
                             RoleCode = "Leader",
                             RoleName = "Leader"
                         },
                         new
                         {
-                            Id = new Guid("86991ac4-bbf4-4fd5-bd17-f6df413b0d11"),
+                            Id = new Guid("ece759df-37ce-47c0-bdef-da201a4c9bc4"),
                             IsActive = true,
                             RoleCode = "Designer",
                             RoleName = "Designer"
                         },
                         new
                         {
-                            Id = new Guid("43b48b97-3a08-4e8a-89a2-9f5553265d60"),
+                            Id = new Guid("09f57a24-01d8-4e4f-9fa6-d15518f4bffc"),
                             IsActive = true,
                             RoleCode = "Employee",
                             RoleName = "Employee"
@@ -829,7 +829,7 @@ namespace PrintManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Permissions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -974,6 +974,11 @@ namespace PrintManagement.Infrastructure.Migrations
             modelBuilder.Entity("PrintManagement.Domain.Entities.ShippingMethod", b =>
                 {
                     b.Navigation("Deliveries");
+                });
+
+            modelBuilder.Entity("PrintManagement.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Permissions");
                 });
 #pragma warning restore 612, 618
         }

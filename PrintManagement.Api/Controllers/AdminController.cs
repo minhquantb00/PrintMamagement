@@ -9,9 +9,11 @@ using PrintManagement.Application.Payloads.RequestModels.CustomerRequests;
 using PrintManagement.Application.Payloads.RequestModels.DesignRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.RequestModels.ProjectRequests;
+using PrintManagement.Application.Payloads.RequestModels.ResourceRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
 using PrintManagement.Application.Payloads.ResponseModels.DataDesign;
 using PrintManagement.Application.Payloads.ResponseModels.DataProject;
+using PrintManagement.Application.Payloads.ResponseModels.DataResource;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 
@@ -25,12 +27,14 @@ namespace PrintManagement.Api.Controllers
         private readonly IProjectService _projectService;
         private readonly IDesignService _designService;
         private readonly IAuthService _authService;
-        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService)
+        private readonly IResourceService _resourceService;
+        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService)
         {
             _customerService = customerService;
             _projectService = projectService;
             _designService = designService;
             _authService = authService;
+            _resourceService = resourceService;
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -126,6 +130,34 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> ApprovalDesign([FromForm] Request_DesignApproval request)
         {
             return Ok(await _designService.ApprovalDesign(request));
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreateResourceInformation([FromForm] Request_CreateResource request)
+        {
+            return Ok(await _resourceService.CreateResourceInformation(request));
+        }
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UpdateResourceInformation([FromForm] Request_UpdateResource request)
+        {
+            return Ok(await _resourceService.UpdateResourceInformation(request));
+        }
+        [HttpDelete("{resourceId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> DeleteResource([FromRoute] Guid resourceId)
+        {
+            return Ok(await _resourceService.DeleteResource(resourceId));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAll(string? resourceName)
+        {
+            return Ok(await _resourceService.GetAll(resourceName));
+        }
+        [HttpGet("{resourceId}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid resourceId)
+        {
+            return Ok(await _resourceService.GetById(resourceId));
         }
     }
 }

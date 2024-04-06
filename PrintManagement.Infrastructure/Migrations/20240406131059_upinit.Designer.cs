@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrintManagement.Infrastructure.DataContexts;
 
@@ -11,9 +12,10 @@ using PrintManagement.Infrastructure.DataContexts;
 namespace PrintManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240406131059_upinit")]
+    partial class upinit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -580,36 +582,6 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("3b29e3ee-4173-47b2-8f8f-eb8637cdad7c"),
-                            IsActive = true,
-                            RoleCode = "Admin",
-                            RoleName = "Admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("33309333-5dfd-4858-843a-c0fd1d19dadb"),
-                            IsActive = true,
-                            RoleCode = "Leader",
-                            RoleName = "Leader"
-                        },
-                        new
-                        {
-                            Id = new Guid("ece759df-37ce-47c0-bdef-da201a4c9bc4"),
-                            IsActive = true,
-                            RoleCode = "Designer",
-                            RoleName = "Designer"
-                        },
-                        new
-                        {
-                            Id = new Guid("09f57a24-01d8-4e4f-9fa6-d15518f4bffc"),
-                            IsActive = true,
-                            RoleCode = "Employee",
-                            RoleName = "Employee"
-                        });
                 });
 
             modelBuilder.Entity("PrintManagement.Domain.Entities.ShippingMethod", b =>

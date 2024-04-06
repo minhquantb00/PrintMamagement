@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PrintManagement.Infrastructure.Migrations
 {
-    public partial class init : Migration
+    public partial class upinit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -486,17 +486,6 @@ namespace PrintManagement.Infrastructure.Migrations
                         principalTable: "Resources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "IsActive", "RoleCode", "RoleName" },
-                values: new object[,]
-                {
-                    { new Guid("102b5af9-e3ff-4e0f-b4e5-60d74bd89128"), true, "Admin", "Admin" },
-                    { new Guid("43b48b97-3a08-4e8a-89a2-9f5553265d60"), true, "Employee", "Employee" },
-                    { new Guid("86991ac4-bbf4-4fd5-bd17-f6df413b0d11"), true, "Designer", "Designer" },
-                    { new Guid("c5665115-6218-4309-8b6d-a74c9e4fee21"), true, "Leader", "Leader" }
                 });
 
             migrationBuilder.CreateIndex(

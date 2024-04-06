@@ -34,9 +34,11 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IUserRepository<User> _userRepository;
         private readonly IBaseReposiroty<RefreshToken> _baseRefreshTokenRepository;
         private readonly IBaseReposiroty<ConfirmEmail> _confirmEmailRepository;
+        private readonly IBaseReposiroty<Permissions> _basePermissionRepository;
+        private readonly IBaseReposiroty<Role> _baseRoleRepository;
         private readonly IEmailService _emailService;
         public AuthService(IBaseReposiroty<User> baseUserRepository, UserConverter mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, 
-            IEmailService emailService)
+            IEmailService emailService, IBaseReposiroty<Permissions> basePermissionRepository, IBaseReposiroty<Role> baseRoleRepository)
         {
             _baseUserRepository = baseUserRepository;
             _mapper = mapper;
@@ -45,18 +47,34 @@ namespace PrintManagement.Application.ImplementServices
             _baseRefreshTokenRepository = baseRefreshTokenRepository;
             _confirmEmailRepository = confirmEmailRepository;
             _emailService = emailService;
+            _basePermissionRepository = basePermissionRepository;
+            _baseRoleRepository = baseRoleRepository;
         }
         public async Task<ResponseObject<DataResponseLogin>> GetJwtTokenAsync(User user)
         {
+            var permissions = await _basePermissionRepository.GetAllAsync(x => x.UserId == user.Id);
+            var roles = await _baseRoleRepository.GetAllAsync();
+            
             var authClaims = new List<Claim>
+    {
+        new Claim("Id", user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim("Email", user.Email),
+        new Claim("Avatar", user.Avatar),
+        new Claim("FullName", user.FullName),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    };
+
+            foreach (var permission in permissions)
+            {
+                 foreach(var role in roles)
                 {
-                new Claim("Id", user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim("Email", user.Email),
-                    new Claim("Avatar", user.Avatar),
-                    new Claim("FullName", user.FullName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+                    if(role.Id == permission.RoleId)
+                    {
+                        authClaims.Add(new Claim("Permission", role.RoleName));
+                    }
+                }
+            }
 
             var userRoles = await _userRepository.GetRolesOfUserAsync(user);
             foreach (var role in userRoles)
@@ -64,7 +82,7 @@ namespace PrintManagement.Application.ImplementServices
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var jwtToken = GetToken(authClaims); //access token
+            var jwtToken = GetToken(authClaims); 
             var refreshToken = GenerateRefreshToken();
             _ = int.TryParse(_configuration["JWT:RefreshTokenValidity"], out int refreshTokenValidity);
 
@@ -76,6 +94,7 @@ namespace PrintManagement.Application.ImplementServices
             };
 
             rf = await _baseRefreshTokenRepository.CreateAsync(rf);
+
             return new ResponseObject<DataResponseLogin>
             {
                 Status = StatusCodes.Status200OK,
@@ -96,8 +115,8 @@ namespace PrintManagement.Application.ImplementServices
                     }
                 }
             };
-
         }
+
         public async Task<ResponseObject<DataResponseLogin>> Login(Request_Login request)
         {
             try

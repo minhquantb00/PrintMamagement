@@ -11,6 +11,6 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataResource
     {
         public string ResourcePropertyName { get; set; }
         public int Quantity { get; set; }
-        public IQueryable<DataResponseResoucePropertyDetail>? ResourcePropertyDetails { get; set; }
+        public IQueryable<DataResponseResourcePropertyDetail>? ResourcePropertyDetails { get; set; }
     }
 }

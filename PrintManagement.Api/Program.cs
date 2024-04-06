@@ -60,8 +60,13 @@ builder.Services.AddScoped<IBaseReposiroty<Customer>, BaseRepository<Customer>>(
 builder.Services.AddScoped<IBaseReposiroty<Project>,  BaseRepository<Project>>();
 builder.Services.AddScoped<IBaseReposiroty<Design>,  BaseRepository<Design>>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IProjectService, ProjectService>();  
-
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<ResourcePropertyDetailConverter>();
+builder.Services.AddScoped<ResourcePropertyConverter>();
+builder.Services.AddScoped<IBaseReposiroty<ResourceProperty>, BaseRepository<ResourceProperty>>();
+builder.Services.AddScoped<IBaseReposiroty<ResourcePropertyDetail>, BaseRepository<ResourcePropertyDetail>>();
+builder.Services.AddScoped<IBaseReposiroty<Permissions>, BaseRepository<Permissions>>();
+builder.Services.AddScoped<IBaseReposiroty<Role>, BaseRepository<Role>>();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     // Set the expiration time for the OTP

@@ -12,7 +12,11 @@ import authV2MaskDark from "@images/pages/misc-mask-dark.png";
 import authV2MaskLight from "@images/pages/misc-mask-light.png";
 import { VNodeRenderer } from "@layouts/components/VNodeRenderer";
 import { themeConfig } from "@themeConfig";
-import { emailValidator, requiredValidator } from "@validators";
+import {
+  emailValidator,
+  requiredValidator,
+  usernameValidator,
+} from "@validators";
 
 const authThemeImg = useGenerateImageVariant(
   authV2LoginIllustrationLight,
@@ -36,37 +40,6 @@ const refVForm = ref();
 const email = ref("admin@demo.com");
 const password = ref("admin");
 const rememberMe = ref(false);
-
-const login = () => {
-  axios
-    .post("/auth/login", {
-      email: email.value,
-      password: password.value,
-    })
-    .then((r) => {
-      const { accessToken, userData, userAbilities } = r.data;
-
-      localStorage.setItem("userAbilities", JSON.stringify(userAbilities));
-      ability.update(userAbilities);
-      localStorage.setItem("userData", JSON.stringify(userData));
-      localStorage.setItem("accessToken", JSON.stringify(accessToken));
-
-      // Redirect to `to` query if exist or redirect to index route
-      router.replace(route.query.to ? String(route.query.to) : "/");
-    })
-    .catch((e) => {
-      const { errors: formErrors } = e.response.data;
-
-      errors.value = formErrors;
-      console.error(e.response.data);
-    });
-};
-
-const onSubmit = () => {
-  refVForm.value?.validate().then(({ valid: isValid }) => {
-    if (isValid) login();
-  });
-};
 </script>
 
 <template>
@@ -95,37 +68,23 @@ const onSubmit = () => {
           <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
 
           <h5 class="text-h5 mb-1">
-            Welcome to
-            <span class="text-capitalize"> {{ themeConfig.app.title }} </span>!
-            👋🏻
+            <span class="text-capitalize"> Welcome to Print Manage </span>! 👋🏻
           </h5>
           <p class="mb-0">
             Please sign-in to your account and start the adventure
           </p>
         </VCardText>
-        <VCardText>
-          <VAlert color="primary" variant="tonal">
-            <p class="text-caption mb-2">
-              Admin Email: <strong>admin@demo.com</strong> / Pass:
-              <strong>admin</strong>
-            </p>
-            <p class="text-caption mb-0">
-              Client Email: <strong>client@demo.com</strong> / Pass:
-              <strong>client</strong>
-            </p>
-          </VAlert>
-        </VCardText>
+        <!--  -->
         <VCardText>
           <VForm ref="refVForm" @submit.prevent="onSubmit">
             <VRow>
               <!-- email -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="email"
-                  label="Email"
-                  type="email"
+                  v-model="inputLogin.username"
+                  label="Username"
                   autofocus
-                  :rules="[requiredValidator, emailValidator]"
+                  :rules="[requiredValidator, usernameValidator]"
                   :error-messages="errors.email"
                 />
               </VCol>
@@ -133,7 +92,7 @@ const onSubmit = () => {
               <!-- password -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="password"
+                  v-model="inputLogin.password"
                   label="Password"
                   :rules="[requiredValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
@@ -152,23 +111,28 @@ const onSubmit = () => {
                     class="text-primary ms-2 mb-1"
                     :to="{ name: 'forgot-password' }"
                   >
-                  Quên mật khẩu?
+                    Forgot Password?
                   </RouterLink>
                 </div>
 
-                <VBtn block type="submit"> Đăng nhập </VBtn>
+                <VBtn block type="submit" :loading="loading" @click="login">
+                  Login
+                </VBtn>
               </VCol>
 
               <!-- create account -->
               <VCol cols="12" class="text-center">
-                <span>Bạn chưa có tài khoản?</span>
-                <RouterLink class="text-primary ms-2"  :to="{ name: 'register' }">
-                  Đăng ký tài khoản
+                <span>New on our platform?</span>
+                <RouterLink
+                  class="text-primary ms-2"
+                  :to="{ name: 'register' }"
+                >
+                  Create an account
                 </RouterLink>
               </VCol>
               <VCol cols="12" class="d-flex align-center">
                 <VDivider />
-                <span class="mx-4">Hoặc</span>
+                <span class="mx-4">or</span>
                 <VDivider />
               </VCol>
 
@@ -181,9 +145,97 @@ const onSubmit = () => {
         </VCardText>
       </VCard>
     </VCol>
+    <v-snackbar
+      v-model="snackbar"
+      color="blue-grey"
+      rounded="pill"
+      class="mb-5"
+    >
+      {{ text }}
+      <template v-slot:actions>
+        <v-btn color="green" variant="text" @click="snackbar = false">
+          Đóng
+        </v-btn>
+      </template>
+      <!-- <template v-slot:activator="{ props }">
+        <v-btn class="ma-2" color="blue-grey" rounded="pill" v-bind="props"
+          >open</v-btn
+        >
+      </template> -->
+    </v-snackbar>
   </VRow>
 </template>
+<script>
+import { authApi } from "../api/Auth/authApi";
+import { useRoute } from "vue-router";
+export default {
+  data() {
+    return {
+      authApi: authApi(),
+      loading: false,
+      snackbar: false,
+      text: "",
+      router: useRoute(),
+      inputLogin: {
+        username: "",
+        password: "",
+      },
+    };
+  },
+  methods: {
+    async login() {
+      this.loading = true;
+      const result = (await this.authApi.login(this.inputLogin)).data;
+      console.log(result);
+      debugger;
 
+      if (result && result.status === 200) {
+        if (!localStorage.getItem("accessToken")) {
+          localStorage.setItem("accessToken", result.data.accessToken);
+          localStorage.setItem("refreshToken", result.data.refreshToken);
+          const accessToken = localStorage.getItem("accessToken");
+          var decoded = this.parseJwt(accessToken); // Fix lỗi parseJwt không được định nghĩa
+          localStorage.setItem("userInfo", JSON.stringify(decoded));
+        }
+
+        const userInfo = JSON.parse(localStorage.getItem("userInfo")); // Lấy userInfo từ localStorage và parse thành đối tượng JSON
+        console.log(userInfo);
+        console.log("user");
+        console.log(result);
+        this.text = result.message;
+        this.snackbar = true;
+        
+      } else {
+        this.text = result.message || "Unknown error occurred";
+        this.snackbar = true;
+      }
+    },
+    parseJwt(token) {
+      var base64Url = token.split(".")[1];
+      var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      var jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+
+      return JSON.parse(jsonPayload);
+    },
+    reloadPage() {
+      location.reload();
+    },
+    onSubmit() {
+      refVForm.value?.validate().then(({ valid: isValid }) => {
+        if (isValid) login();
+      });
+    },
+  },
+};
+</script>
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth.scss";
 </style>

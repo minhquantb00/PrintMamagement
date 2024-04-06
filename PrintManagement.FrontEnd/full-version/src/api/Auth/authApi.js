@@ -8,7 +8,7 @@ export const authApi = defineStore("auth", {
     login(params) {
       return new Promise((resolve, reject) => {
         axios
-          .post("/auth/DangNhap", { ...params })
+          .post("/Auth/Login", { ...params })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

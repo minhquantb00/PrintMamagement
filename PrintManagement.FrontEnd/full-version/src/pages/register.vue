@@ -16,6 +16,8 @@ import {
   alphaDashValidator,
   emailValidator,
   requiredValidator,
+  phoneNumberValidator,
+  usernameValidator,
 } from "@validators";
 import dayjs from "dayjs";
 import { ref } from "vue";
@@ -67,7 +69,11 @@ const privacyPolicies = ref(true);
 // Router
 const route = useRoute();
 const router = useRouter();
-
+const onSubmit = () => {
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) register();
+  });
+};
 // Ability
 const ability = useAppAbility();
 
@@ -86,12 +92,6 @@ const imageVariant = useGenerateImageVariant(
 );
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
 const isPasswordVisible = ref(false);
-
-// const onSubmit = () => {
-//   refVForm.value?.validate().then(({ valid: isValid }) => {
-//     if (isValid) register();
-//   });
-// };
 </script>
 
 <template>
@@ -125,22 +125,23 @@ const isPasswordVisible = ref(false);
         </VCardText>
 
         <VCardText>
-          <VForm ref="refVForm">
+          <VForm ref="refVForm" @submit.prevent="onSubmit">
             <VRow>
               <!-- Username -->
               <VCol cols="12">
                 <AppTextField
                   v-model="inputRegister.Username"
                   autofocus
-                  :rules="[requiredValidator]"
-                  label="Tài khoản"
+                  :rules="[requiredValidator, usernameValidator]"
+                  label="Username"
                 />
               </VCol>
               <VCol cols="12">
-                <a-label class="label-date-birth">Ngày sinh</a-label>
+                <a-label class="label-date-birth">Date of birth</a-label>
                 <!-- <AppDatePicKer v-model="hgsdhdhd"></AppDatePicKer> -->
                 <AppDateTimePicker
                   v-model="inputRegister.DateOfBirth"
+                  :rules="[requiredValidator]"
                   :format="dateFormat"
                   class="date-picker-input"
                 />
@@ -159,15 +160,15 @@ const isPasswordVisible = ref(false);
                 <AppTextField
                   v-model="inputRegister.FullName"
                   :rules="[requiredValidator]"
-                  label="Họ và tên"
+                  label="Full Name"
                   type="text"
                 />
               </VCol>
               <VCol cols="12">
                 <AppTextField
                   v-model="inputRegister.PhoneNumber"
-                  :rules="[requiredValidator]"
-                  label="Số điện thoại"
+                  :rules="[requiredValidator, phoneNumberValidator]"
+                  label="Phone number"
                   type="text"
                 />
               </VCol>
@@ -177,17 +178,18 @@ const isPasswordVisible = ref(false);
                   class="mb-5"
                   v-model="inputRegister.Password"
                   :rules="[requiredValidator]"
-                  label="Mật khẩu"
+                  label="Password"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :append-inner-icon="
                     isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
                   "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
-                <a-label class="sex"> Giới tính </a-label>
+                <a-label class="sex"> Gender </a-label>
                 <v-select
                   class="select-ant"
                   ref="select"
+                  :rules="[requiredValidator]"
                   v-model="inputRegister.Gender"
                   :items="items"
                 >
@@ -201,29 +203,29 @@ const isPasswordVisible = ref(false);
                   >
                     <template #label>
                       <span class="me-1">
-                        Tôi đồng ý với các
+                        I agree to
                         <a href="javascript:void(0)" class="text-primary"
-                          >Điều khoản dịch vụ của VUE</a
+                          >privacy policy & terms of Print Manage</a
                         >
                       </span>
                     </template>
                   </VCheckbox>
                 </div>
 
-                <VBtn block @click="Register"> Đăng ký </VBtn>
+                <VBtn block type="submit" @click="Register"> Sign up </VBtn>
               </VCol>
 
               <!-- create account -->
               <VCol cols="12" class="text-center text-base">
-                <span>Bạn đã có tài khoản?</span>
+                <span>Already have an account?</span>
                 <RouterLink class="text-primary ms-2" :to="{ name: 'login' }">
-                  Đăng nhập
+                  Sign in instead
                 </RouterLink>
               </VCol>
 
               <VCol cols="12" class="d-flex align-center">
                 <VDivider />
-                <span class="mx-4">Hoặc</span>
+                <span class="mx-4">or</span>
                 <VDivider />
               </VCol>
 
@@ -237,12 +239,7 @@ const isPasswordVisible = ref(false);
       </VCard>
     </VCol>
   </VRow>
-  <v-snackbar
-    v-model="snackbar"
-    color="blue-grey"
-    rounded="pill"
-    class="mb-5"
-  >
+  <v-snackbar v-model="snackbar" color="blue-grey" rounded="pill" class="mb-5">
     {{ text }}
     <template v-slot:actions>
       <v-btn color="green" variant="text" @click="snackbar = false">
@@ -257,10 +254,12 @@ const isPasswordVisible = ref(false);
 <script>
 import { authApi } from "../api/Auth/authApi";
 import { format } from "date-fns";
+import { useRouter } from "vue-router";
 export default {
   data() {
     return {
       authApi: authApi(),
+      router: useRouter(),
       text: "",
       snackbar: false,
       items: ["Male", "Female", "UnKnown"],
@@ -281,19 +280,24 @@ export default {
   methods: {
     async Register() {
       const result = await this.authApi.register(this.inputRegister);
+      // this.router.push();
+      console.log("Vào đây rồi nhe");
       console.log(result);
-      if (result == 200) {
-        this.text = "Đăng ký tài khoản thành công";
+      console.log(result.data.status);
+      console.log(result.data.message);
+      if (result && result.data.status === 200) {
+        this.text = result.data.message;
         this.snackbar = true;
         setTimeout(() => {
           this.reloadPage();
         }, 1500);
+        this.router.push();
+      } else if (result && result.data.status === 400) {
+        this.text = result.data.message;
+        this.snackbar = true;
       } else {
-        this.text = "Đăng ký tài khoản thất bại";
+        this.text = "Registration failed";
         this.snackbar = true;
-        setTimeout(() => {
-          this.reloadPage();
-        }, 1500);
       }
     },
     reloadPage() {

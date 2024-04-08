@@ -33,16 +33,14 @@ namespace PrintManagement.Api.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ChangePassword(Request_ChangePassword request)
         {
-            var userClaim = HttpContext.User.FindFirst("Id"); // lấy ra thông tin của người đang trong phiên đăng nhập thông qua token
+            var userClaim = HttpContext.User.FindFirst("Id");
             if (userClaim == null)
             {
                 return BadRequest("User ID not found in token.");
             }
-
             Guid id;
-            string str = userClaim.Value; 
             bool parseResult = Guid.TryParse(userClaim.Value, out id);
-            if (!parseResult) // userClaim không phải kiểu Guid thì parseResult = false
+            if (!parseResult)
             {
                 return BadRequest("Invalid User ID.");
             }

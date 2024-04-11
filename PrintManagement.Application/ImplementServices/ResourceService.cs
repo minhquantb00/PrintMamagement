@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Asn1.Cmp;
 using PrintManagement.Application.Handle.HandleFile;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.Mappers;
@@ -20,11 +21,17 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IBaseReposiroty<Resource> _baseResourceRepository;
         private readonly ResourceConverter _converter;
-        public ResourceService(IHttpContextAccessor contextAccessor, IBaseReposiroty<Resource> baseResourceRepository, ResourceConverter converter)
+        private readonly IBaseReposiroty<ResourceProperty> _baseResourcePropertyRepository;
+        private readonly ResourcePropertyConverter _resourcePropertyConverter;
+        private readonly IBaseReposiroty<ResourcePropertyDetail> _baseResourcePropertyDetailRepository;
+        public ResourceService(IHttpContextAccessor contextAccessor, IBaseReposiroty<Resource> baseResourceRepository, ResourceConverter converter, IBaseReposiroty<ResourceProperty> baseResourcePropertyRepository, ResourcePropertyConverter resourcePropertyConverter, IBaseReposiroty<ResourcePropertyDetail> baseResourcePropertyDetailRepository)
         {
             _contextAccessor = contextAccessor;
             _baseResourceRepository = baseResourceRepository;
             _converter = converter;
+            _baseResourcePropertyRepository = baseResourcePropertyRepository;
+            _resourcePropertyConverter = resourcePropertyConverter;
+            _baseResourcePropertyDetailRepository = baseResourcePropertyDetailRepository;
         }
         public async Task<ResponseObject<DataResponseResource>> CreateResourceInformation(Request_CreateResource request)
         {
@@ -61,6 +68,7 @@ namespace PrintManagement.Application.ImplementServices
                     ResourceStatus = Domain.Enumerates.ResourceStatusEnum.OutOfStock
                 };
                 resource = await _baseResourceRepository.CreateAsync(resource);
+                resource.ResourceProperties =   CreateResourcePropertyAsync(resource.Id, request.requests).Result.ToList();
                 return new ResponseObject<DataResponseResource>
                 {
                     Status = StatusCodes.Status200OK,
@@ -174,5 +182,76 @@ namespace PrintManagement.Application.ImplementServices
                 };
             }
         }
+
+
+        #region Private methods
+        private async Task<IQueryable<ResourceProperty>> CreateResourcePropertyAsync(Guid resourceId, IEnumerable<Request_CreateResourceProperty> request)
+        {
+            try
+            {
+                var resource = await _baseResourceRepository.GetByIDAsync(resourceId);
+                if (resource == null)
+                {
+                    throw new ArgumentNullException("Resource not found");
+                }
+                List<ResourceProperty> resourceProperties = new List<ResourceProperty>();
+                foreach (var property in request)
+                {
+                    var propertyItem = new ResourceProperty
+                    {
+                        IsActive = true,
+                        Id = Guid.NewGuid(),
+                        Quantity = 0,
+                        ResourceId = resourceId,
+                        ResourcePropertyDetails = null,
+                        ResourcePropertyName = property.ResourcePropertyName
+                    };
+                    resourceProperties.Add(propertyItem);
+                    propertyItem = await _baseResourcePropertyRepository.CreateAsync(propertyItem);
+                    propertyItem.ResourcePropertyDetails = CreateResourcePropertyDetailAsync(propertyItem.Id, property.requests).Result.ToList();
+                }
+                resource.ResourceProperties = resourceProperties;
+                await _baseResourceRepository.UpdateAsync(resource);
+                return resourceProperties.AsQueryable();
+            }catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        private async Task<IQueryable<ResourcePropertyDetail>> CreateResourcePropertyDetailAsync(Guid resourcePropertyId, IEnumerable<Request_CreateResourcePropertyDetail> requets)
+        {
+            try
+            {
+                var resourceProperty = await _baseResourcePropertyRepository.GetByIDAsync(resourcePropertyId);
+                if (resourceProperty == null)
+                {
+                    throw new ArgumentNullException("ResourceProperty not found");
+                }
+                List<ResourcePropertyDetail> listResult = new List<ResourcePropertyDetail>();
+                foreach(var resourcePropertyDetail in requets)
+                {
+                    var item = new ResourcePropertyDetail
+                    {
+                        IsActive= true,
+                        Id = Guid.NewGuid(),
+                        Name = resourcePropertyDetail.Name,
+                        Price = 0,
+                        Quantity = 0,
+                        ResourcePropertyId = resourcePropertyId
+                    };
+                    listResult.Add(item);
+                    item = await _baseResourcePropertyDetailRepository.CreateAsync(item);
+                }
+                resourceProperty.ResourcePropertyDetails = listResult;
+                await _baseResourcePropertyRepository.UpdateAsync(resourceProperty);
+                return listResult.AsQueryable();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+        #endregion
     }
 }

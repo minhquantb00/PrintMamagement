@@ -16,5 +16,6 @@ namespace PrintManagement.Application.Payloads.RequestModels.ResourceRequests
         public string ResourceName { get; set; }
         [DataType(DataType.Upload)]
         public IFormFile Image { get; set; }
+        public IEnumerable<Request_CreateResourceProperty>? requests { get; set; }
     }
 }

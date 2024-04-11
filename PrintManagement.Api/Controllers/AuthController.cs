@@ -38,7 +38,6 @@ namespace PrintManagement.Api.Controllers
             {
                 return BadRequest("User ID not found in token.");
             }
-
             Guid id;
             bool parseResult = Guid.TryParse(userClaim.Value, out id);
             if (!parseResult)

@@ -269,16 +269,17 @@ namespace PrintManagement.Application.ImplementServices
         {
             try
             {
-                var user = await _baseUserRepository.GetByIDAsync(userId);
-                bool checkPassword = BcryptNet.Verify(request.OldPassword, user.Password);
+                var user = await _baseUserRepository.GetByIDAsync(userId); // lấy user theo id
+                bool checkPassword = BcryptNet.Verify(request.OldPassword, user.Password); // check mật khẩu cũ mà mình truyền vào có trùng với mật khẩu trong db hay không
                 if (!checkPassword)
                 {
-                    return "Incorrect password";
+                    return "Incorrect password"; // mật khẩu không chính xác
                 }
                 if (!request.NewPassword.Equals(request.ConfirmPassword))
                 {
                     return "Passwords do not match";
                 }
+                // nếu chính xác thì gán mật khẩu mới vào
                 user.Password = BcryptNet.HashPassword(request.NewPassword);
                 await _baseUserRepository.UpdateAsync(user);
                 return "Change password successfully";

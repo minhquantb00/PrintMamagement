@@ -66,12 +66,12 @@ builder.Services.AddScoped<ResourcePropertyDetailConverter>();
 builder.Services.AddScoped<ResourcePropertyConverter>();
 builder.Services.AddScoped<IBaseReposiroty<ResourceProperty>, BaseRepository<ResourceProperty>>();
 builder.Services.AddScoped<IBaseReposiroty<ResourcePropertyDetail>, BaseRepository<ResourcePropertyDetail>>();
+builder.Services.AddScoped<IBaseReposiroty<Resource>, BaseRepository<Resource>>();
 builder.Services.AddScoped<IBaseReposiroty<Permissions>, BaseRepository<Permissions>>();
 builder.Services.AddScoped<IBaseReposiroty<Role>, BaseRepository<Role>>();
-builder.Services.AddScoped<IBaseReposiroty<ResourceProperty>, BaseRepository<ResourceProperty>>();
-builder.Services.AddScoped<IBaseReposiroty<ResourcePropertyDetail>, BaseRepository<ResourcePropertyDetail>>();
 builder.Services.AddScoped<ResourcePropertyConverter>();
 builder.Services.AddScoped<ImportCouponConverter>();
+builder.Services.AddScoped<IImportCouponService, ImportCouponService>();
 builder.Services.AddScoped<ResourcePropertyDetailConverter>();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {

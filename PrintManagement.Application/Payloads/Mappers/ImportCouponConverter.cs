@@ -31,6 +31,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 Id = entity.Id,
                 TotalMoney = entity.TotalMoney,
                 TradingCode = entity.TradingCode,
+                Quantity = entity.Quantity,
                 UpdateTime = entity.UpdateTime,
                 Employee = _userConverter.EntityToDTOForUser(_baseUserRepository.GetByIDAsync(entity.EmployeeId).Result),
                 ResourcePropertyDetail = _detailConverter.EntityToDTO(_baseDetailRepository.GetByIDAsync(entity.ResourcePropertyDetailId).Result)

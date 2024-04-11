@@ -15,6 +15,7 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataImportCoupon
         public DataResponseResourcePropertyDetail ResourcePropertyDetail { get; set; }
         public DataResponseUser Employee { get; set; }
         public string TradingCode { get; set; }
+        public int Quantity { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
     }

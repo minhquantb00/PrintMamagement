@@ -7,11 +7,13 @@ using PrintManagement.Application.Constants;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.RequestModels.CustomerRequests;
 using PrintManagement.Application.Payloads.RequestModels.DesignRequests;
+using PrintManagement.Application.Payloads.RequestModels.ImportCouponRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.RequestModels.ProjectRequests;
 using PrintManagement.Application.Payloads.RequestModels.ResourceRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
 using PrintManagement.Application.Payloads.ResponseModels.DataDesign;
+using PrintManagement.Application.Payloads.ResponseModels.DataImportCoupon;
 using PrintManagement.Application.Payloads.ResponseModels.DataProject;
 using PrintManagement.Application.Payloads.ResponseModels.DataResource;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
@@ -28,13 +30,15 @@ namespace PrintManagement.Api.Controllers
         private readonly IDesignService _designService;
         private readonly IAuthService _authService;
         private readonly IResourceService _resourceService;
-        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService)
+        private readonly IImportCouponService _importCouponService;
+        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService)
         {
             _customerService = customerService;
             _projectService = projectService;
             _designService = designService;
             _authService = authService;
             _resourceService = resourceService;
+            _importCouponService = importCouponService;
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -158,6 +162,19 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> GetById([FromRoute] Guid resourceId)
         {
             return Ok(await _resourceService.GetById(resourceId));
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreateImportCoupon([FromBody] Request_CreateImportCoupon request)
+        {
+            Guid id = Guid.Parse(HttpContext.User.FindFirst("Id").Value);
+            return Ok(await _importCouponService.CreateImportCoupon(id, request));
+        }
+        [HttpDelete("{couponId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> DeleteImportCoupon([FromRoute] Guid couponId)
+        {
+            return Ok(await _importCouponService.DeleteImportCoupon(couponId));
         }
     }
 }

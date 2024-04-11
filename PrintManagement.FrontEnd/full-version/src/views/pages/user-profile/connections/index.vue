@@ -1,6 +1,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import axios from '@axios'
+const userData = JSON.parse(localStorage.getItem("userInfo") || "null");
 
 const router = useRoute()
 const connectionData = ref([])
@@ -42,7 +43,7 @@ watch(router, fetchProjectData, { immediate: true })
           <VCardTitle class="d-flex flex-column align-center justify-center">
             <VAvatar
               size="100"
-              :image="data.avatar"
+              :image="userData.Avatar"
             />
 
             <p class="mt-4 mb-0">

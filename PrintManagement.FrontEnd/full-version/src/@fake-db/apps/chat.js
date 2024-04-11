@@ -18,7 +18,7 @@ const database = {
     id: 11,
     avatar: avatar1,
     fullName: 'John Doe',
-    role: 'admin',
+    role: 'Admin',
     about: 'Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw brownie marshmallow.',
     status: 'online',
     settings: {

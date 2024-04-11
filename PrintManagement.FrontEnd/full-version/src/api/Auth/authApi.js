@@ -2,7 +2,9 @@ import axios from "axios";
 import { defineStore } from "pinia";
 // Định nghĩa baseURL cho axios
 axios.defaults.baseURL = "https://localhost:7070/api";
-
+const authorization = localStorage.getItem("accessToken")
+  ? localStorage.getItem("accessToken")
+  : "";
 export const authApi = defineStore("auth", {
   actions: {
     login(params) {
@@ -32,13 +34,18 @@ export const authApi = defineStore("auth", {
       });
     },
 
-    confirmAddUser(params) {
-      return new Promise((resolve, reject) => {
-        axios
-          .put("/auth/XacThucDangKyTaiKhoan", { ...params })
-          .then((res) => resolve(res))
-          .catch((error) => reject(error));
-      });
+    async changePassword(params) {
+      const authToken = `Bearer ${authorization}`;
+      console.log(authToken);
+      const res = await axios.put(
+        `/Auth/ChangePassword`,
+        { ...params },
+        {
+          headers: {
+            Authorization: authToken,
+          },
+        }
+      );
     },
     forgotPassword(params) {
       return new Promise((resolve, reject) => {

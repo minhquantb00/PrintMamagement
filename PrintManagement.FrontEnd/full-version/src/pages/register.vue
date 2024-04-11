@@ -61,9 +61,6 @@ const value5 = ref(dayjs("2015/01/01", dateFormat));
 const value6 = ref(dayjs());
 const customFormat = (value) => `custom format: ${value.format(dateFormat)}`;
 const refVForm = ref();
-const username = ref("johnDoe");
-const email = ref("john@example.com");
-const password = ref("john@VUEXY#123");
 const privacyPolicies = ref(true);
 
 // Router

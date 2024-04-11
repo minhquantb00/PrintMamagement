@@ -118,6 +118,7 @@ const rememberMe = ref(false);
                 <VBtn block type="submit" :loading="loading" @click="login">
                   Login
                 </VBtn>
+                <!-- <VBtn block class="mt-3" @click="logout"> Xóa location </VBtn> -->
               </VCol>
 
               <!-- create account -->
@@ -176,6 +177,7 @@ export default {
       snackbar: false,
       text: "",
       router: useRoute(),
+      route: useRouter(),
       inputLogin: {
         username: "",
         password: "",
@@ -185,31 +187,61 @@ export default {
   methods: {
     async login() {
       this.loading = true;
-      const result = (await this.authApi.login(this.inputLogin)).data;
-      console.log(result);
-      debugger;
-
-      if (result && result.status === 200) {
-        if (!localStorage.getItem("accessToken")) {
-          localStorage.setItem("accessToken", result.data.accessToken);
-          localStorage.setItem("refreshToken", result.data.refreshToken);
-          const accessToken = localStorage.getItem("accessToken");
-          var decoded = this.parseJwt(accessToken); // Fix lỗi parseJwt không được định nghĩa
-          localStorage.setItem("userInfo", JSON.stringify(decoded));
-        }
-
-        const userInfo = JSON.parse(localStorage.getItem("userInfo")); // Lấy userInfo từ localStorage và parse thành đối tượng JSON
-        console.log(userInfo);
-        console.log("user");
+      try {
+        const result = (await this.authApi.login(this.inputLogin)).data;
         console.log(result);
-        this.text = result.message;
+        if (result && result.status === 200) {
+          const res = result.data;
+          console.log(res.accessToken);
+          if (!localStorage.getItem("accessToken")) {
+            localStorage.setItem("accessToken", res.accessToken);
+            localStorage.setItem("refreshToken", res.refreshToken);
+            const accessToken = localStorage.getItem("accessToken");
+            const decoded = this.parseJwt(res.accessToken);
+            console.log(decoded);
+            localStorage.setItem("userInfo", JSON.stringify(decoded));
+          }
+
+          const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+          this.text = result.message;
+          if (userInfo && userInfo.Permission) {
+            const allRoles = ["Admin", "Leader", "Designer", "Employee"];
+            const userRoles = userInfo.Permission;
+            if (userRoles.length === allRoles.length) {
+              this.$router.push({ name: "dashboards-analytics" });
+              this.text = result.message;
+              this.snackbar = true;
+            } else if (userRoles.includes("Admin")) {
+              this.$router.push({ name: "home" });
+              this.text = result.message;
+              this.snackbar = true;
+            } else if (userRoles.includes("Employee")) {
+              this.$router.push({ name: "access-control" });
+              this.text = result.message;
+              this.snackbar = true;
+            } else {
+              const toPath = this.$route.query.to;
+              if (toPath) {
+                this.$router.push(toPath);
+              } else {
+                this.$router.push({ name: "defaultRouteName" });
+              }
+            }
+          }
+          this.snackbar = true;
+        } else {
+          this.text = result.message || "Unknown error occurred";
+          this.snackbar = true;
+        }
+      } catch (error) {
+        console.error("Error during login:", error);
+        this.text = "An error occurred during login";
         this.snackbar = true;
-        
-      } else {
-        this.text = result.message || "Unknown error occurred";
-        this.snackbar = true;
+      } finally {
+        this.loading = false;
       }
     },
+
     parseJwt(token) {
       var base64Url = token.split(".")[1];
       var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -232,6 +264,11 @@ export default {
       refVForm.value?.validate().then(({ valid: isValid }) => {
         if (isValid) login();
       });
+    },
+    logout() {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userInfo");
     },
   },
 };

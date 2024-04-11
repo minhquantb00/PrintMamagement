@@ -16,8 +16,11 @@ const shallRenderIcon = isVerticalNavMini(windowWidth)
 </script>
 
 <template>
-  <li
+<!-- custom cái cũ là có 
     v-if="can(item.action, item.subject)"
+trong thẻ li
+ -->
+  <li
     class="nav-section-title"
   >
     <div class="title-wrapper">

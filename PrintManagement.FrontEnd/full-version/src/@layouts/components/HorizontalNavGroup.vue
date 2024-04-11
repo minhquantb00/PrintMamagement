@@ -41,7 +41,6 @@ watch(() => route.path, () => {
 
 <template>
   <HorizontalNavPopper
-    v-if="canViewNavMenuGroup(item)"
     :is-rtl="isAppRtl"
     class="nav-group"
     tag="li"

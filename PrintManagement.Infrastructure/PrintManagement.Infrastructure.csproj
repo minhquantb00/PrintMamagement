@@ -31,8 +31,4 @@
     <ProjectReference Include="..\PrintManagement.Domain\PrintManagement.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ImplementRepositories\" />
-  </ItemGroup>
-
 </Project>

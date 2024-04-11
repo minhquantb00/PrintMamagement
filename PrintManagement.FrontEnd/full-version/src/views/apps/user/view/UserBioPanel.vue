@@ -56,7 +56,7 @@ const resolveUserRoleVariant = role => {
       color: 'info',
       icon: 'tabler-pencil',
     }
-  if (role === 'admin')
+  if (role === 'Admin')
     return {
       color: 'secondary',
       icon: 'tabler-server-2',

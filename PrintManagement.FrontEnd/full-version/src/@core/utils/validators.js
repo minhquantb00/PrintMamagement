@@ -34,6 +34,23 @@ export const passwordValidator = (password) => {
     "Field must contain at least one uppercase, lowercase, special character and digit with min 8 chars"
   );
 };
+export const newPasswordValidator = (password) => {
+  const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/;
+  const validPassword = regExp.test(password);
+
+  return (
+    validPassword ||
+    "Field must contain at least one uppercase, lowercase, special character and digit with minimum 8 characters"
+  );
+};
+
+export const confirmPasswordValidator = (password, confirmPassword) => {
+  // Kiểm tra xem cả hai mật khẩu có giống nhau không, bao gồm cả trường hợp tất cả các ký tự đều trống
+  const passwordMatch = password.localeCompare(confirmPassword) === 0;
+
+  return passwordMatch || "Confirm password must match the original password";
+};
+
 export const phoneNumberValidator = (phoneNumber) => {
   const regExp = /^(03|09)\d{8}$/;
   const validPhoneNumber = regExp.test(phoneNumber);

@@ -65,7 +65,7 @@ namespace PrintManagement.Infrastructure.ImplementRepositories.ImplementUser
             }
             _context.SaveChanges();
         }
-        public virtual async Task<IEnumerable<string>> GetRolesOfUserAsync(User user)
+        public  async Task<IEnumerable<string>> GetRolesOfUserAsync(User user)
         {
             List<string> roles = new List<string>();
             var listRoles = _context.Permissions.Where(x => x.UserId == user.Id).AsQueryable();

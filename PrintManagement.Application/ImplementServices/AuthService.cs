@@ -234,10 +234,11 @@ namespace PrintManagement.Application.ImplementServices
                     Gender = request.Gender,
                     Password = BcryptNet.HashPassword(request.Password),
                     PhoneNumber = request.PhoneNumber,
-                    UserName = request.Username
+                    UserName = request.Username,
+                    TeamId = request.TeamId
                 };
                 user = await _baseUserRepository.CreateAsync(user);
-                await _userRepository.AddUserToRoleAsync(user, new List<string> {"Admin", "Leader", "Designer", "Employee" });
+                await _userRepository.AddUserToRoleAsync(user, new List<string> {"Employee" });
                 return new ResponseObject<DataResponseUser>
                 {
                     Status = StatusCodes.Status200OK,

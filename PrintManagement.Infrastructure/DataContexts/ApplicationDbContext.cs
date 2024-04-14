@@ -36,11 +36,12 @@ namespace PrintManagement.Infrastructure.DataContexts
         public virtual DbSet<ResourceForPrintJob> ResourceForPrintJobs { get; set; }
         public virtual DbSet<ShippingMethod> ShippingMethods { get; set; }
         public virtual DbSet<DeliveryProject> DeliveryProjects { get; set; }
+        public virtual DbSet<Team> Teams { get; set; }
         //protected override void OnModelCreating(ModelBuilder builder)
         //{
         //    base.OnModelCreating(builder);
+        //    SeedTeams(builder);
         //    SeedRoles(builder);
-
 
         //}
 
@@ -49,9 +50,21 @@ namespace PrintManagement.Infrastructure.DataContexts
         //    builder.Entity<Role>().HasData
         //        (
         //            new Role() { Id = Guid.NewGuid(), RoleCode = "Admin", RoleName = "Admin" },
+        //            new Role() { Id = Guid.NewGuid(), RoleCode = "Manager", RoleName = "Manager" },
         //            new Role() { Id = Guid.NewGuid(), RoleCode = "Leader", RoleName = "Leader" },
         //            new Role() { Id = Guid.NewGuid(), RoleCode = "Designer", RoleName = "Designer" },
+        //            new Role() { Id = Guid.NewGuid(), RoleCode = "Deliver", RoleName = "Deliver" },
         //            new Role() { Id = Guid.NewGuid(), RoleCode = "Employee", RoleName = "Employee" }
+        //        );
+        //}
+
+        //private static void SeedTeams(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Team>().HasData
+        //        (
+        //            new Team() { Id = Guid.NewGuid(), IsActive = true, CreateTime = DateTime.Now, Description = "Phòng ban kinh doanh", Name = "Sales"},
+        //            new Team() { Id = Guid.NewGuid(), IsActive = true, CreateTime = DateTime.Now, Description = "Phòng ban kỹ thuật", Name = "Technical" },
+        //            new Team() { Id = Guid.NewGuid(), IsActive = true, CreateTime = DateTime.Now, Description = "Phòng ban giao hàng", Name = "Delivery" }
         //        );
         //}
 

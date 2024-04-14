@@ -12,8 +12,8 @@ using PrintManagement.Infrastructure.DataContexts;
 namespace PrintManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240406131059_upinit")]
-    partial class upinit
+    [Migration("20240414130735_initialv3")]
+    partial class initialv3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -274,6 +274,9 @@ namespace PrintManagement.Infrastructure.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ResourcePropertyDetailId")
                         .HasColumnType("uniqueidentifier");
@@ -582,6 +585,50 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e97891bd-eb30-4c5a-9cce-190a45910392"),
+                            IsActive = true,
+                            RoleCode = "Admin",
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("53ca905e-32f4-4ecb-b80f-dc9cf11ff37e"),
+                            IsActive = true,
+                            RoleCode = "Manager",
+                            RoleName = "Manager"
+                        },
+                        new
+                        {
+                            Id = new Guid("1cef52f3-8f3e-4a86-9813-ddae4b960dad"),
+                            IsActive = true,
+                            RoleCode = "Leader",
+                            RoleName = "Leader"
+                        },
+                        new
+                        {
+                            Id = new Guid("2af72283-6b1d-4962-8b2c-642a224c340e"),
+                            IsActive = true,
+                            RoleCode = "Designer",
+                            RoleName = "Designer"
+                        },
+                        new
+                        {
+                            Id = new Guid("60da399e-f258-4711-b77e-28d1f6c3342e"),
+                            IsActive = true,
+                            RoleCode = "Deliver",
+                            RoleName = "Deliver"
+                        },
+                        new
+                        {
+                            Id = new Guid("45c85867-370a-425a-8d93-d8dd1511d7c9"),
+                            IsActive = true,
+                            RoleCode = "Employee",
+                            RoleName = "Employee"
+                        });
                 });
 
             modelBuilder.Entity("PrintManagement.Domain.Entities.ShippingMethod", b =>
@@ -600,6 +647,75 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ShippingMethods");
+                });
+
+            modelBuilder.Entity("PrintManagement.Domain.Entities.Team", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ManagerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberOfMember")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teams");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("5ce8a3d5-d64a-4da6-876b-17ea1d158f6b"),
+                            CreateTime = new DateTime(2024, 4, 14, 20, 7, 34, 767, DateTimeKind.Local).AddTicks(7140),
+                            Description = "Phòng ban kinh doanh",
+                            IsActive = true,
+                            ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Name = "Sales",
+                            NumberOfMember = 0,
+                            UpdateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("b5750299-122d-42bb-8423-3cf79991ac5a"),
+                            CreateTime = new DateTime(2024, 4, 14, 20, 7, 34, 767, DateTimeKind.Local).AddTicks(7162),
+                            Description = "Phòng ban kỹ thuật",
+                            IsActive = true,
+                            ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Name = "Technical",
+                            NumberOfMember = 0,
+                            UpdateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("7e950f76-320a-4037-865a-73e986009e45"),
+                            CreateTime = new DateTime(2024, 4, 14, 20, 7, 34, 767, DateTimeKind.Local).AddTicks(7164),
+                            Description = "Phòng ban giao hàng",
+                            IsActive = true,
+                            ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Name = "Delivery",
+                            NumberOfMember = 0,
+                            UpdateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("PrintManagement.Domain.Entities.User", b =>
@@ -640,6 +756,9 @@ namespace PrintManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TeamId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("UpdateTime")
                         .HasColumnType("datetime2");
 
@@ -648,6 +767,8 @@ namespace PrintManagement.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
 
                     b.ToTable("Users");
                 });
@@ -891,6 +1012,15 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.Navigation("ResourceProperty");
                 });
 
+            modelBuilder.Entity("PrintManagement.Domain.Entities.User", b =>
+                {
+                    b.HasOne("PrintManagement.Domain.Entities.Team", "Team")
+                        .WithMany("Users")
+                        .HasForeignKey("TeamId");
+
+                    b.Navigation("Team");
+                });
+
             modelBuilder.Entity("PrintManagement.Domain.Entities.Customer", b =>
                 {
                     b.Navigation("Bills");
@@ -944,6 +1074,11 @@ namespace PrintManagement.Infrastructure.Migrations
             modelBuilder.Entity("PrintManagement.Domain.Entities.ShippingMethod", b =>
                 {
                     b.Navigation("Deliveries");
+                });
+
+            modelBuilder.Entity("PrintManagement.Domain.Entities.Team", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("PrintManagement.Domain.Entities.User", b =>

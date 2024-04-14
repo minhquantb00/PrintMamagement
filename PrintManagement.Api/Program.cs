@@ -64,6 +64,8 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IBaseReposiroty<ImportCoupon>, BaseRepository<ImportCoupon>>();
 builder.Services.AddScoped<ResourcePropertyDetailConverter>();
 builder.Services.AddScoped<ResourcePropertyConverter>();
+builder.Services.AddScoped<TeamConverter>();
+builder.Services.AddScoped<IBaseReposiroty<Team>, BaseRepository<Team>>();
 builder.Services.AddScoped<IBaseReposiroty<ResourceProperty>, BaseRepository<ResourceProperty>>();
 builder.Services.AddScoped<IBaseReposiroty<ResourcePropertyDetail>, BaseRepository<ResourcePropertyDetail>>();
 builder.Services.AddScoped<IBaseReposiroty<Resource>, BaseRepository<Resource>>();

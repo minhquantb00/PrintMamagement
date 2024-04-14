@@ -7,6 +7,7 @@ using PrintManagement.Application.Payloads.ResponseModels.DataDesign;
 using PrintManagement.Application.Payloads.Responses;
 using PrintManagement.Domain.Entities;
 using PrintManagement.Domain.InterfaceRepositories.InterfaceBase;
+using PrintManagement.Domain.InterfaceRepositories.InterfaceUser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +21,19 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<User> _baseUserRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IBaseReposiroty<Design> _baseDesignRepository;
+        private readonly IBaseReposiroty<Team> _baseTeamRepository;
         private readonly IBaseReposiroty<Project> _baseProjectReposiroty;
         private readonly DesignConverter _mapper;
-        public DesignService(IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Design> baseDesignRepository, DesignConverter mapper, IBaseReposiroty<Project> baseProjectReposiroty)
+        private readonly IUserRepository<User> _userRepository;
+        public DesignService(IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Design> baseDesignRepository, DesignConverter mapper, IBaseReposiroty<Project> baseProjectReposiroty, IBaseReposiroty<Team> baseTeamRepository, IUserRepository<User> userRepository)
         {
             _baseUserRepository = baseUserRepository;
             _httpContextAccessor = httpContextAccessor;
             _baseDesignRepository = baseDesignRepository;
             _mapper = mapper;
             _baseProjectReposiroty = baseProjectReposiroty;
+            _baseTeamRepository = baseTeamRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<string> ApprovalDesign(Request_DesignApproval request)
@@ -94,6 +99,25 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 var designer = await _baseUserRepository.GetByIDAsync(designerId);
+                var team = await _baseTeamRepository.GetAsync(x => x.Id == designer.TeamId);
+                if (!team.Name.Equals("Technical"))
+                {
+                    return new ResponseObject<DataResponseDesign>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "The user must belong to the technical department",
+                        Data = null
+                    };
+                }
+                if (!_userRepository.GetRolesOfUserAsync(designer).Result.Contains("Designer"))
+                {
+                    return new ResponseObject<DataResponseDesign>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "The user must have designer rights",
+                        Data = null
+                    };
+                }
                 var project = await _baseProjectReposiroty.GetByIDAsync(request.ProjectId);
                 if(project == null)
                 {

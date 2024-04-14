@@ -22,8 +22,9 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<User> _baseUserRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IBaseReposiroty<Design> _baseDesignRepository;
+        private readonly IBaseReposiroty<Team> _baseTeamRepository;
         private readonly ProjectConverter _mapper;
-        public ProjectService(IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<Design> baseDesignRepository, ProjectConverter mapper)
+        public ProjectService(IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<Design> baseDesignRepository, ProjectConverter mapper, IBaseReposiroty<Team> baseTeamRepository)
         {
             _baseProjectRepository = baseProjectRepository;
             _baseUserRepository = baseUserRepository;
@@ -31,13 +32,17 @@ namespace PrintManagement.Application.ImplementServices
             _baseCustomerRepository = baseCustomerRepository;
             _baseDesignRepository = baseDesignRepository;
             _mapper = mapper;
+            _baseTeamRepository = baseTeamRepository;
         }
 
         public async Task<ResponseObject<DataResponseProject>> CreateProject(Request_CreateProject request)
         {
             var currentUser = _httpContextAccessor.HttpContext.User;
+            var userId = Guid.Parse(currentUser.FindFirst("Id").Value);
             try
             {
+                var user = await _baseUserRepository.GetByIDAsync(userId);
+                var team = await _baseTeamRepository.GetAsync(x => x.Id == user.TeamId);
                 if (!currentUser.Identity.IsAuthenticated)
                 {
                     return new ResponseObject<DataResponseProject>
@@ -47,7 +52,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if (!currentUser.IsInRole("Admin"))
+                if (!currentUser.IsInRole("Admin") || !(currentUser.IsInRole("Employee") && team.Name.Equals("Sales")))
                 {
                     return new ResponseObject<DataResponseProject>
                     {

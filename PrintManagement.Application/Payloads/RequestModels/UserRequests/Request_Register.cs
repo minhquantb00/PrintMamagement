@@ -27,5 +27,6 @@ namespace PrintManagement.Application.Payloads.RequestModels.UserRequests
         public DateTime DateOfBirth { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public GenderEnum? Gender { get; set; }
+        public Guid TeamId { get; set; }
     }
 }

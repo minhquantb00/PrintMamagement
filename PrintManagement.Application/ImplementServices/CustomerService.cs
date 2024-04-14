@@ -43,6 +43,16 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
+                var customerItem = await _baseCustomerRepository.GetAsync(x => x.PhoneNumber.Equals(request.PhoneNumber));
+                if(customerItem != null)
+                {
+                    return new ResponseObject<DataResponseCustomer>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "Phone number existed",
+                        Data = null
+                    };
+                }
                 Customer customer = new Customer
                 {
                     Address = request.Address,

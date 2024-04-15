@@ -75,6 +75,7 @@ builder.Services.AddScoped<ResourcePropertyConverter>();
 builder.Services.AddScoped<ResourceConverter>();
 builder.Services.AddScoped<ImportCouponConverter>();
 builder.Services.AddScoped<IImportCouponService, ImportCouponService>();
+builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddScoped<ResourcePropertyDetailConverter>();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>

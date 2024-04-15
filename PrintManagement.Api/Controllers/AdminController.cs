@@ -11,11 +11,13 @@ using PrintManagement.Application.Payloads.RequestModels.ImportCouponRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.RequestModels.ProjectRequests;
 using PrintManagement.Application.Payloads.RequestModels.ResourceRequests;
+using PrintManagement.Application.Payloads.RequestModels.TeamRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
 using PrintManagement.Application.Payloads.ResponseModels.DataDesign;
 using PrintManagement.Application.Payloads.ResponseModels.DataImportCoupon;
 using PrintManagement.Application.Payloads.ResponseModels.DataProject;
 using PrintManagement.Application.Payloads.ResponseModels.DataResource;
+using PrintManagement.Application.Payloads.ResponseModels.DataTeam;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 
@@ -31,7 +33,8 @@ namespace PrintManagement.Api.Controllers
         private readonly IAuthService _authService;
         private readonly IResourceService _resourceService;
         private readonly IImportCouponService _importCouponService;
-        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService)
+        private readonly ITeamService _teamService;
+        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService)
         {
             _customerService = customerService;
             _projectService = projectService;
@@ -39,6 +42,7 @@ namespace PrintManagement.Api.Controllers
             _authService = authService;
             _resourceService = resourceService;
             _importCouponService = importCouponService;
+            _teamService = teamService;
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -175,6 +179,35 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> DeleteImportCoupon([FromRoute] Guid couponId)
         {
             return Ok(await _importCouponService.DeleteImportCoupon(couponId));
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreateTeam([FromBody] Request_CreateTeam request)
+        {
+            return Ok(await _teamService.CreateTeam(request));
+        }
+
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UpdateTeam([FromBody] Request_UpdateTeam request)
+        {
+            return Ok(await _teamService.UpdateTeam(request));
+        }
+        [HttpDelete]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> DeleteTeam([FromRoute] Guid teamId)
+        {
+            return Ok(await _teamService.DeleteTeam(teamId));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllTeams()
+        {
+            return Ok(await _teamService.GetAllTeams());
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetTeamById(Guid teamId)
+        {
+            return Ok(await _teamService.GetTeamById(teamId));
         }
     }
 }

@@ -50,7 +50,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if(!currentUser.IsInRole("Admin") && !currentUser.IsInRole("Leader"))
+                if(!currentUser.IsInRole("Admin"))
                 {
                     return new ResponseObject<DataResponseImportCoupon>
                     {
@@ -78,7 +78,7 @@ namespace PrintManagement.Application.ImplementServices
                     Quantity = request.Quantity,
                     ResourcePropertyDetailId = request.ResourcePropertyDetailId,
                     TotalMoney = resourcePropertyDetail.Price,
-                    TradingCode = "MyBugs_" + new Random().Next(1000, 9999).ToString()
+                    TradingCode = "InkMastery_" + new Random().Next(1000, 9999).ToString()
                 };
                 coupon = await _baseImportCouponRepository.CreateAsync(coupon);
                 resourcePropertyDetail.Quantity += request.Quantity;

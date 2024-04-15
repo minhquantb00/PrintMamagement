@@ -52,7 +52,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if (!currentUser.IsInRole("Admin") || !(currentUser.IsInRole("Employee") && team.Name.Equals("Sales")))
+                if (!currentUser.IsInRole("Admin") && !(currentUser.IsInRole("Employee") && team.Name.Equals("Sales")))
                 {
                     return new ResponseObject<DataResponseProject>
                     {

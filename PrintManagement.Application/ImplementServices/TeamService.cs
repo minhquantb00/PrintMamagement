@@ -31,6 +31,50 @@ namespace PrintManagement.Application.ImplementServices
             _userRepository = userRepository;
         }
 
+        public async Task<string> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request)
+        {
+            var currentUser = _contextAccessor.HttpContext.User;
+            try
+            {
+                if (!currentUser.Identity.IsAuthenticated)
+                {
+                    return "UnAuthenticated user";
+                }
+                if (!currentUser.IsInRole("Admin"))
+                {
+                    return "You do not have permission to perform this function";
+                }
+                var employee = await _baseUserRepository.GetByIDAsync(request.EmployeeId);
+                if(employee == null)
+                {
+                    return "Employee not found";
+                }
+                if (_userRepository.GetRolesOfUserAsync(employee).Result.Contains("Manager"))
+                {
+                    return "Failed! This person is the head of the department";
+                }
+                var team = await _baseTeamRepository.GetByIDAsync(request.TeamId);
+                if(team == null)
+                {
+                    return "Team not found";
+                }
+                employee.TeamId = request.TeamId;
+                employee.UpdateTime = DateTime.Now;
+                await _baseUserRepository.UpdateAsync(employee);
+                team.NumberOfMember = await _baseUserRepository.CountAsync(x => x.TeamId == team.Id);
+                await _baseTeamRepository.UpdateAsync(team);
+                return "Change department for user successfully";
+            }catch(Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public async Task<ResponseObject<DataResponseTeam>> ChangeManagerForTeam(Request_ChangeManager request)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ResponseObject<DataResponseTeam>> CreateTeam(Request_CreateTeam request)
         {
             var currentUser = _contextAccessor.HttpContext.User;

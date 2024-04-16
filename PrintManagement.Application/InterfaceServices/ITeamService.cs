@@ -16,5 +16,7 @@ namespace PrintManagement.Application.InterfaceServices
         Task<string> DeleteTeam(Guid teamId);
         Task<IQueryable<DataResponseTeam>> GetAllTeams();
         Task<DataResponseTeam> GetTeamById(Guid teamId);
+        Task<ResponseObject<DataResponseTeam>> ChangeManagerForTeam(Request_ChangeManager request);
+        Task<string> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request);
     }
 }

@@ -63,7 +63,7 @@ namespace PrintManagement.Api.Controllers
             return Ok(await _customerService.DeleteCustomer(id));
         }
         [HttpGet]
-        [Authorize(Roles = "Admin, Leader")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllCustomers([FromQuery] Request_InputCustomer request)
         {
             return Ok(await _customerService.GetAllCustomers(request));

@@ -238,6 +238,7 @@ namespace PrintManagement.Application.ImplementServices
                         Name = resourcePropertyDetail.Name,
                         Price = 0,
                         Quantity = 0,
+                        Image = await HandleUploadFile.WriteFile(resourcePropertyDetail.Image),
                         ResourcePropertyId = resourcePropertyId
                     };
                     listResult.Add(item);

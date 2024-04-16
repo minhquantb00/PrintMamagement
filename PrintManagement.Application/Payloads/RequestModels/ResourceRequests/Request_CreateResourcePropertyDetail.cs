@@ -1,4 +1,5 @@
-﻿using PrintManagement.Domain.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using PrintManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace PrintManagement.Application.Payloads.RequestModels.ResourceRequests
     public class Request_CreateResourcePropertyDetail
     {
         public string Name { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PrintManagement.Infrastructure.Migrations
 {
-    public partial class initial : Migration
+    public partial class upv2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -68,7 +68,7 @@ namespace PrintManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Team",
+                name: "Teams",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -82,7 +82,7 @@ namespace PrintManagement.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Team", x => x.Id);
+                    table.PrimaryKey("PK_Teams", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,9 +158,9 @@ namespace PrintManagement.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Team_TeamId",
+                        name: "FK_Users_Teams_TeamId",
                         column: x => x.TeamId,
-                        principalTable: "Team",
+                        principalTable: "Teams",
                         principalColumn: "Id");
                 });
 
@@ -172,6 +172,7 @@ namespace PrintManagement.Infrastructure.Migrations
                     ResourcePropertyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -518,12 +519,22 @@ namespace PrintManagement.Infrastructure.Migrations
                 columns: new[] { "Id", "IsActive", "RoleCode", "RoleName" },
                 values: new object[,]
                 {
-                    { new Guid("05d9bf2f-a860-45e5-a98a-ed2d2842ed85"), true, "Manager", "Manager" },
-                    { new Guid("243bf441-5c6f-415b-9434-acca8f5d8cb5"), true, "Deliver", "Deliver" },
-                    { new Guid("354efc0a-39f9-4f23-8d23-8dde9999de26"), true, "Leader", "Leader" },
-                    { new Guid("630acfee-7322-43db-9f03-9894ba4d8ca0"), true, "Designer", "Designer" },
-                    { new Guid("9229c553-0d05-4843-9592-b31411e79963"), true, "Employee", "Employee" },
-                    { new Guid("bf6099e1-d67d-4f4e-887a-74b5c02f41c8"), true, "Admin", "Admin" }
+                    { new Guid("267299c2-b0a9-4fab-ae22-abbc99dc292a"), true, "Manager", "Manager" },
+                    { new Guid("44974e44-dbac-4146-9fdb-e6ba9c2e7577"), true, "Leader", "Leader" },
+                    { new Guid("a3a3374c-d664-4c2a-8f5e-e67e6a098a1b"), true, "Employee", "Employee" },
+                    { new Guid("b39e2e64-8c5b-4276-8faa-f0796f351113"), true, "Admin", "Admin" },
+                    { new Guid("bece7ac7-fc48-4133-b2df-30077fcd88d8"), true, "Designer", "Designer" },
+                    { new Guid("c4d3e9f2-778d-4cb2-a92d-f6a3382c1585"), true, "Deliver", "Deliver" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Teams",
+                columns: new[] { "Id", "CreateTime", "Description", "IsActive", "ManagerId", "Name", "NumberOfMember", "UpdateTime" },
+                values: new object[,]
+                {
+                    { new Guid("58b8a350-fd69-4532-b3c6-1fcf8b3178fe"), new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(176), "Phòng ban giao hàng", true, new Guid("00000000-0000-0000-0000-000000000000"), "Delivery", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { new Guid("8c46aac7-6f92-4a5e-bf23-c1338429a18a"), new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(174), "Phòng ban kỹ thuật", true, new Guid("00000000-0000-0000-0000-000000000000"), "Technical", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { new Guid("a19fa227-b53c-4d0e-87ff-fda6a5e10b63"), new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(160), "Phòng ban kinh doanh", true, new Guid("00000000-0000-0000-0000-000000000000"), "Sales", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -720,7 +731,7 @@ namespace PrintManagement.Infrastructure.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Team");
+                name: "Teams");
         }
     }
 }

@@ -12,8 +12,8 @@ using PrintManagement.Infrastructure.DataContexts;
 namespace PrintManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240414125625_initial")]
-    partial class initial
+    [Migration("20240416131929_upv2")]
+    partial class upv2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -542,6 +542,10 @@ namespace PrintManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -589,42 +593,42 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("bf6099e1-d67d-4f4e-887a-74b5c02f41c8"),
+                            Id = new Guid("b39e2e64-8c5b-4276-8faa-f0796f351113"),
                             IsActive = true,
                             RoleCode = "Admin",
                             RoleName = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("05d9bf2f-a860-45e5-a98a-ed2d2842ed85"),
+                            Id = new Guid("267299c2-b0a9-4fab-ae22-abbc99dc292a"),
                             IsActive = true,
                             RoleCode = "Manager",
                             RoleName = "Manager"
                         },
                         new
                         {
-                            Id = new Guid("354efc0a-39f9-4f23-8d23-8dde9999de26"),
+                            Id = new Guid("44974e44-dbac-4146-9fdb-e6ba9c2e7577"),
                             IsActive = true,
                             RoleCode = "Leader",
                             RoleName = "Leader"
                         },
                         new
                         {
-                            Id = new Guid("630acfee-7322-43db-9f03-9894ba4d8ca0"),
+                            Id = new Guid("bece7ac7-fc48-4133-b2df-30077fcd88d8"),
                             IsActive = true,
                             RoleCode = "Designer",
                             RoleName = "Designer"
                         },
                         new
                         {
-                            Id = new Guid("243bf441-5c6f-415b-9434-acca8f5d8cb5"),
+                            Id = new Guid("c4d3e9f2-778d-4cb2-a92d-f6a3382c1585"),
                             IsActive = true,
                             RoleCode = "Deliver",
                             RoleName = "Deliver"
                         },
                         new
                         {
-                            Id = new Guid("9229c553-0d05-4843-9592-b31411e79963"),
+                            Id = new Guid("a3a3374c-d664-4c2a-8f5e-e67e6a098a1b"),
                             IsActive = true,
                             RoleCode = "Employee",
                             RoleName = "Employee"
@@ -680,7 +684,42 @@ namespace PrintManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Team");
+                    b.ToTable("Teams");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a19fa227-b53c-4d0e-87ff-fda6a5e10b63"),
+                            CreateTime = new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(160),
+                            Description = "Phòng ban kinh doanh",
+                            IsActive = true,
+                            ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Name = "Sales",
+                            NumberOfMember = 0,
+                            UpdateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("8c46aac7-6f92-4a5e-bf23-c1338429a18a"),
+                            CreateTime = new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(174),
+                            Description = "Phòng ban kỹ thuật",
+                            IsActive = true,
+                            ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Name = "Technical",
+                            NumberOfMember = 0,
+                            UpdateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("58b8a350-fd69-4532-b3c6-1fcf8b3178fe"),
+                            CreateTime = new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(176),
+                            Description = "Phòng ban giao hàng",
+                            IsActive = true,
+                            ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Name = "Delivery",
+                            NumberOfMember = 0,
+                            UpdateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("PrintManagement.Domain.Entities.User", b =>
@@ -743,19 +782,19 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.Customer", null)
                         .WithMany("Bills")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.User", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
@@ -768,7 +807,7 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -779,13 +818,13 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.Project", "Project")
                         .WithMany("CustomerFeedbacks")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.User", "UserFeedback")
                         .WithMany()
                         .HasForeignKey("UserFeedbackId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Project");
@@ -798,13 +837,13 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.Customer", "Customer")
                         .WithMany("Delivery")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.ShippingMethod", null)
                         .WithMany("Deliveries")
                         .HasForeignKey("ShippingMethodId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -815,13 +854,13 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.Delivery", "Delivery")
                         .WithMany("DeliveryProjects")
                         .HasForeignKey("DeliveryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.Project", "Project")
                         .WithMany("DeliveryProjects")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Delivery");
@@ -834,13 +873,13 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.User", "Designer")
                         .WithMany()
                         .HasForeignKey("DesignerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.Project", "Project")
                         .WithMany("Designs")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Designer");
@@ -853,13 +892,13 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.User", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.ResourcePropertyDetail", "ResourcePropertyDetail")
                         .WithMany("ImportCoupons")
                         .HasForeignKey("ResourcePropertyDetailId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
@@ -881,13 +920,13 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.User", "User")
                         .WithMany("Permissions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -900,7 +939,7 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.Design", "Design")
                         .WithMany("PrintJobs")
                         .HasForeignKey("DesignId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Design");
@@ -911,13 +950,13 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.Customer", "Customer")
                         .WithMany("Projects")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.User", "Leader")
                         .WithMany()
                         .HasForeignKey("LeaderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -930,7 +969,7 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -941,13 +980,13 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.PrintJob", "PrintJob")
                         .WithMany("ResourceForPrints")
                         .HasForeignKey("PrintJobId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrintManagement.Domain.Entities.Resource", "Resource")
                         .WithMany("ResourceForPrintJobs")
                         .HasForeignKey("ResourceId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("PrintJob");
@@ -960,7 +999,7 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.Resource", "Resource")
                         .WithMany("ResourceProperties")
                         .HasForeignKey("ResourceId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Resource");
@@ -971,7 +1010,7 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasOne("PrintManagement.Domain.Entities.ResourceProperty", "ResourceProperty")
                         .WithMany("ResourcePropertyDetails")
                         .HasForeignKey("ResourcePropertyId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ResourceProperty");

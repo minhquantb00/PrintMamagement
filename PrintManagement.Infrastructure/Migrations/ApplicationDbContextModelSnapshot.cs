@@ -540,6 +540,10 @@ namespace PrintManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -587,42 +591,42 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e97891bd-eb30-4c5a-9cce-190a45910392"),
+                            Id = new Guid("b39e2e64-8c5b-4276-8faa-f0796f351113"),
                             IsActive = true,
                             RoleCode = "Admin",
                             RoleName = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("53ca905e-32f4-4ecb-b80f-dc9cf11ff37e"),
+                            Id = new Guid("267299c2-b0a9-4fab-ae22-abbc99dc292a"),
                             IsActive = true,
                             RoleCode = "Manager",
                             RoleName = "Manager"
                         },
                         new
                         {
-                            Id = new Guid("1cef52f3-8f3e-4a86-9813-ddae4b960dad"),
+                            Id = new Guid("44974e44-dbac-4146-9fdb-e6ba9c2e7577"),
                             IsActive = true,
                             RoleCode = "Leader",
                             RoleName = "Leader"
                         },
                         new
                         {
-                            Id = new Guid("2af72283-6b1d-4962-8b2c-642a224c340e"),
+                            Id = new Guid("bece7ac7-fc48-4133-b2df-30077fcd88d8"),
                             IsActive = true,
                             RoleCode = "Designer",
                             RoleName = "Designer"
                         },
                         new
                         {
-                            Id = new Guid("60da399e-f258-4711-b77e-28d1f6c3342e"),
+                            Id = new Guid("c4d3e9f2-778d-4cb2-a92d-f6a3382c1585"),
                             IsActive = true,
                             RoleCode = "Deliver",
                             RoleName = "Deliver"
                         },
                         new
                         {
-                            Id = new Guid("45c85867-370a-425a-8d93-d8dd1511d7c9"),
+                            Id = new Guid("a3a3374c-d664-4c2a-8f5e-e67e6a098a1b"),
                             IsActive = true,
                             RoleCode = "Employee",
                             RoleName = "Employee"
@@ -683,8 +687,8 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5ce8a3d5-d64a-4da6-876b-17ea1d158f6b"),
-                            CreateTime = new DateTime(2024, 4, 14, 20, 7, 34, 767, DateTimeKind.Local).AddTicks(7140),
+                            Id = new Guid("a19fa227-b53c-4d0e-87ff-fda6a5e10b63"),
+                            CreateTime = new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(160),
                             Description = "Phòng ban kinh doanh",
                             IsActive = true,
                             ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -694,8 +698,8 @@ namespace PrintManagement.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b5750299-122d-42bb-8423-3cf79991ac5a"),
-                            CreateTime = new DateTime(2024, 4, 14, 20, 7, 34, 767, DateTimeKind.Local).AddTicks(7162),
+                            Id = new Guid("8c46aac7-6f92-4a5e-bf23-c1338429a18a"),
+                            CreateTime = new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(174),
                             Description = "Phòng ban kỹ thuật",
                             IsActive = true,
                             ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -705,8 +709,8 @@ namespace PrintManagement.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7e950f76-320a-4037-865a-73e986009e45"),
-                            CreateTime = new DateTime(2024, 4, 14, 20, 7, 34, 767, DateTimeKind.Local).AddTicks(7164),
+                            Id = new Guid("58b8a350-fd69-4532-b3c6-1fcf8b3178fe"),
+                            CreateTime = new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(176),
                             Description = "Phòng ban giao hàng",
                             IsActive = true,
                             ManagerId = new Guid("00000000-0000-0000-0000-000000000000"),

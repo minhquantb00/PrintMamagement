@@ -17,6 +17,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 Id = detail.Id,
                 Name = detail.Name,
                 Price = detail.Price,
+                Image = detail.Image,
                 Quantity = detail.Quantity
             };
         }

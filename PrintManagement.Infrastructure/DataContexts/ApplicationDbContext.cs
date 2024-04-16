@@ -62,7 +62,7 @@ namespace PrintManagement.Infrastructure.DataContexts
         //{
         //    modelBuilder.Entity<Team>().HasData
         //        (
-        //            new Team() { Id = Guid.NewGuid(), IsActive = true, CreateTime = DateTime.Now, Description = "Phòng ban kinh doanh", Name = "Sales"},
+        //            new Team() { Id = Guid.NewGuid(), IsActive = true, CreateTime = DateTime.Now, Description = "Phòng ban kinh doanh", Name = "Sales" },
         //            new Team() { Id = Guid.NewGuid(), IsActive = true, CreateTime = DateTime.Now, Description = "Phòng ban kỹ thuật", Name = "Technical" },
         //            new Team() { Id = Guid.NewGuid(), IsActive = true, CreateTime = DateTime.Now, Description = "Phòng ban giao hàng", Name = "Delivery" }
         //        );

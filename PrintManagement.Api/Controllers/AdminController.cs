@@ -69,7 +69,7 @@ namespace PrintManagement.Api.Controllers
             return Ok(await _customerService.GetAllCustomers(request));
         }
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin, Leader")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetCustomerById([FromRoute] Guid id)
         {
             return Ok(await _customerService.GetCustomerById(id));

@@ -16,5 +16,6 @@ namespace PrintManagement.Domain.Enumerates
         Completed = 5, // Hoàn thành
         Delivered = 6, // Đã giao
         Cancelled = 7, // Đã hủy
+        Refuse = 8 // không duyệt
     }
 }

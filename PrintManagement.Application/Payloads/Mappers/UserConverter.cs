@@ -29,15 +29,6 @@ namespace PrintManagement.Application.Payloads.Mappers
                 PhoneNumber = user.PhoneNumber,
                 TeamName = _baseTeamRepository.GetAsync(x => x.Id == user.TeamId).Result.Name
             };
-
-            // 200: khi thực hiện yêu cầu thành công
-            // 201: khi tạo đối tượng thành công
-            // 400: dữ liệu truyền vào bị sai
-            // 401: dữ liệu đó cần có xác thực 
-            // 403: người dùng không đủ quyền thực hiện chức năng này
-            // 404: Không tìm thấy dữ liệu
-            // 405: HTTP Method bị sai yêu cầu
-            // 415: định dạng của dữ liệu truyền lên bị sai
         }
     }
 }

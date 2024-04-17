@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrintManagement.Application.Payloads.ResponseModels.DataTeam;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataUser
         public string FullName { get; set; }
         public string PhoneNumber { get; set; }
         public string Avatar { get; set; }
+        public string TeamName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime CreateTime { get; set; }
     }

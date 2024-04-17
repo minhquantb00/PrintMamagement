@@ -103,7 +103,7 @@ const isOneTimePasswordDialogVisible = ref(false);
 
             <!-- 👉 Action Buttons -->
             <VCardText class="d-flex flex-wrap gap-4">
-              <VBtn type="submit" @click="changePassword">Save changes</VBtn>
+              <VBtn type="submit" @click="changePassword">Cập nhật</VBtn>
 
               <VBtn type="reset" color="secondary" variant="tonal">
                 Reset

@@ -29,6 +29,7 @@ const { appRouteTransition } = useThemeConfig()
 
         <h1 class="app-title font-weight-bold leading-normal text-xl text-capitalize">
           {{ themeConfig.app.title }}
+          
         </h1>
       </RouterLink>
       <VSpacer />

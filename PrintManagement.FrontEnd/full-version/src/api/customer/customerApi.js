@@ -5,27 +5,29 @@ axios.defaults.baseURL = "https://localhost:7070/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";
-export const authApi = defineStore("auth", {
+export const customerApi = defineStore("customer", {
   actions: {
-    login(params) {
+    getAllCustomer() {
       return new Promise((resolve, reject) => {
         axios
-          .post("/Auth/Login", { ...params })
+          .get("/Admin/GetAllCustomers", {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
     },
-    register(params) {
+    addCustomer(params) {
       return new Promise((resolve, reject) => {
-        console.log(params);
-        // params.DateOfBirth = format(new Date(params.DateOfBirth), "yyyy-MM-dd");
         axios
           .post(
-            "/Auth/Register",
+            "/Admin/CreateCustomer",
             { ...params },
             {
               headers: {
-                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${authorization}`,
               },
             }
           )
@@ -34,23 +36,11 @@ export const authApi = defineStore("auth", {
       });
     },
 
-    async changePassword(params) {
-      const authToken = `Bearer ${authorization}`;
-      console.log(authToken);
-      const res = await axios.put(
-        `/Auth/ChangePassword`,
-        { ...params },
-        {
-          headers: {
-            Authorization: authToken,
-          },
-        }
-      );
-    },
-    getAllRoles() {
+    deleteCustomer(id) {
+      console.log(id);
       return new Promise((resolve, reject) => {
         axios
-          .get("/Auth/GetAllRoles", {
+          .delete(`/Admin/DeleteCustomer/${id}`, {
             headers: {
               Authorization: `Bearer ${authorization}`,
             },

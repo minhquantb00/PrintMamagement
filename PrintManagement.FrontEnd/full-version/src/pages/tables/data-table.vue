@@ -1,106 +1,40 @@
 <script setup>
-import * as demoCode from '@/views/demos/forms/tables/data-table/demoCodeDataTable'
+import * as demoCode from "@/views/demos/forms/tables/simple-table/demoCodeSimpleTable";
+import ChatLeftSidebarContent from "@/views/apps/chat/ChatLeftSidebarContent.vue";
 </script>
 
 <template>
+  <v-row>
+    <v-col>
+      <div class="seach">
+        <VNavigationDrawer
+          v-model="isLeftSidebarOpen"
+          absolute
+          touchless
+          location="start"
+          width="370"
+          :temporary="$vuetify.display.smAndDown"
+          class="chat-list-sidebar"
+          :permanent="$vuetify.display.mdAndUp"
+        >
+          <ChatLeftSidebarContent
+            v-model:isDrawerOpen="isLeftSidebarOpen"
+            v-model:search="q"
+            @open-chat-of-contact="openChatOfContact"
+            @show-user-profile="isUserProfileSidebarOpen = true"
+            @close="isLeftSidebarOpen = false"
+          />
+        </VNavigationDrawer>
+      </div>
+    </v-col>
+    <v-col></v-col>
+  </v-row>
   <VRow>
     <VCol cols="12">
-      <!-- 👉 Basic -->
-      <AppCardCode
-        title="Basic"
-        :code="demoCode.basic"
-      >
-        <DemoDataTableBasic />
-      </AppCardCode>
-    </VCol>
-
-    <VCol>
-      <!-- 👉 Dense  -->
-      <AppCardCode
-        title="Dense"
-        :code="demoCode.dense"
-      >
-        <DemoDataTableDense />
-      </AppCardCode>
-    </VCol>
-
-    <!-- 👉 Table Cell Slot  -->
-    <VCol cols="12">
-      <AppCardCode
-        title="Cell Slot"
-        :code="demoCode.cellSlot"
-      >
-        <DemoDataTableCellSlot />
-      </AppCardCode>
-    </VCol>
-
-    <!-- 👉 Table Row selection  -->
-    <VCol cols="12">
-      <AppCardCode
-        title="Row Selection"
-        :code="demoCode.rowSelection"
-      >
-        <DemoDataTableRowSelection />
-      </AppCardCode>
-    </VCol>
-
-    <!-- 👉 Fixed Header  -->
-    <VCol cols="12">
-      <AppCardCode
-        title="Fixed Header"
-        :code="demoCode.fixedHeader"
-      >
-        <DemoDataTableFixedHeader />
-      </AppCardCode>
-    </VCol>
-
-    <!-- 👉 Expandable rows -->
-    <VCol cols="12">
-      <AppCardCode
-        title="Expandable Rows"
-        :code="demoCode.expandableRows"
-      >
-        <DemoDataTableExpandableRows />
-      </AppCardCode>
-    </VCol>
-    <!-- 👉 Grouping Rows -->
-    <VCol cols="12">
-      <AppCardCode
-        title="Grouping Rows"
-        :code="demoCode.groupingRows"
-      >
-        <DemoDataTableGroupingRows />
-      </AppCardCode>
-    </VCol>
-
-    <!-- 👉 Row Editing via Dialog -->
-    <VCol cols="12">
-      <AppCardCode
-        title="Row Editing via Dialog"
-        :code="demoCode.rowEditingViaDialog"
-      >
-        <DemoDataTableRowEditingViaDialog />
-      </AppCardCode>
-    </VCol>
-
-    <!-- 👉 External Pagination  -->
-    <VCol cols="12">
-      <AppCardCode
-        title="External Pagination"
-        :code="demoCode.externalPagination"
-      >
-        <DemoDataTableExternalPagination />
-      </AppCardCode>
-    </VCol>
-
-    <!-- 👉 Kitchen Sink  -->
-    <VCol cols="12">
-      <AppCardCode
-        title="Kitchen Sink"
-        :code="demoCode.kitchenSink"
-      >
-        <DemoDataTableKitchenSink />
-      </AppCardCode>
+      <DemoSimpleTableBasic height="495" />
     </VCol>
   </VRow>
 </template>
+<script>
+export default {};
+</script>

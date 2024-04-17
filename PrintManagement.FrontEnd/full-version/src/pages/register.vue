@@ -184,11 +184,22 @@ const isPasswordVisible = ref(false);
                 />
                 <a-label class="sex"> Gender </a-label>
                 <v-select
-                  class="select-ant"
+                  class="select-ant mb-5"
                   ref="select"
                   :rules="[requiredValidator]"
                   v-model="inputRegister.Gender"
                   :items="items"
+                >
+                </v-select>
+                <a-label class="sex"> Team </a-label>
+                <v-select
+                  class="select-ant"
+                  ref="select"
+                  :rules="[requiredValidator]"
+                  v-model="inputRegister.TeamId"
+                  item-value="id"
+                  item-title="name"
+                  :items="team"
                 >
                 </v-select>
                 <div class="d-flex align-center mt-2 mb-4">
@@ -252,10 +263,15 @@ const isPasswordVisible = ref(false);
 import { authApi } from "../api/Auth/authApi";
 import { format } from "date-fns";
 import { useRouter } from "vue-router";
+import { teamApi } from "../api/Team/teamApi";
+
 export default {
   data() {
     return {
       authApi: authApi(),
+      teamApi: teamApi(),
+      team: [],
+
       router: useRouter(),
       text: "",
       snackbar: false,
@@ -268,6 +284,7 @@ export default {
         PhoneNumber: "",
         DateOfBirth: "",
         Gender: "",
+        TeamId: "",
       },
     };
   },
@@ -300,6 +317,11 @@ export default {
     reloadPage() {
       location.reload();
     },
+  },
+  async mounted() {
+    const res = await this.teamApi.getAllTeams();
+    this.team = res.data;
+    console.log(this.team);
   },
 };
 </script>

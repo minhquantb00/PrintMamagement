@@ -42,9 +42,17 @@ const router = createRouter({
       }),
     },
     {
-      path: "/home",
-      name: "home",
-      component: () => import("../pages/pages/authentication/test.vue"),
+      path: "/update-password",
+      name: "update-password",
+      component: () => import("../pages/ConfirmCreateNewPassword.vue"),
+    },
+    {
+      path: "/tables/warehouse",
+      // name: "warehouse",
+      // component: () => import("../pages/tables/warehouse.vue"),
+      redirect: () => ({
+        name: "pages-table-warehouse",
+      }),
     },
     ...setupLayouts(routes),
   ],

@@ -154,6 +154,7 @@ trong thẻ li
       </TransitionGroup>
     </div>
     <TransitionExpand>
+      <!-- đây là dropdow -->
       <ul v-show="isGroupOpen" class="nav-group-children">
         <Component
           :is="'children' in child ? 'VerticalNavGroup' : VerticalNavLink"

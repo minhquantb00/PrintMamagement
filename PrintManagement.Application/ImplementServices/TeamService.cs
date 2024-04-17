@@ -72,7 +72,66 @@ namespace PrintManagement.Application.ImplementServices
 
         public async Task<ResponseObject<DataResponseTeam>> ChangeManagerForTeam(Request_ChangeManager request)
         {
-            throw new NotImplementedException();
+            var currentUser = _contextAccessor.HttpContext.User;
+            try
+            {
+                if (!currentUser.Identity.IsAuthenticated)
+                {
+                    return new ResponseObject<DataResponseTeam>
+                    {
+                        Status = StatusCodes.Status401Unauthorized,
+                        Message = "UnAuthenticated user",
+                        Data = null
+                    };
+                }
+                if (!currentUser.IsInRole("Admin"))
+                {
+                    return new ResponseObject<DataResponseTeam>
+                    {
+                        Status = StatusCodes.Status403Forbidden,
+                        Message = "You do not have permission to perform this function",
+                        Data = null
+                    };
+                }
+                var manager = await _baseUserRepository.GetByIDAsync(request.ManagerId);
+                if (!_userRepository.GetRolesOfUserAsync(manager).Result.Contains("Manager"))
+                {
+                    return new ResponseObject<DataResponseTeam>
+                    {
+                        Status = StatusCodes.Status403Forbidden,
+                        Message = "This person does not have the authority to head the department",
+                        Data = null
+                    };
+                }
+                var team = await _baseTeamRepository.GetByIDAsync(request.TeamId);
+                if(team == null)
+                {
+                    return new ResponseObject<DataResponseTeam>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "Team not found",
+                        Data = null
+                    };
+                }
+                team.ManagerId = request.ManagerId;
+                team.UpdateTime = DateTime.Now;
+                await _baseTeamRepository.UpdateAsync(team);
+                return new ResponseObject<DataResponseTeam>
+                {
+                    Status = StatusCodes.Status200OK,
+                    Message = "Change manager for team successfully",
+                    Data = _converter.EntityToDTO(team)
+                };
+            }
+            catch(Exception ex)
+            {
+                return new ResponseObject<DataResponseTeam>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message,
+                    Data = null
+                };
+            }
         }
 
         public async Task<ResponseObject<DataResponseTeam>> CreateTeam(Request_CreateTeam request)

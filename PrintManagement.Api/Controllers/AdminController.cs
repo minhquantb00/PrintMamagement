@@ -141,12 +141,14 @@ namespace PrintManagement.Api.Controllers
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Consumes(contentType: "multipart/form-data")]
         public async Task<IActionResult> CreateResourceInformation([FromForm] Request_CreateResource request)
         {
             return Ok(await _resourceService.CreateResourceInformation(request));
         }
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Consumes(contentType: "multipart/form-data")]
         public async Task<IActionResult> UpdateResourceInformation([FromForm] Request_UpdateResource request)
         {
             return Ok(await _resourceService.UpdateResourceInformation(request));
@@ -208,6 +210,19 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> GetTeamById(Guid teamId)
         {
             return Ok(await _teamService.GetTeamById(teamId));
+        }
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ChangeManagerForTeam(Request_ChangeManager request)
+        {
+            return Ok(await _teamService.ChangeManagerForTeam(request));
+        }
+
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request)
+        {
+            return Ok(await _teamService.ChangeDepartmentForUser(request));
         }
     }
 }

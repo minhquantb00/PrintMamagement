@@ -24,6 +24,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 DateOfBirth = user.DateOfBirth,
                 Email = user.Email,
                 FullName = user.FullName,
+                Avatar = user.Avatar,
                 Id = user.Id,
                 PhoneNumber = user.PhoneNumber,
             };

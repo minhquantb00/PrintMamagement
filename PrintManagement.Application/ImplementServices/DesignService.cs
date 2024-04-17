@@ -54,11 +54,14 @@ namespace PrintManagement.Application.ImplementServices
                 {
                     return "Design not found";
                 }
+                var project = await _baseProjectReposiroty.GetByIDAsync(design.ProjectId);
                 if (request.DesignApproval.ToString().Equals("Agree"))
                 {
                     design.DesignStatus = Domain.Enumerates.DesignStatusEnum.HasBeenApproved;
                     design.ApproverId = Guid.Parse(currentUser.FindFirst("Id").Value);
                     await _baseDesignRepository.UpdateAsync(design);
+                    project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Approved;
+                    await _baseProjectReposiroty.UpdateAsync(project);
                     return "Approved design";
                 }
                 else
@@ -66,6 +69,8 @@ namespace PrintManagement.Application.ImplementServices
                     design.DesignStatus = Domain.Enumerates.DesignStatusEnum.Refuse;
                     design.ApproverId = Guid.Parse(currentUser.FindFirst("Id").Value);
                     await _baseDesignRepository.UpdateAsync(design);
+                    project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Refuse;
+                    await _baseProjectReposiroty.UpdateAsync(project);
                     return "Design not approved";
                 }
             }
@@ -128,6 +133,8 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
+                project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Designing;
+                await _baseProjectReposiroty.UpdateAsync(project);
                 Design design = new Design
                 {
                     IsActive = true,
@@ -139,6 +146,8 @@ namespace PrintManagement.Application.ImplementServices
                     Id = Guid.NewGuid()
                 };
                 design = await _baseDesignRepository.CreateAsync(design);
+                project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.AwaitingApproval;
+                await _baseProjectReposiroty.UpdateAsync(project);
                 return new ResponseObject<DataResponseDesign>
                 {
                     Status = StatusCodes.Status200OK,
@@ -198,6 +207,15 @@ namespace PrintManagement.Application.ImplementServices
                     {
                         Status = StatusCodes.Status404NotFound,
                         Message = "Design not found",
+                        Data = null
+                    };
+                }
+                if(design.DesignStatus.ToString().Equals("HasBeenApproved") || design.DesignStatus.ToString().Equals("Refuse"))
+                {
+                    return new ResponseObject<DataResponseDesign>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "This design has been approved or rejected so it cannot be edited",
                         Data = null
                     };
                 }

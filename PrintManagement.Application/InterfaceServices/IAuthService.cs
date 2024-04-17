@@ -1,5 +1,6 @@
 ﻿using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataLogin;
+using PrintManagement.Application.Payloads.ResponseModels.DataRole;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 using PrintManagement.Domain.Entities;
@@ -20,5 +21,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<string> ForgotPassword(string email);
         Task<string> ConfirmCreateNewPassword(Request_ConfirmCreateNewPassword request);
         Task<ResponseObject<DataResponseUser>> AddRoleToUser(Guid userId, List<string> roles);
+        Task<IQueryable<DataResponseRole>> GetAllRoles();
     }
 }

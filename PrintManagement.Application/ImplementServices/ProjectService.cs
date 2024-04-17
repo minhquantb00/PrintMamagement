@@ -7,6 +7,7 @@ using PrintManagement.Application.Payloads.ResponseModels.DataProject;
 using PrintManagement.Application.Payloads.Responses;
 using PrintManagement.Domain.Entities;
 using PrintManagement.Domain.InterfaceRepositories.InterfaceBase;
+using PrintManagement.Domain.InterfaceRepositories.InterfaceUser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +22,11 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Customer> _baseCustomerRepository;
         private readonly IBaseReposiroty<User> _baseUserRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserRepository<User> _userRepository;
         private readonly IBaseReposiroty<Design> _baseDesignRepository;
         private readonly IBaseReposiroty<Team> _baseTeamRepository;
         private readonly ProjectConverter _mapper;
-        public ProjectService(IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<Design> baseDesignRepository, ProjectConverter mapper, IBaseReposiroty<Team> baseTeamRepository)
+        public ProjectService(IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<Design> baseDesignRepository, ProjectConverter mapper, IBaseReposiroty<Team> baseTeamRepository, IUserRepository<User> userRepository)
         {
             _baseProjectRepository = baseProjectRepository;
             _baseUserRepository = baseUserRepository;
@@ -33,6 +35,7 @@ namespace PrintManagement.Application.ImplementServices
             _baseDesignRepository = baseDesignRepository;
             _mapper = mapper;
             _baseTeamRepository = baseTeamRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<ResponseObject<DataResponseProject>> CreateProject(Request_CreateProject request)
@@ -70,6 +73,10 @@ namespace PrintManagement.Application.ImplementServices
                         Message = "Leader not found",
                         Data = null
                     };
+                }
+                if (!_userRepository.GetRolesOfUserAsync(leader).Result.Contains("Leader"))
+                {
+                    await _userRepository.AddUserToRoleAsync(leader, new string[] { "Leader" });
                 }
                 var customer = await _baseCustomerRepository.GetByIDAsync(request.CustomerId);
                 if (customer == null)
@@ -186,6 +193,10 @@ namespace PrintManagement.Application.ImplementServices
                         Message = "Leader not found",
                         Status = StatusCodes.Status404NotFound
                     };
+                }
+                if (!_userRepository.GetRolesOfUserAsync(leader).Result.Contains("Leader"))
+                {
+                    await _userRepository.AddUserToRoleAsync(leader, new string[] { "Leader" });
                 }
                 var customer = await _baseCustomerRepository.GetByIDAsync(request.CustomerId);
                 if (customer == null)

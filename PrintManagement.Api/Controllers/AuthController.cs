@@ -6,6 +6,7 @@ using PrintManagement.Application.Constants;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataLogin;
+using PrintManagement.Application.Payloads.ResponseModels.DataRole;
 using PrintManagement.Application.Payloads.Responses;
 
 namespace PrintManagement.Api.Controllers
@@ -55,6 +56,12 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> ConfirmCreateNewPassword([FromBody] Request_ConfirmCreateNewPassword request)
         {
             return Ok(await _authService.ConfirmCreateNewPassword(request));
+        }
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            return Ok(await _authService.GetAllRoles());
         }
     }
 }

@@ -8,6 +8,7 @@ using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataLogin;
+using PrintManagement.Application.Payloads.ResponseModels.DataRole;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 using PrintManagement.Domain.Entities;
@@ -36,9 +37,10 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<ConfirmEmail> _confirmEmailRepository;
         private readonly IBaseReposiroty<Permissions> _basePermissionRepository;
         private readonly IBaseReposiroty<Role> _baseRoleRepository;
+        private readonly IBaseReposiroty<Team> _baseTeamRepository;
         private readonly IEmailService _emailService;
         public AuthService(IBaseReposiroty<User> baseUserRepository, UserConverter mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, 
-            IEmailService emailService, IBaseReposiroty<Permissions> basePermissionRepository, IBaseReposiroty<Role> baseRoleRepository)
+            IEmailService emailService, IBaseReposiroty<Permissions> basePermissionRepository, IBaseReposiroty<Role> baseRoleRepository, IBaseReposiroty<Team> baseTeamRepository)
         {
             _baseUserRepository = baseUserRepository;
             _mapper = mapper;
@@ -49,6 +51,7 @@ namespace PrintManagement.Application.ImplementServices
             _emailService = emailService;
             _basePermissionRepository = basePermissionRepository;
             _baseRoleRepository = baseRoleRepository;
+            _baseTeamRepository = baseTeamRepository;
         }
         public async Task<ResponseObject<DataResponseLogin>> GetJwtTokenAsync(User user)
         {
@@ -249,6 +252,8 @@ namespace PrintManagement.Application.ImplementServices
                         CreateTime = user.CreateTime,
                         DateOfBirth = user.DateOfBirth,
                         Email = user.Email,
+                        Avatar = user.Avatar,
+                        TeamName = _baseTeamRepository.GetAsync(x => x.Id == user.TeamId).Result.Name,
                         FullName = user.FullName,
                         PhoneNumber = user.PhoneNumber,
                     }
@@ -387,6 +392,16 @@ namespace PrintManagement.Application.ImplementServices
             }
         }
 
+        public async Task<IQueryable<DataResponseRole>> GetAllRoles()
+        {
+            var query = _baseRoleRepository.GetAllAsync(x => x.IsActive == true);
+            return query.Result.Select(x => new DataResponseRole
+            {
+                Id = x.Id,
+                RoleCode = x.RoleCode,
+                RoleName = x.RoleName
+            });
+        }
 
 
         #region PrivateMethods

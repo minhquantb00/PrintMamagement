@@ -61,7 +61,7 @@ namespace PrintManagement.Application.ImplementServices
             var authClaims = new List<Claim>
     {
         new Claim("Id", user.Id.ToString()),
-        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim("UserName", user.UserName),
         new Claim("Email", user.Email),
         new Claim("Avatar", user.Avatar),
         new Claim("FullName", user.FullName),

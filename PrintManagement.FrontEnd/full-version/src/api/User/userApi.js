@@ -15,17 +15,17 @@ export const userApi = defineStore("user", {
           .catch((error) => reject(error));
       });
     },
-    register(params) {
+    updateUserAccount(id, params) {
       return new Promise((resolve, reject) => {
         console.log(params);
-        // params.DateOfBirth = format(new Date(params.DateOfBirth), "yyyy-MM-dd");
         axios
-          .post(
-            "/Auth/Register",
+          .put(
+            "/User/UpdateUser",
             { ...params },
             {
               headers: {
                 "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${authorization}`,
               },
             }
           )
@@ -34,19 +34,6 @@ export const userApi = defineStore("user", {
       });
     },
 
-    async changePassword(params) {
-      const authToken = `Bearer ${authorization}`;
-      console.log(authToken);
-      const res = await axios.put(
-        `/Auth/ChangePassword`,
-        { ...params },
-        {
-          headers: {
-            Authorization: authToken,
-          },
-        }
-      );
-    },
     filterUser(param) {
       console.log(param);
       return new Promise((resolve, reject) => {
@@ -64,10 +51,11 @@ export const userApi = defineStore("user", {
           .catch((error) => reject(error));
       });
     },
-    confirmCreateNewPassword(params) {
+    getUserById(id) {
+      console.log(id);
       return new Promise((resolve, reject) => {
         axios
-          .put("/Auth/ConfirmCreateNewPassword", { ...params })
+          .get(`User/GetUserById/${id}`)
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

@@ -49,10 +49,48 @@ export const customerApi = defineStore("customer", {
           .catch((error) => reject(error));
       });
     },
-    confirmCreateNewPassword(params) {
+    getByIdCustomer(id) {
       return new Promise((resolve, reject) => {
         axios
-          .put("/Auth/ConfirmCreateNewPassword", { ...params })
+          .get(`/Admin/GetCustomerById/${id}`, {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    updateCustomer(id, params){
+      return new Promise((resolve, reject) => {
+        console.log(params);
+        axios
+          .put(
+            "/Admin/UpdateCustomer",
+            { ...params },
+            {
+              headers: {
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    filterCustomer(param) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`/Admin/GetAllCustomers`, {
+            params: {
+              Name: param.name,
+              PhoneNumber: param.phoneNumber,
+              Address: param.address,
+            },
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

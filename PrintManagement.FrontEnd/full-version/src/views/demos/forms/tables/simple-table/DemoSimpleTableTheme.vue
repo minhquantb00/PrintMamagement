@@ -70,7 +70,6 @@ const isCardDetailsVisible = ref(false);
             <template v-slot:activator="{ props: activatorProps }">
               <v-btn
                 v-bind="activatorProps"
-                color="info"
                 style="font-size: 20px"
                 density="comfortable"
                 icon="mdi-pencil-outline"
@@ -89,7 +88,18 @@ const isCardDetailsVisible = ref(false);
                   chips
                   label="Quyền hạn"
                   :items="dataRoles"
+                  item-title="roleCode"
+                  item-value="id"
                   multiple
+                  variant="outlined"
+                ></v-select>
+                <v-select
+                  class="mb-6"
+                  clearable
+                  label="Phòng ban"
+                  :items="dataTeam"
+                  item-title="name"
+                  item-value="id"
                   variant="outlined"
                 ></v-select>
                 <v-card-actions>

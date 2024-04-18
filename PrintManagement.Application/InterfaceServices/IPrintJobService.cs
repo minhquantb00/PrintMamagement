@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
+using PrintManagement.Application.Payloads.Responses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,6 @@ namespace PrintManagement.Application.InterfaceServices
 {
     public interface IPrintJobService
     {
-        
+        Task<ResponseObject<DataResponsePrintJob>> CreatePrintJob();
     }
 }

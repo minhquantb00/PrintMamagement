@@ -14,6 +14,7 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataUser
         public string PhoneNumber { get; set; }
         public string Avatar { get; set; }
         public string TeamName { get; set; }
+        public string Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime CreateTime { get; set; }
     }

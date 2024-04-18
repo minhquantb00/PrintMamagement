@@ -26,6 +26,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 FullName = user.FullName,
                 Avatar = user.Avatar,
                 Id = user.Id,
+                Gender = user.Gender.ToString(),
                 PhoneNumber = user.PhoneNumber,
                 TeamName = _baseTeamRepository.GetAsync(x => x.Id == user.TeamId).Result.Name
             };

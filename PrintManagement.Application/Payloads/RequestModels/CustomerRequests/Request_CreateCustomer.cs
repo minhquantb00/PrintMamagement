@@ -15,5 +15,7 @@ namespace PrintManagement.Application.Payloads.RequestModels.CustomerRequests
         public string PhoneNumber { get; set; }
         [Required(ErrorMessage = "Address is required")]
         public string Address { get; set; }
+        [Required(ErrorMessage = "Email is required")]
+        public string Email { get; set; }
     }
 }

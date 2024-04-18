@@ -21,25 +21,57 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Customer> _baseCustomerRepository;
         private readonly IBaseReposiroty<User> _baseUserRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IBaseReposiroty<Team> _baseTeamRepository;
         private readonly CustomerConverter _mapper;
-        public CustomerService(IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, CustomerConverter mapper)
+        public CustomerService(IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, CustomerConverter mapper, IBaseReposiroty<Team> baseTeamRepository)
         {
             _baseCustomerRepository = baseCustomerRepository;
             _baseUserRepository = baseUserRepository;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
+            _baseTeamRepository = baseTeamRepository;
         }
 
         public async Task<ResponseObject<DataResponseCustomer>> CreateCustomer(Request_CreateCustomer request)
         {
+            var currentUser = _httpContextAccessor.HttpContext.User;
             try
             {
+                if (!currentUser.Identity.IsAuthenticated)
+                {
+                    return new ResponseObject<DataResponseCustomer>
+                    {
+                        Status = StatusCodes.Status401Unauthorized,
+                        Message = "UnAuthenticated user",
+                        Data = null
+                    };
+                }
+                var user = await _baseUserRepository.GetAsync(x => x.Id == Guid.Parse(currentUser.FindFirst("Id").Value));
+                var team = await _baseTeamRepository.GetAsync(x => x.Id == user.TeamId);
+                if (!team.Name.Equals("Sales"))
+                {
+                    return new ResponseObject<DataResponseCustomer>
+                    {
+                        Status = StatusCodes.Status403Forbidden,
+                        Message = "You must be an employee in the sales department",
+                        Data = null
+                    };
+                }
                 if(!ValidateInput.IsValidPhoneNumber(request.PhoneNumber))
                 {
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status400BadRequest,
                         Message = "Invalid phone number format",
+                        Data = null
+                    };
+                }
+                if (!ValidateInput.IsValidEmail(request.Email))
+                {
+                    return new ResponseObject<DataResponseCustomer>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "Invalid email format",
                         Data = null
                     };
                 }
@@ -53,6 +85,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
+                
                 Customer customer = new Customer
                 {
                     Address = request.Address,
@@ -114,7 +147,7 @@ namespace PrintManagement.Application.ImplementServices
                 var query = await _baseCustomerRepository.GetAllAsync(x => x.IsActive == true);
                 if (!string.IsNullOrEmpty(request.PhoneNumber))
                 {
-                    query = query.Where(x => x.PhoneNumber.Equals(request.PhoneNumber));
+                    query = query.Where(x => x.PhoneNumber.Contains(request.PhoneNumber));
                 }
                 if (!string.IsNullOrEmpty(request.Name))
                 {
@@ -122,7 +155,7 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 if (!string.IsNullOrEmpty(request.Address))
                 {
-                    query = query.Where(x => x.Address.ToLower().Equals(request.Address.ToLower()));
+                    query = query.Where(x => x.Address.ToLower().Contains(request.Address.ToLower()));
                 }
                 return query.Select(x => new DataResponseCustomer
                 {
@@ -157,12 +190,32 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if (!currentUser.IsInRole("Admin"))
+                var user = await _baseUserRepository.GetAsync(x => x.Id == Guid.Parse(currentUser.FindFirst("Id").Value));
+                var team = await _baseTeamRepository.GetAsync(x => x.Id == user.TeamId);
+                if (!team.Name.Equals("Sales"))
                 {
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "You must be an employee in the sales department",
+                        Data = null
+                    };
+                }
+                if (!ValidateInput.IsValidPhoneNumber(request.PhoneNumber))
+                {
+                    return new ResponseObject<DataResponseCustomer>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "Invalid phone number format",
+                        Data = null
+                    };
+                }
+                if (!ValidateInput.IsValidEmail(request.Email))
+                {
+                    return new ResponseObject<DataResponseCustomer>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "Invalid email format",
                         Data = null
                     };
                 }

@@ -49,7 +49,7 @@ namespace PrintManagement.Api.Controllers
             _printJobService = printJobService;
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> CreateCustomer([FromBody] Request_CreateCustomer request)
         {
             return Ok(await _customerService.CreateCustomer(request));
@@ -233,6 +233,12 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> CreatePrintJob([FromBody] Request_CreatePrintJob request)
         {
             return Ok(await _printJobService.CreatePrintJob(request));
+        }
+        [HttpPut("{printJobId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ConfirmDonePrintJob([FromRoute] Guid printJobId)
+        {
+            return Ok(await _printJobService.ConfirmDonePrintJob(printJobId));
         }
     }
 }

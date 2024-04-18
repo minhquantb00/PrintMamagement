@@ -117,7 +117,7 @@ const currencies = [
             <div class="d-flex flex-wrap gap-2">
               <VBtn color="primary" @click="refInputEl?.click()">
                 <VIcon icon="tabler-cloud-upload" class="d-sm-none" />
-                <span class="d-none d-sm-block">Upload new photo</span>
+                <span class="d-none d-sm-block">🏞️ Sửa hình ảnh</span>
               </VBtn>
 
               <input
@@ -248,7 +248,7 @@ const currencies = [
 
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
-                <VBtn>Save changes</VBtn>
+                <VBtn>Cập nhật</VBtn>
 
                 <VBtn
                   color="secondary"
@@ -261,31 +261,6 @@ const currencies = [
               </VCol>
             </VRow>
           </VForm>
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <VCol cols="12">
-      <!-- 👉 Delete Account -->
-      <VCard title="Delete Account">
-        <VCardText>
-          <!-- 👉 Checkbox and Button  -->
-          <div>
-            <VCheckbox
-              v-model="isAccountDeactivated"
-              :rules="validateAccountDeactivation"
-              label="I confirm my account deactivation"
-            />
-          </div>
-
-          <VBtn
-            :disabled="!isAccountDeactivated"
-            color="error"
-            class="mt-3"
-            @click="isConfirmDialogOpen = true"
-          >
-            Deactivate Account
-          </VBtn>
         </VCardText>
       </VCard>
     </VCol>

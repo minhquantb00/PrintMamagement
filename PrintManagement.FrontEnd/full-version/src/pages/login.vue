@@ -118,7 +118,7 @@ const rememberMe = ref(false);
                 <VBtn block type="submit" :loading="loading" @click="login">
                   Login
                 </VBtn>
-                <!-- <VBtn block class="mt-3" @click="logout"> Xóa location </VBtn> -->
+                <VBtn block class="mt-3" @click="logout"> Xóa location </VBtn>
               </VCol>
 
               <!-- create account -->
@@ -208,11 +208,11 @@ export default {
             const allRoles = ["Admin", "Leader", "Designer", "Employee"];
             const userRoles = userInfo.Permission;
             if (userRoles.length === allRoles.length) {
-              this.$router.push({ name: "dashboards-analytics" });
+              this.$router.push({ name: "pages-cards-card-basic" });
               this.text = result.message;
               this.snackbar = true;
             } else if (userRoles.includes("Admin")) {
-              this.$router.push({ name: "home" });
+              this.$router.push({ name: "pages-cards-card-basic" });
               this.text = result.message;
               this.snackbar = true;
             } else if (userRoles.includes("Employee")) {
@@ -235,7 +235,7 @@ export default {
         }
       } catch (error) {
         console.error("Error during login:", error);
-        this.text = "An error occurred during login";
+        this.text = "Đã xảy ra lỗi trong quá trình đăng nhập";
         this.snackbar = true;
       } finally {
         this.loading = false;

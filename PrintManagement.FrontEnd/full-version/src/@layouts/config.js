@@ -8,8 +8,8 @@ import { breakpointsVuetify } from "@vueuse/core";
 
 export const config = {
   app: {
-    title: "Print manager",
-    logo: h("img", { src: "./src/assets/logo.svg" }),
+    title: "InkMastery",
+    logo: h("img", { src: "../../src/assets/images/logoPrint.png" }),
 
     // logo: () => h('img', { src: 'assets/colored-logo.png' }, null),
     contentWidth: ref(ContentWidth.Boxed),

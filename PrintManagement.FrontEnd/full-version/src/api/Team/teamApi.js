@@ -5,12 +5,16 @@ axios.defaults.baseURL = "https://localhost:7070/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";
-export const authApi = defineStore("auth", {
+export const teamApi = defineStore("team", {
   actions: {
-    login(params) {
+    getAllTeams() {
       return new Promise((resolve, reject) => {
         axios
-          .post("/Auth/Login", { ...params })
+          .get("/Admin/GetAllTeams", {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
@@ -47,12 +51,13 @@ export const authApi = defineStore("auth", {
         }
       );
     },
-    getAllRoles() {
+    forgotPassword(param) {
+      console.log(param);
       return new Promise((resolve, reject) => {
         axios
-          .get("/Auth/GetAllRoles", {
-            headers: {
-              Authorization: `Bearer ${authorization}`,
+          .post("/Auth/ForgotPassword", null, {
+            params: {
+              email: param.email,
             },
           })
           .then((res) => resolve(res))

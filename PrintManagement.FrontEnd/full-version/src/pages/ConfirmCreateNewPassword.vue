@@ -6,19 +6,14 @@ import authV2ForgotPasswordIllustrationDark from "@images/pages/auth-v2-forgot-p
 import authV2ForgotPasswordIllustrationLight from "@images/pages/auth-v2-forgot-password-illustration-light.png";
 import authV2MaskDark from "@images/pages/misc-mask-dark.png";
 import authV2MaskLight from "@images/pages/misc-mask-light.png";
-import {
-  emailValidator,
-  requiredValidator,
-  usernameValidator,
-} from "@validators";
-const email = ref("");
-const refVForm = ref();
 
 const authThemeImg = useGenerateImageVariant(
   authV2ForgotPasswordIllustrationLight,
   authV2ForgotPasswordIllustrationDark
 );
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
+const isPasswordVisible = ref(false);
+const isPasswordVisibleOne = ref(false);
 </script>
 
 <template>
@@ -49,26 +44,67 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
         </VCardText>
 
         <VCardText>
-          <VForm ref="refVForm" @submit.prevent="onSubmit">
+          <VForm @submit.prevent="() => {}">
             <VRow>
               <!-- email -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="inputForgotPassword.email"
+                  v-model="inputConfirmUpdate.confirmCode"
                   autofocus
-                  :rules="[requiredValidator, emailValidator]"
-                  label="Email"
-                  type="email"
+                  label="Verification code"
+                  type="text"
                 />
               </VCol>
+              <!-- <VCol cols="12">
+                <AppTextField
+                  v-model="inputConfirmUpdate.password"
+                  autofocus
+                  label="A new password"
+                  type="text"
+                />
+              </VCol>
+              <VCol cols="12">
+                <AppTextField
+                  v-model="inputConfirmUpdate.confirmPassword"
+                  autofocus
+                  label="Enter a new password"
+                  type="text"
+                />
+              </VCol> -->
 
+              <VCol cols="12">
+                <AppTextField
+                  autofocus
+                  v-model="inputConfirmUpdate.password"
+                  label="A new password"
+                  :type="isPasswordVisible ? 'text' : 'password'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
+                  @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                />
+              </VCol>
+              <VCol cols="12">
+                <AppTextField
+                  autofocus
+                  v-model="inputConfirmUpdate.confirmPassword"
+                  label="Enter a new password"
+                  :type="isPasswordVisibleOne ? 'text' : 'password'"
+                  :append-inner-icon="
+                    isPasswordVisibleOne ? 'tabler-eye-off' : 'tabler-eye'
+                  "
+                  @click:append-inner="
+                    isPasswordVisibleOne = !isPasswordVisibleOne
+                  "
+                />
+              </VCol>
               <!-- Reset link -->
               <VCol cols="12">
                 <VBtn
                   block
                   :loading="loading"
                   type="submit"
-                  @click="fogotPassword"
+                  @click="createNewPassword"
                 >
                   Send Reset Link
                 </VBtn>
@@ -78,10 +114,10 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
               <VCol cols="12">
                 <RouterLink
                   class="d-flex align-center justify-center"
-                  :to="{ name: 'login' }"
+                  :to="{ path: '/forgot-password' }"
                 >
                   <VIcon icon="tabler-chevron-left" class="flip-in-rtl" />
-                  <span>Back to login</span>
+                  <span>Back to forgot password</span>
                 </RouterLink>
               </VCol>
             </VRow>
@@ -110,31 +146,35 @@ export default {
   data() {
     return {
       text: "",
-      loading: false,
       snackbar: false,
+      loading: false,
       authApi: authApi(),
-      inputForgotPassword: {
-        email: "",
+      inputConfirmUpdate: {
+        password: "",
+        confirmCode: "",
+        confirmPassword: "",
       },
     };
   },
   methods: {
-    async fogotPassword() {
-      console.log(this.inputForgotPassword);
-      const result = await this.authApi.forgotPassword(
-        this.inputForgotPassword,
+    async createNewPassword() {
+      console.log(this.inputConfirmUpdate);
+      const result = await this.authApi.confirmCreateNewPassword(
+        this.inputConfirmUpdate,
+        (this.loading = true)
       );
       console.log(result);
-      if (result.status === 200) {
+      if (result) {
         (this.text = result.data), (this.snackbar = true);
         setTimeout(() => {
-          this.$router.push({ path: "/update-password" });
-        }, 2000);
+          this.$router.push({ path: "/login" });
+        }, 1500);
       } else {
-        (this.text = "Sending failed"), (this.snackbar = true);
+        (this.text = "Password update failed"), (this.snackbar = true);
       }
     },
   },
+ 
 };
 </script>
 <style lang="scss">

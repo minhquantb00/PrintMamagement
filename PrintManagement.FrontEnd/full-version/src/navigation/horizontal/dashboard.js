@@ -1,5 +1,10 @@
 export default [
   {
+    title: 'CRM',
+    to: 'dashboards-crm',
+    icon: { icon: 'tabler-3d-cube-sphere' },
+  },
+  {
     title: 'Dashboards',
     icon: { icon: 'tabler-smart-home' },
     children: [
@@ -13,11 +18,7 @@ export default [
         to: 'dashboards-ecommerce',
         icon: { icon: 'tabler-atom-2' },
       },
-      {
-        title: 'CRM',
-        to: 'dashboards-crm',
-        icon: { icon: 'tabler-3d-cube-sphere' },
-      },
+      
     ],
   },
 ]

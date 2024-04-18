@@ -1,39 +1,33 @@
 <script setup>
-import { HorizontalNav } from '@layouts/components'
+import { HorizontalNav } from "@layouts/components";
 
 // import { useLayouts } from '@layouts'
-import { useLayouts } from '@layouts/composable/useLayouts'
+import { useLayouts } from "@layouts/composable/useLayouts";
 
 const props = defineProps({
   navItems: {
     type: null,
     required: true,
   },
-})
+});
 
-const { y: windowScrollY } = useWindowScroll()
-const { width: windowWidth } = useWindowSize()
-const router = useRouter()
-const shallShowPageLoading = ref(false)
+const { y: windowScrollY } = useWindowScroll();
+const { width: windowWidth } = useWindowSize();
+const router = useRouter();
+const shallShowPageLoading = ref(false);
 
 router.beforeEach(() => {
-  shallShowPageLoading.value = true
-})
+  shallShowPageLoading.value = true;
+});
 router.afterEach(() => {
-  shallShowPageLoading.value = false
-})
+  shallShowPageLoading.value = false;
+});
 
-const {
-  _layoutClasses: layoutClasses,
-  isNavbarBlurEnabled,
-} = useLayouts()
+const { _layoutClasses: layoutClasses, isNavbarBlurEnabled } = useLayouts();
 </script>
 
 <template>
-  <div
-    class="layout-wrapper"
-    :class="layoutClasses(windowWidth, windowScrollY)"
-  >
+  <div class="layout-wrapper">
     <div
       class="layout-navbar-and-nav-container"
       :class="isNavbarBlurEnabled && 'header-blur'"
@@ -173,4 +167,8 @@ const {
     @include mixins.boxed-content(true);
   }
 }
+// .layout-wrapper {
+//   overflow-y: scroll;
+//   height: ;
+// }
 </style>

@@ -5,12 +5,12 @@ axios.defaults.baseURL = "https://localhost:7070/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";
-export const authApi = defineStore("auth", {
+export const userApi = defineStore("user", {
   actions: {
-    login(params) {
+    getAllUsers() {
       return new Promise((resolve, reject) => {
         axios
-          .post("/Auth/Login", { ...params })
+          .get("/User/GetAllUsers")
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
@@ -47,12 +47,17 @@ export const authApi = defineStore("auth", {
         }
       );
     },
-    getAllRoles() {
+    filterUser(param) {
+      console.log(param);
       return new Promise((resolve, reject) => {
+        // https://localhost:7070/api/User/GetAllUsers?Name=D%C6%B0%C6%A1ng&Email=duongtv280703%40gmail.com&PhoneNumber=0388049008
         axios
-          .get("/Auth/GetAllRoles", {
-            headers: {
-              Authorization: `Bearer ${authorization}`,
+          .get("/User/GetAllUsers", {
+            params: {
+              email: param.email,
+              name: param.name,
+              phoneNumber: param.phoneNumber,
+              teamId: param.teamId,
             },
           })
           .then((res) => resolve(res))

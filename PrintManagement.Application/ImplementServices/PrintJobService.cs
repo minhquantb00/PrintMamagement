@@ -20,11 +20,11 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Project> _baseProjectRepository;
         private readonly IBaseReposiroty<PrintJob> _basePrintJobRepository;
         private readonly IBaseReposiroty<ResourceForPrintJob> _baseResourceForPrintJobRepository;
-        private readonly IBaseReposiroty<Resource> _baseResourceRepository;
+        private readonly IBaseReposiroty<ResourcePropertyDetail> _baseResourceRepository;
         private readonly IBaseReposiroty<Design> _baseDesignRepository;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly PrintJobConverter _printerConverter;
-        public PrintJobService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<PrintJob> basePrintJobRepository, IBaseReposiroty<ResourceForPrintJob> baseResourceForPrintJobRepository, IBaseReposiroty<Resource> baseResourceRepository, IHttpContextAccessor contextAccessor, PrintJobConverter printerConverter, IBaseReposiroty<Design> baseDesignRepository)
+        public PrintJobService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<PrintJob> basePrintJobRepository, IBaseReposiroty<ResourceForPrintJob> baseResourceForPrintJobRepository, IBaseReposiroty<ResourcePropertyDetail> baseResourceRepository, IHttpContextAccessor contextAccessor, PrintJobConverter printerConverter, IBaseReposiroty<Design> baseDesignRepository)
         {
             _baseUserRepository = baseUserRepository;
             _baseProjectRepository = baseProjectRepository;
@@ -101,6 +101,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.InProgress;
+                project.Progress = 75;
                 await _baseProjectRepository.UpdateAsync(project);
                 return new ResponseObject<DataResponsePrintJob>
                 {
@@ -129,17 +130,21 @@ namespace PrintManagement.Application.ImplementServices
             List<ResourceForPrintJob> listResult = new List<ResourceForPrintJob>();
             foreach (var request in requests)
             {
-                var resource = await _baseResourceRepository.GetByIDAsync(request.ResourceId);
+                var resource = await _baseResourceRepository.GetByIDAsync(request.ResourcePropertyDetailId);
                 if(resource == null)
                 {
                     throw new ArgumentNullException(nameof(resource));
+                }
+                if(resource.Quantity == 0)
+                {
+                    throw new ArgumentException("Out of stock");
                 }
                 ResourceForPrintJob item = new ResourceForPrintJob
                 {
                     IsActive = true,
                     Id = Guid.NewGuid(),
                     PrintJobId = printJobId,
-                    ResourceId = request.ResourceId
+                    ResourcePropertyDetailId = request.ResourcePropertyDetailId
                 };
                 item = await _baseResourceForPrintJobRepository.CreateAsync(item);
                 listResult.Add(item);

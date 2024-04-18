@@ -1,4 +1,5 @@
-﻿using PrintManagement.Application.Payloads.ResponseModels.DataTeam;
+﻿using PrintManagement.Application.Payloads.ResponseModels.DataNotification;
+using PrintManagement.Application.Payloads.ResponseModels.DataTeam;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataUser
         public string Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime CreateTime { get; set; }
+        public IQueryable<DataResponseNotification>? DataResponseNotifications { get; set; }
     }
 }

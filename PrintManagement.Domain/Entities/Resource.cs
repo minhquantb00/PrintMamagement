@@ -14,6 +14,5 @@ namespace PrintManagement.Domain.Entities
         public string Image { get; set; }
         public ResourceStatusEnum? ResourceStatus { get; set; } = ResourceStatusEnum.ReadyToUse;
         public virtual ICollection<ResourceProperty>? ResourceProperties { get; set; }
-        public virtual ICollection<ResourceForPrintJob>? ResourceForPrintJobs { get; set; }
     }
 }

@@ -84,6 +84,8 @@ builder.Services.AddScoped<IBaseReposiroty<ResourceForPrintJob>, BaseRepository<
 builder.Services.AddScoped<PrintJobConverter>();
 builder.Services.AddScoped<ResourceForPrintJobConverter>();
 builder.Services.AddScoped<IPrintJobService, PrintJobService>();
+builder.Services.AddScoped<NotificationConverter>();
+builder.Services.AddScoped<IBaseReposiroty<Notification>,  BaseRepository<Notification>>();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     // Set the expiration time for the OTP

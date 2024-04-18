@@ -1,4 +1,5 @@
-﻿using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
+﻿using PrintManagement.Application.Payloads.RequestModels.PrintJobRequests;
+using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
 using PrintManagement.Application.Payloads.Responses;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace PrintManagement.Application.InterfaceServices
 {
     public interface IPrintJobService
     {
-        Task<ResponseObject<DataResponsePrintJob>> CreatePrintJob();
+        Task<ResponseObject<DataResponsePrintJob>> CreatePrintJob(Request_CreatePrintJob request);
     }
 }

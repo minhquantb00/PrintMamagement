@@ -79,6 +79,11 @@ builder.Services.AddScoped<IImportCouponService, ImportCouponService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddScoped<ResourcePropertyDetailConverter>();
+builder.Services.AddScoped<IBaseReposiroty<PrintJob>, BaseRepository<PrintJob>>();
+builder.Services.AddScoped<IBaseReposiroty<ResourceForPrintJob>, BaseRepository<ResourceForPrintJob>>();
+builder.Services.AddScoped<PrintJobConverter>();
+builder.Services.AddScoped<ResourceForPrintJobConverter>();
+builder.Services.AddScoped<IPrintJobService, PrintJobService>();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     // Set the expiration time for the OTP

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrintManagement.Application.Constants;
 using PrintManagement.Application.InterfaceServices;
@@ -29,6 +31,7 @@ namespace PrintManagement.Api.Controllers
             return Ok(await _userService.GetUserById(id));
         }
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Consumes(contentType: "multipart/form-data")]
         public async Task<IActionResult> UpdateUser([FromForm] Request_UpdateUser request)
         {

@@ -9,12 +9,14 @@ using PrintManagement.Application.Payloads.RequestModels.CustomerRequests;
 using PrintManagement.Application.Payloads.RequestModels.DesignRequests;
 using PrintManagement.Application.Payloads.RequestModels.ImportCouponRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
+using PrintManagement.Application.Payloads.RequestModels.PrintJobRequests;
 using PrintManagement.Application.Payloads.RequestModels.ProjectRequests;
 using PrintManagement.Application.Payloads.RequestModels.ResourceRequests;
 using PrintManagement.Application.Payloads.RequestModels.TeamRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
 using PrintManagement.Application.Payloads.ResponseModels.DataDesign;
 using PrintManagement.Application.Payloads.ResponseModels.DataImportCoupon;
+using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
 using PrintManagement.Application.Payloads.ResponseModels.DataProject;
 using PrintManagement.Application.Payloads.ResponseModels.DataResource;
 using PrintManagement.Application.Payloads.ResponseModels.DataTeam;
@@ -34,7 +36,8 @@ namespace PrintManagement.Api.Controllers
         private readonly IResourceService _resourceService;
         private readonly IImportCouponService _importCouponService;
         private readonly ITeamService _teamService;
-        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService)
+        private readonly IPrintJobService _printJobService;
+        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService)
         {
             _customerService = customerService;
             _projectService = projectService;
@@ -43,6 +46,7 @@ namespace PrintManagement.Api.Controllers
             _resourceService = resourceService;
             _importCouponService = importCouponService;
             _teamService = teamService;
+            _printJobService = printJobService;
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -223,6 +227,12 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request)
         {
             return Ok(await _teamService.ChangeDepartmentForUser(request));
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreatePrintJob([FromBody] Request_CreatePrintJob request)
+        {
+            return Ok(await _printJobService.CreatePrintJob(request));
         }
     }
 }

@@ -15,10 +15,8 @@ namespace PrintManagement.Application.Payloads.RequestModels.UserRequests
         public string? Email { get; set; }
         public string? FullName { get; set; }
         public IFormFile? Avatar { get; set; }
-        [MaybeNull]
-        public GenderEnum Gender { get; set; }
-        [MaybeNull]
-        public DateTime DateOfBirth { get; set; }
+        public GenderEnum? Gender { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string? PhoneNumber { get; set; }
     }
 }

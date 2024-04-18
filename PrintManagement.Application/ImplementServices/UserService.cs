@@ -62,11 +62,11 @@ namespace PrintManagement.Application.ImplementServices
                 var user = await _baseUserRepository.GetByIDAsync(id);
                 user.Avatar = request.Avatar != null ? await HandleUploadFile.Upfile(request.Avatar) : user.Avatar;
                 user.PhoneNumber = !string.IsNullOrWhiteSpace(request.PhoneNumber) ? request.PhoneNumber : user.PhoneNumber;
-                user.DateOfBirth = request.DateOfBirth != null ? request.DateOfBirth : user.DateOfBirth;
+                user.DateOfBirth = request.DateOfBirth ?? user.DateOfBirth;
                 user.FullName = !string.IsNullOrWhiteSpace(request.FullName) ? request.FullName : user.FullName;
                 user.Gender = request.Gender != null ? request.Gender : user.Gender;
 
-                if(_baseUserRepository.GetAsync(x => x.Email.Equals(request.Email)).Result != null)
+                if(_baseUserRepository.GetAsync(x => x.Email.Equals(request.Email)).Result != null && _baseUserRepository.GetAsync(x => x.Email.Equals(request.Email)).Result != user)
                 {
                     return new ResponseObject<DataResponseUser>
                     {

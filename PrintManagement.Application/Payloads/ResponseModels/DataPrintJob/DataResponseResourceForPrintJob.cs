@@ -10,6 +10,6 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataPrintJob
 {
     public class DataResponseResourceForPrintJob : DataResponseBase
     {
-        public DataResponseResource Resource { get; set; }
+        public DataResponseResourcePropertyDetail Resource { get; set; }
     }
 }

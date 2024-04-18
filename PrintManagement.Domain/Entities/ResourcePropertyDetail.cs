@@ -15,5 +15,6 @@ namespace PrintManagement.Domain.Entities
         public string Image { get; set; }
         public int Quantity { get; set; }
         public virtual ICollection<ImportCoupon>? ImportCoupons { get; set; }
+        public virtual ICollection<ResourceForPrintJob>? ResourceForPrintJobs { get; set; }
     }
 }

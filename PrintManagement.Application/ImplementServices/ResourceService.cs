@@ -64,7 +64,6 @@ namespace PrintManagement.Application.ImplementServices
                     Image = await HandleUploadFile.WriteFile(request.Image),
                     ResourceName = request.ResourceName,
                     ResourceProperties = null,
-                    ResourceForPrintJobs = null,
                     ResourceStatus = Domain.Enumerates.ResourceStatusEnum.OutOfStock
                 };
                 resource = await _baseResourceRepository.CreateAsync(resource);

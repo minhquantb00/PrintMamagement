@@ -12,9 +12,13 @@ namespace PrintManagement.Application.Payloads.Mappers
     public class UserConverter
     {
         private readonly IBaseReposiroty<Team> _baseTeamRepository;
-        public UserConverter(IBaseReposiroty<Team> baseTeamRepository)
+        private readonly IBaseReposiroty<Notification> _notificationRepository;
+        private readonly NotificationConverter _notificationConverter;
+        public UserConverter(IBaseReposiroty<Team> baseTeamRepository, IBaseReposiroty<Notification> notificationRepository, NotificationConverter notificationConverter)
         {
             _baseTeamRepository = baseTeamRepository;
+            _notificationRepository = notificationRepository;
+            _notificationConverter = notificationConverter;
         }
         public DataResponseUser EntityToDTOForUser(User user)
         {
@@ -28,7 +32,8 @@ namespace PrintManagement.Application.Payloads.Mappers
                 Id = user.Id,
                 Gender = user.Gender.ToString(),
                 PhoneNumber = user.PhoneNumber,
-                TeamName = _baseTeamRepository.GetAsync(x => x.Id == user.TeamId).Result.Name
+                TeamName = _baseTeamRepository.GetAsync(x => x.Id == user.TeamId).Result.Name,
+                DataResponseNotifications = _notificationRepository.GetAllAsync(x => x.UserId == user.Id).Result.Select(x => _notificationConverter.EntityToDTO(x))
             };
         }
     }

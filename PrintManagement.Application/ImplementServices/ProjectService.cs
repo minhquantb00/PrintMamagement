@@ -25,8 +25,9 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IUserRepository<User> _userRepository;
         private readonly IBaseReposiroty<Design> _baseDesignRepository;
         private readonly IBaseReposiroty<Team> _baseTeamRepository;
+        private readonly IBaseReposiroty<Notification> _baseNotificationRepository;
         private readonly ProjectConverter _mapper;
-        public ProjectService(IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<Design> baseDesignRepository, ProjectConverter mapper, IBaseReposiroty<Team> baseTeamRepository, IUserRepository<User> userRepository)
+        public ProjectService(IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<Design> baseDesignRepository, ProjectConverter mapper, IBaseReposiroty<Team> baseTeamRepository, IUserRepository<User> userRepository, IBaseReposiroty<Notification> baseNotificationRepository)
         {
             _baseProjectRepository = baseProjectRepository;
             _baseUserRepository = baseUserRepository;
@@ -36,6 +37,7 @@ namespace PrintManagement.Application.ImplementServices
             _mapper = mapper;
             _baseTeamRepository = baseTeamRepository;
             _userRepository = userRepository;
+            _baseNotificationRepository = baseNotificationRepository;
         }
 
         public async Task<ResponseObject<DataResponseProject>> CreateProject(Request_CreateProject request)
@@ -55,7 +57,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if (!currentUser.IsInRole("Admin") && !(currentUser.IsInRole("Employee") && team.Name.Equals("Sales")))
+                if (!currentUser.IsInRole("Admin") || !(currentUser.IsInRole("Employee") || !team.Name.Equals("Sales")))
                 {
                     return new ResponseObject<DataResponseProject>
                     {
@@ -71,6 +73,16 @@ namespace PrintManagement.Application.ImplementServices
                     {
                         Status = StatusCodes.Status404NotFound,
                         Message = "Leader not found",
+                        Data = null
+                    };
+                }
+                var teamLeader = await _baseTeamRepository.GetAsync(x => x.Id == leader.TeamId);
+                if (!teamLeader.Name.Equals("Technical"))
+                {
+                    return new ResponseObject<DataResponseProject>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "This person is not an employee in the technical department",
                         Data = null
                     };
                 }
@@ -102,6 +114,19 @@ namespace PrintManagement.Application.ImplementServices
                     StartDate = DateTime.Now
                 };
                 project = await _baseProjectRepository.CreateAsync(project);
+
+                Notification notification = new Notification
+                {
+                    IsActive = true,
+                    Content = $"You have been assigned a project {project.ProjectName} read the announcement for more details",
+                    Link = "",
+                    Id = Guid.NewGuid(),
+                    IsSeen = false,
+                    UserId = request.LeaderId
+                };
+
+                notification = await _baseNotificationRepository.CreateAsync(notification);
+
                 return new ResponseObject<DataResponseProject>
                 {
                     Status = StatusCodes.Status200OK,
@@ -215,6 +240,17 @@ namespace PrintManagement.Application.ImplementServices
                 project.Description = request.Description;
                 project.ExpectedEndDate = request.ExpectedEndDate;
                 await _baseProjectRepository.UpdateAsync(project);
+                Notification notification = new Notification
+                {
+                    IsActive = true,
+                    Content = $"Project information {project.ProjectName} that you are the leader of has been updated! please check",
+                    Link = "",
+                    Id = Guid.NewGuid(),
+                    IsSeen = false,
+                    UserId = request.LeaderId
+                };
+
+                notification = await _baseNotificationRepository.CreateAsync(notification);
                 return new ResponseObject<DataResponseProject>
                 {
                     Status = StatusCodes.Status200OK,

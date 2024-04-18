@@ -11,9 +11,9 @@ namespace PrintManagement.Application.Payloads.Mappers
 {
     public class ResourceForPrintJobConverter
     {
-        private readonly IBaseReposiroty<Resource> _repository;
-        private readonly ResourceConverter _converter;
-        public ResourceForPrintJobConverter(IBaseReposiroty<Resource> repository, ResourceConverter converter)
+        private readonly IBaseReposiroty<ResourcePropertyDetail> _repository;
+        private readonly ResourcePropertyDetailConverter _converter;
+        public ResourceForPrintJobConverter(IBaseReposiroty<ResourcePropertyDetail> repository, ResourcePropertyDetailConverter converter)
         {
             _repository = repository;
             _converter = converter;
@@ -24,7 +24,7 @@ namespace PrintManagement.Application.Payloads.Mappers
             return new DataResponseResourceForPrintJob
             {
                 Id = resourceForPrintJob.Id,
-                Resource = _converter.EntityToDTO(_repository.GetAsync(x => x.Id == resourceForPrintJob.ResourceId).Result),
+                Resource = _converter.EntityToDTO(_repository.GetAsync(x => x.Id == resourceForPrintJob.ResourcePropertyDetailId).Result),
             };
         }
     }

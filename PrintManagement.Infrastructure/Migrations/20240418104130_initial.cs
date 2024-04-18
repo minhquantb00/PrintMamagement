@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PrintManagement.Infrastructure.Migrations
 {
-    public partial class upv2 : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -230,6 +230,28 @@ namespace PrintManagement.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Link = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsSeen = table.Column<bool>(type: "bit", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -493,7 +515,7 @@ namespace PrintManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResourcePropertyDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PrintJobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -507,34 +529,11 @@ namespace PrintManagement.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ResourceForPrintJobs_Resources_ResourceId",
-                        column: x => x.ResourceId,
-                        principalTable: "Resources",
+                        name: "FK_ResourceForPrintJobs_ResourcePropertyDetails_ResourcePropertyDetailId",
+                        column: x => x.ResourcePropertyDetailId,
+                        principalTable: "ResourcePropertyDetails",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "IsActive", "RoleCode", "RoleName" },
-                values: new object[,]
-                {
-                    { new Guid("267299c2-b0a9-4fab-ae22-abbc99dc292a"), true, "Manager", "Manager" },
-                    { new Guid("44974e44-dbac-4146-9fdb-e6ba9c2e7577"), true, "Leader", "Leader" },
-                    { new Guid("a3a3374c-d664-4c2a-8f5e-e67e6a098a1b"), true, "Employee", "Employee" },
-                    { new Guid("b39e2e64-8c5b-4276-8faa-f0796f351113"), true, "Admin", "Admin" },
-                    { new Guid("bece7ac7-fc48-4133-b2df-30077fcd88d8"), true, "Designer", "Designer" },
-                    { new Guid("c4d3e9f2-778d-4cb2-a92d-f6a3382c1585"), true, "Deliver", "Deliver" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Teams",
-                columns: new[] { "Id", "CreateTime", "Description", "IsActive", "ManagerId", "Name", "NumberOfMember", "UpdateTime" },
-                values: new object[,]
-                {
-                    { new Guid("58b8a350-fd69-4532-b3c6-1fcf8b3178fe"), new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(176), "Phòng ban giao hàng", true, new Guid("00000000-0000-0000-0000-000000000000"), "Delivery", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("8c46aac7-6f92-4a5e-bf23-c1338429a18a"), new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(174), "Phòng ban kỹ thuật", true, new Guid("00000000-0000-0000-0000-000000000000"), "Technical", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("a19fa227-b53c-4d0e-87ff-fda6a5e10b63"), new DateTime(2024, 4, 16, 20, 19, 29, 577, DateTimeKind.Local).AddTicks(160), "Phòng ban kinh doanh", true, new Guid("00000000-0000-0000-0000-000000000000"), "Sales", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -613,6 +612,11 @@ namespace PrintManagement.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Permissions_RoleId",
                 table: "Permissions",
                 column: "RoleId");
@@ -648,9 +652,9 @@ namespace PrintManagement.Infrastructure.Migrations
                 column: "PrintJobId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResourceForPrintJobs_ResourceId",
+                name: "IX_ResourceForPrintJobs_ResourcePropertyDetailId",
                 table: "ResourceForPrintJobs",
-                column: "ResourceId");
+                column: "ResourcePropertyDetailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ResourceProperties_ResourceId",
@@ -689,6 +693,9 @@ namespace PrintManagement.Infrastructure.Migrations
                 name: "KeyPerformanceIndicators");
 
             migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
                 name: "Permissions");
 
             migrationBuilder.DropTable(
@@ -701,28 +708,28 @@ namespace PrintManagement.Infrastructure.Migrations
                 name: "Deliveries");
 
             migrationBuilder.DropTable(
-                name: "ResourcePropertyDetails");
-
-            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "PrintJobs");
 
             migrationBuilder.DropTable(
-                name: "ShippingMethods");
+                name: "ResourcePropertyDetails");
 
             migrationBuilder.DropTable(
-                name: "ResourceProperties");
+                name: "ShippingMethods");
 
             migrationBuilder.DropTable(
                 name: "Designs");
 
             migrationBuilder.DropTable(
-                name: "Resources");
+                name: "ResourceProperties");
 
             migrationBuilder.DropTable(
                 name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "Resources");
 
             migrationBuilder.DropTable(
                 name: "Customers");

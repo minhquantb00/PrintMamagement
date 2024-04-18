@@ -9,6 +9,6 @@ namespace PrintManagement.Application.Payloads.RequestModels.PrintJobRequests
 {
     public class Request_CreateResourceForPrintJob
     {
-        public Guid ResourceId { get; set; }
+        public Guid ResourcePropertyDetailId { get; set; }
     }
 }

@@ -22,5 +22,6 @@ namespace PrintManagement.Domain.Entities
         public virtual Team? Team { get; set; }
         public string PhoneNumber { get; set; }
         public virtual ICollection<Permissions>? Permissions { get; set; }
+        public virtual ICollection<Notification>? Notifications { get; set; }
     }
 }

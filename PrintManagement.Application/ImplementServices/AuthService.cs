@@ -253,6 +253,7 @@ namespace PrintManagement.Application.ImplementServices
                         DateOfBirth = user.DateOfBirth,
                         Email = user.Email,
                         Avatar = user.Avatar,
+                        Gender = user.Gender.ToString(),
                         TeamName = _baseTeamRepository.GetAsync(x => x.Id == user.TeamId).Result.Name,
                         FullName = user.FullName,
                         PhoneNumber = user.PhoneNumber,

@@ -25,7 +25,8 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Project> _baseProjectReposiroty;
         private readonly DesignConverter _mapper;
         private readonly IUserRepository<User> _userRepository;
-        public DesignService(IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Design> baseDesignRepository, DesignConverter mapper, IBaseReposiroty<Project> baseProjectReposiroty, IBaseReposiroty<Team> baseTeamRepository, IUserRepository<User> userRepository)
+        private readonly IBaseReposiroty<Notification> _notificationRepository;
+        public DesignService(IBaseReposiroty<User> baseUserRepository, IHttpContextAccessor httpContextAccessor, IBaseReposiroty<Design> baseDesignRepository, DesignConverter mapper, IBaseReposiroty<Project> baseProjectReposiroty, IBaseReposiroty<Team> baseTeamRepository, IUserRepository<User> userRepository, IBaseReposiroty<Notification> notificationRepository)
         {
             _baseUserRepository = baseUserRepository;
             _httpContextAccessor = httpContextAccessor;
@@ -34,18 +35,20 @@ namespace PrintManagement.Application.ImplementServices
             _baseProjectReposiroty = baseProjectReposiroty;
             _baseTeamRepository = baseTeamRepository;
             _userRepository = userRepository;
+            _notificationRepository = notificationRepository;
         }
 
         public async Task<string> ApprovalDesign(Request_DesignApproval request)
         {
             var currentUser = _httpContextAccessor.HttpContext.User;
+            var leader = currentUser.FindFirst("Id").Value;
             try
             {
                 if (!currentUser.Identity.IsAuthenticated)
                 {
                     return "UnAuthenticated user";
                 }
-                if (!currentUser.IsInRole("Admin") && !currentUser.IsInRole("Leader"))
+                if (!currentUser.IsInRole("Leader"))
                 {
                     return "You do not have permission to perform this function";
                 }
@@ -55,13 +58,34 @@ namespace PrintManagement.Application.ImplementServices
                     return "Design not found";
                 }
                 var project = await _baseProjectReposiroty.GetByIDAsync(design.ProjectId);
+                if(Guid.Parse(leader) != project.LeaderId)
+                {
+                    return "You are not the leader of this project";
+                }
+                if (design.DesignStatus.ToString().Equals("HasBeenApproved"))
+                {
+                    return "You have already approved this design";
+                }
                 if (request.DesignApproval.ToString().Equals("Agree"))
                 {
                     design.DesignStatus = Domain.Enumerates.DesignStatusEnum.HasBeenApproved;
                     design.ApproverId = Guid.Parse(currentUser.FindFirst("Id").Value);
                     await _baseDesignRepository.UpdateAsync(design);
                     project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Approved;
+                    project.Progress = 50;
                     await _baseProjectReposiroty.UpdateAsync(project);
+
+                    Notification notification = new Notification
+                    {
+                        IsActive = true,
+                        Content = "Your design has been approved! please check",
+                        Id = Guid.NewGuid(),
+                        IsSeen = false,
+                        Link = "",
+                        UserId = design.DesignerId
+                    };
+
+                    notification = await _notificationRepository.CreateAsync(notification);
                     return "Approved design";
                 }
                 else
@@ -70,7 +94,19 @@ namespace PrintManagement.Application.ImplementServices
                     design.ApproverId = Guid.Parse(currentUser.FindFirst("Id").Value);
                     await _baseDesignRepository.UpdateAsync(design);
                     project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Refuse;
+                    project.Progress = 0;
                     await _baseProjectReposiroty.UpdateAsync(project);
+                    Notification notification = new Notification
+                    {
+                        IsActive = true,
+                        Content = "Your design has been rejected! please check",
+                        Id = Guid.NewGuid(),
+                        IsSeen = false,
+                        Link = "",
+                        UserId = design.DesignerId
+                    };
+
+                    notification = await _notificationRepository.CreateAsync(notification);
                     return "Design not approved";
                 }
             }
@@ -114,6 +150,16 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
+                var listDesign = await _baseDesignRepository.GetAllAsync(x => x.ProjectId == request.ProjectId);
+                if(listDesign.ToList().Count > 0)
+                {
+                    return new ResponseObject<DataResponseDesign> 
+                    { 
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "This project already has an approved design",
+                        Data = null
+                    };
+                }
                 if (!_userRepository.GetRolesOfUserAsync(designer).Result.Contains("Designer"))
                 {
                     return new ResponseObject<DataResponseDesign>
@@ -133,6 +179,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
+                
                 project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Designing;
                 await _baseProjectReposiroty.UpdateAsync(project);
                 Design design = new Design
@@ -147,6 +194,7 @@ namespace PrintManagement.Application.ImplementServices
                 };
                 design = await _baseDesignRepository.CreateAsync(design);
                 project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.AwaitingApproval;
+                project.Progress = 25;
                 await _baseProjectReposiroty.UpdateAsync(project);
                 return new ResponseObject<DataResponseDesign>
                 {

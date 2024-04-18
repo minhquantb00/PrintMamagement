@@ -2,15 +2,38 @@
   <v-row class="mb-1">
     <v-col>
       <v-text-field
-        v-model="search"
-        label="Search"
+        v-model="fillterCustomer.name"
+        label="Tìm kiếm theo tên"
         prepend-inner-icon="mdi-magnify"
         variant="outlined"
         hide-details
         single-line
       ></v-text-field>
     </v-col>
-    <v-col class="text-right">
+    <v-col>
+      <v-text-field
+        v-model="fillterCustomer.phoneNumber"
+        label="Tìm kiếm theo số điện thoại"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        hide-details
+        single-line
+      ></v-text-field>
+    </v-col>
+    <v-col cols="">
+      <v-text-field
+        v-model="fillterCustomer.address"
+        label="Tìm kiếm theo địa chỉ"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        hide-details
+        single-line
+      ></v-text-field>
+    </v-col>
+    <v-col cols="1">
+      <v-btn @click="findByCustomer">Tìm kiếm</v-btn>
+    </v-col>
+    <v-col class="text-right" cols="1">
       <v-dialog max-width="600">
         <template v-slot:activator="{ props: activatorProps }">
           <v-btn
@@ -104,6 +127,7 @@
                 density="comfortable"
                 icon="mdi-pencil-outline"
                 class="mr-4"
+                @click="getByIdCustomer(item.id)"
               ></v-btn>
             </template>
 
@@ -115,6 +139,7 @@
                     <span class="obligatory">(*)</span>
 
                     <v-text-field
+                      v-model="updateKhachHang.fullName"
                       label="Họ và tên"
                       variant="outlined"
                     ></v-text-field>
@@ -123,6 +148,7 @@
                     <span class="obligatory">(*)</span>
                     <v-text-field
                       label="Số diện thoại"
+                      v-model="updateKhachHang.phoneNumber"
                       variant="outlined"
                     ></v-text-field>
                   </v-col>
@@ -133,6 +159,7 @@
                   label="Địa chỉ"
                   variant="outlined"
                   no-resize
+                  v-model="updateKhachHang.address"
                   class="mb-4"
                 ></v-textarea>
                 <v-card-actions>
@@ -141,7 +168,7 @@
                   <v-btn
                     text="Cập nhật"
                     variant="flat"
-                    @click="isActive.value = false"
+                    @click="updateCustomers"
                   ></v-btn>
                   <v-btn
                     text="Thoát"
@@ -216,9 +243,15 @@ export default {
       loading: false,
       text: "",
       snackbar: false,
+      updateKhachHang: {},
       customerApi: customerApi(),
       inputAddCustomer: {
         fullName: "",
+        phoneNumber: "",
+        address: "",
+      },
+      fillterCustomer: {
+        name: "",
         phoneNumber: "",
         address: "",
       },
@@ -230,6 +263,14 @@ export default {
     console.log(this.dataCustomers);
   },
   methods: {
+    async findByCustomer() {
+      const res = await this.customerApi.filterCustomer(this.fillterCustomer);
+      this.dataCustomers = res.data;
+    },
+    async getByIdCustomer(id) {
+      const getByIdCustomer = await this.customerApi.getByIdCustomer(id);
+      this.updateKhachHang = getByIdCustomer.data;
+    },
     async addCustomer() {
       const res = await this.customerApi.addCustomer(
         this.inputAddCustomer,
@@ -245,6 +286,13 @@ export default {
         this.text = res.data;
         this.snackbar = true;
       }
+    },
+    async updateCustomers() {
+      const res = await this.customerApi.updateCustomer(
+        id,
+        this.updateKhachHang
+      );
+      console.log(res.data);
     },
     async deleteCustomer(id) {
       const res = await this.customerApi.deleteCustomer(

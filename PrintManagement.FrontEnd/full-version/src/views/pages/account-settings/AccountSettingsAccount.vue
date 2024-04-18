@@ -1,133 +1,37 @@
-<script setup>
-import avatar1 from "@images/avatars/avatar-14.png";
-const userData = JSON.parse(localStorage.getItem("userInfo") || "null");
-const accountData = {
-  avatarImg: avatar1,
-  firstName: "john",
-  lastName: "Doe",
-  email: "johnDoe@example.com",
-  org: "Pixinvent",
-  phone: "+1 (917) 543-9876",
-  address: "123 Main St, New York, NY 10001",
-  state: "New York",
-  zip: "10001",
-  country: "USA",
-  language: "English",
-  timezone: "(GMT-11:00) International Date Line West",
-  currency: "USD",
-};
-
-const refInputEl = ref();
-const isConfirmDialogOpen = ref(false);
-const accountDataLocal = ref(structuredClone(accountData));
-const isAccountDeactivated = ref(false);
-const validateAccountDeactivation = [
-  (v) => !!v || "Please confirm account deactivation",
-];
-
-const resetForm = () => {
-  accountDataLocal.value = structuredClone(accountData);
-};
-
-const changeAvatar = (file) => {
-  const fileReader = new FileReader();
-  const { files } = file.target;
-  if (files && files.length) {
-    fileReader.readAsDataURL(files[0]);
-    fileReader.onload = () => {
-      if (typeof fileReader.result === "string")
-        accountDataLocal.value.avatarImg = fileReader.result;
-    };
-  }
-};
-
-// reset avatar image
-const resetAvatar = () => {
-  accountDataLocal.value.avatarImg = accountData.avatarImg;
-};
-
-const timezones = [
-  "(GMT-11:00) International Date Line West",
-  "(GMT-11:00) Midway Island",
-  "(GMT-10:00) Hawaii",
-  "(GMT-09:00) Alaska",
-  "(GMT-08:00) Pacific Time (US & Canada)",
-  "(GMT-08:00) Tijuana",
-  "(GMT-07:00) Arizona",
-  "(GMT-07:00) Chihuahua",
-  "(GMT-07:00) La Paz",
-  "(GMT-07:00) Mazatlan",
-  "(GMT-07:00) Mountain Time (US & Canada)",
-  "(GMT-06:00) Central America",
-  "(GMT-06:00) Central Time (US & Canada)",
-  "(GMT-06:00) Guadalajara",
-  "(GMT-06:00) Mexico City",
-  "(GMT-06:00) Monterrey",
-  "(GMT-06:00) Saskatchewan",
-  "(GMT-05:00) Bogota",
-  "(GMT-05:00) Eastern Time (US & Canada)",
-  "(GMT-05:00) Indiana (East)",
-  "(GMT-05:00) Lima",
-  "(GMT-05:00) Quito",
-  "(GMT-04:00) Atlantic Time (Canada)",
-  "(GMT-04:00) Caracas",
-  "(GMT-04:00) La Paz",
-  "(GMT-04:00) Santiago",
-  "(GMT-03:30) Newfoundland",
-  "(GMT-03:00) Brasilia",
-  "(GMT-03:00) Buenos Aires",
-  "(GMT-03:00) Georgetown",
-  "(GMT-03:00) Greenland",
-  "(GMT-02:00) Mid-Atlantic",
-  "(GMT-01:00) Azores",
-  "(GMT-01:00) Cape Verde Is.",
-  "(GMT+00:00) Casablanca",
-  "(GMT+00:00) Dublin",
-  "(GMT+00:00) Edinburgh",
-  "(GMT+00:00) Lisbon",
-  "(GMT+00:00) London",
-];
-
-const currencies = [
-  "USD",
-  "EUR",
-  "GBP",
-  "AUD",
-  "BRL",
-  "CAD",
-  "CNY",
-  "CZK",
-  "DKK",
-  "HKD",
-  "HUF",
-  "INR",
-];
-</script>
-
 <template>
   <VRow>
     <VCol cols="12">
       <VCard title="Profile Details">
         <VCardText class="d-flex">
           <!-- 👉 Avatar -->
-          <VAvatar rounded size="100" class="me-6" :image="userData.Avatar" />
+          <v-avatar
+            ref="imagePreview"
+            rounded
+            size="100"
+            class="me-6"
+            :image="accountDataLocal.avatarImg"
+          />
 
           <!-- 👉 Upload Photo -->
           <form class="d-flex flex-column justify-center gap-4">
             <div class="d-flex flex-wrap gap-2">
-              <VBtn color="primary" @click="refInputEl?.click()">
-                <VIcon icon="tabler-cloud-upload" class="d-sm-none" />
-                <span class="d-none d-sm-block">🏞️ Sửa hình ảnh</span>
+              <VBtn color="primary">
+                <v-icon icon="mdi-tray-arrow-up" class="mr-3" />
+                <label for="inputFile"> Sửa hình ảnh </label>
               </VBtn>
-
               <input
-                ref="refInputEl"
+                id="inputFile"
                 type="file"
                 name="file"
                 accept=".jpeg,.png,.jpg,GIF"
                 hidden
-                @input="changeAvatar"
+                @change="handleImageChange"
               />
+              <!-- <img
+                :src="accountDataLocal.avatarImg"
+                alt="Avatar"
+                style="max-width: 100px; max-height: 100px"
+              /> -->
 
               <VBtn
                 type="reset"
@@ -141,7 +45,7 @@ const currencies = [
             </div>
 
             <p class="text-body-1 mb-0">
-              Allowed JPG, GIF or PNG. Max size of 800K
+              Allowed JPG, GIF or PNG. Max size of 2MB
             </p>
           </form>
         </VCardText>
@@ -152,95 +56,48 @@ const currencies = [
           <!-- 👉 Form -->
           <VForm class="mt-6">
             <VRow>
-              <!-- 👉 First Name -->
+              <!-- 👉 Username -->
               <VCol md="6" cols="12">
-                <AppTextField v-model="userData.FullName" label="Full Name" />
+                <AppTextField v-model="UserNames" label="Tài khoản" disabled />
               </VCol>
 
-              <!-- 👉 Last Name -->
+              <!-- 👉 FullName-->
               <VCol md="6" cols="12">
-                <AppTextField
-                  v-model="accountDataLocal.lastName"
-                  label="Last Name"
-                />
+                <AppTextField v-model="updateUser.fullName" label="Họ và tên" />
               </VCol>
 
               <!-- 👉 Email -->
               <VCol cols="12" md="6">
                 <AppTextField
-                  v-model="accountDataLocal.email"
-                  label="E-mail"
+                  v-model="updateUser.email"
+                  label="Email"
                   type="email"
                 />
               </VCol>
 
-              <!-- 👉 Organization -->
+              <!-- 👉 Date of birth -->
               <VCol cols="12" md="6">
                 <AppTextField
-                  v-model="accountDataLocal.org"
-                  label="Organization"
+                  v-model="updateUser.phoneNumber"
+                  label="Số điện thoại"
                 />
               </VCol>
 
-              <!-- 👉 Phone -->
+              <!-- 👉 phone -->
               <VCol cols="12" md="6">
-                <AppTextField
-                  v-model="accountDataLocal.phone"
-                  label="Phone Number"
+                <AppDateTimePicker
+                  label="Ngày sinh"
+                  v-model="updateUser.dateOfBirth"
+                  :format="dateFormat"
+                  class="date-picker-input"
                 />
               </VCol>
 
-              <!-- 👉 Address -->
-              <VCol cols="12" md="6">
-                <AppTextField
-                  v-model="accountDataLocal.address"
-                  label="Address"
-                />
-              </VCol>
-
-              <!-- 👉 State -->
-              <VCol cols="12" md="6">
-                <AppTextField v-model="accountDataLocal.state" label="State" />
-              </VCol>
-
-              <!-- 👉 Zip Code -->
-              <VCol cols="12" md="6">
-                <AppTextField v-model="accountDataLocal.zip" label="Zip Code" />
-              </VCol>
-
-              <!-- 👉 Country -->
+              <!-- 👉 Gender -->
               <VCol cols="12" md="6">
                 <AppSelect
-                  v-model="accountDataLocal.country"
-                  label="Country"
-                  :items="['USA', 'Canada', 'UK', 'India', 'Australia']"
-                />
-              </VCol>
-
-              <!-- 👉 Language -->
-              <VCol cols="12" md="6">
-                <AppSelect
-                  v-model="accountDataLocal.language"
-                  label="Language"
-                  :items="['English', 'Spanish', 'Arabic', 'Hindi', 'Urdu']"
-                />
-              </VCol>
-
-              <!-- 👉 Timezone -->
-              <VCol cols="12" md="6">
-                <AppSelect
-                  v-model="accountDataLocal.timezone"
-                  label="Timezone"
-                  :items="timezones"
-                  :menu-props="{ maxHeight: 200 }"
-                />
-              </VCol>
-
-              <!-- 👉 Currency -->
-              <VCol cols="12" md="6">
-                <AppSelect
-                  v-model="accountDataLocal.currency"
-                  label="Currency"
+                  v-model="updateUser.gender"
+                  label="Giới tính"
                   :items="currencies"
                   :menu-props="{ maxHeight: 200 }"
                 />
@@ -248,7 +105,7 @@ const currencies = [
 
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
-                <VBtn>Cập nhật</VBtn>
+                <VBtn @click="updateUsers">Cập nhật</VBtn>
 
                 <VBtn
                   color="secondary"
@@ -275,4 +132,178 @@ const currencies = [
     cancel-title="Cancelled"
     cancel-msg="Account Deactivation Cancelled!"
   />
+  <v-snackbar v-model="snackbar" color="blue-grey" rounded="pill" class="mb-5">
+    {{ text }}
+    <template v-slot:actions>
+      <v-btn color="green" variant="text" @click="snackbar = false">
+        Đóng
+      </v-btn>
+    </template>
+  </v-snackbar>
 </template>
+<script>
+import { userApi } from "../../../api/User/userApi";
+import avatar1 from "@images/avatars/avatar-14.png";
+import { ref } from "vue";
+export default {
+  computed: {
+    dateFormat: "yyyy-MM-dd",
+  },
+  data() {
+    const userData = JSON.parse(localStorage.getItem("userInfo") || "null");
+    const accountData = {
+      avatarImg: userData.Avatar,
+    };
+    return {
+      usersApi: userApi(),
+      updateUser: {},
+      text: "",
+      snackbar: false,
+      accountData,
+      UserNames: "",
+      refInputEl: null,
+      isConfirmDialogOpen: false,
+      accountDataLocal: structuredClone(accountData),
+      isAccountDeactivated: false,
+      currencies: ["Male", "Female", "UnKnown"],
+      validateAccountDeactivation: [
+        (v) => !!v || "Please confirm account deactivation",
+      ],
+    };
+  },
+  async mounted() {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    console.log(userInfo.Id);
+    this.UserNames = userInfo.UserName;
+    const user = await this.usersApi.getUserById(userInfo.Id);
+    this.updateUser = user.data;
+    console.log(this.updateUser);
+  },
+  methods: {
+    // handleImageChange(event) {
+    //   const file = event.target.files[0];
+    //   const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    //   const allowedExtensions = [".jpg", ".jpeg", ".png"];
+    //   if (!file) {
+    //     return;
+    //   }
+    //   if (file.size > maxSizeInBytes) {
+    //     this.text = "Kích thước ảnh không được vượt quá 2MB";
+    //     this.snackbar = true;
+    //     return;
+    //   }
+    //   const fileName = file.name;
+    //   const fileExtension = fileName.split(".").pop();
+    //   if (!allowedExtensions.includes("." + fileExtension.toLowerCase())) {
+    //     this.text = "Hệ thống chỉ hỗ trợ file ảnh dạng: jpg, png, jpeg";
+    //     this.snackbar = true;
+    //     return;
+    //   }
+    //   const fileReader = new FileReader();
+    //   fileReader.readAsDataURL(file);
+    //   fileReader.onload = () => {
+    //     if (typeof fileReader.result == "string") {
+    //       this.accountDataLocal.avatarImg = fileReader.result;
+    //       this.$refs.imagePreview.src = fileReader.result;
+    //     }
+    //     this.updateUser.avatar = file;
+    //   };
+    // },
+    handleImageChange(event) {
+      const file = event.target.files[0];
+      const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+      const allowedExtensions = [".jpg", ".jpeg", ".png"];
+      if (!file) {
+        return;
+      }
+      if (file.size > maxSizeInBytes) {
+        this.text = "Kích thước ảnh không được vượt quá 2MB";
+        this.snackbar = true;
+        return;
+      }
+      const fileName = file.name;
+      const fileExtension = fileName.split(".").pop();
+      if (!allowedExtensions.includes("." + fileExtension.toLowerCase())) {
+        this.text = "Hệ thống chỉ hỗ trợ file ảnh dạng: jpg, png, jpeg";
+        this.snackbar = true;
+        return;
+      }
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        if (typeof fileReader.result == "string") {
+          this.accountDataLocal.avatarImg = fileReader.result;
+          this.$refs.imagePreview.src = fileReader.result;
+          // Di chuyển dòng này vào bên trong onload
+          this.updateUser.avatar = file;
+        }
+      };
+    },
+
+    // handleImageChange(event) {
+    //   const file = event.target.files[0];
+    //   const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    //   const allowedExtensions = [".jpg", ".jpeg", ".png"];
+    //   if (!file) {
+    //     return;
+    //   }
+    //   if (file.size > maxSizeInBytes) {
+    //     this.text = "Kích thước ảnh không được vượt quá 2MB";
+    //     this.snackbar = true;
+    //     return;
+    //   }
+    //   const fileName = file.name;
+    //   const fileExtension = fileName.split(".").pop();
+    //   if (!allowedExtensions.includes("." + fileExtension.toLowerCase())) {
+    //     this.text = "Hệ thống chỉ hỗ trợ file ảnh dạng: jpg, png, jpeg";
+    //     this.snackbar = true;
+    //     return;
+    //   }
+    //   const fileReader = new FileReader();
+    //   fileReader.readAsDataURL(file);
+    //   fileReader.onload = () => {
+    //     if (typeof fileReader.result === "string") {
+    //       // Hiển thị ảnh
+    //       // Lưu trữ tệp
+    //     }
+    //   };
+    //   this.updateUser.avatar = file;
+    // },
+    resetForm() {
+      this.accountDataLocal = structuredClone(this.accountData);
+    },
+    // changeAvatar(file) {
+    //   const fileReader = new FileReader();
+    //   const { files } = file.target;
+    //   if (files && files.length) {
+    //     fileReader.readAsDataURL(files[0]);
+    //     fileReader.onload = () => {
+    //       if (typeof fileReader.result === "string")
+    //         this.accountDataLocal.avatarImg = fileReader.result;
+    //     };
+    //   }
+    // },
+    resetAvatar() {
+      this.accountDataLocal.avatarImg = this.accountData.avatarImg;
+    },
+    async updateUsers() {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      const update = await this.usersApi.updateUserAccount(
+        userInfo.Id,
+        this.updateUser
+      );
+
+      if (update.data.status === 200) {
+        this.text = update.data.message;
+        this.snackbar = true;
+      } else if (update.data.status === 400) {
+        this.text = update.data.message;
+        this.snackbar = true;
+      } else {
+        this.text = "Lỗi hệ thống không cập nhật được!";
+        this.snackbar = true;
+      }
+    },
+  },
+};
+</script>

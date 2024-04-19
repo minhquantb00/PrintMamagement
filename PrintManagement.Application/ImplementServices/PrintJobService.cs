@@ -106,7 +106,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.InProgress;
+                project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Completed;
                 project.Progress = 100;
                 await _baseProjectRepository.UpdateAsync(project);
                 

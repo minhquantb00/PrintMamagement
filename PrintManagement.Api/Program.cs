@@ -75,6 +75,8 @@ builder.Services.AddScoped<IBaseReposiroty<Role>, BaseRepository<Role>>();
 builder.Services.AddScoped<ResourcePropertyConverter>();
 builder.Services.AddScoped<ResourceConverter>();
 builder.Services.AddScoped<ImportCouponConverter>();
+builder.Services.AddScoped<DeliveryConverter>();
+builder.Services.AddScoped<IBaseReposiroty<ShippingMethod>, BaseRepository<ShippingMethod>>();
 builder.Services.AddScoped<IImportCouponService, ImportCouponService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
@@ -86,6 +88,10 @@ builder.Services.AddScoped<ResourceForPrintJobConverter>();
 builder.Services.AddScoped<IPrintJobService, PrintJobService>();
 builder.Services.AddScoped<NotificationConverter>();
 builder.Services.AddScoped<IBaseReposiroty<Notification>,  BaseRepository<Notification>>();
+builder.Services.AddScoped<IBaseReposiroty<Delivery>,  BaseRepository<Delivery>>();
+builder.Services.AddScoped<IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer>, BaseRepository<ConfirmReceiptOfGoodsFromCustomer>>();
+builder.Services.AddScoped<ConfirmReceiptConverter>();
+builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     // Set the expiration time for the OTP

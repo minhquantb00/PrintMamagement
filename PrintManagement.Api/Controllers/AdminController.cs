@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using PrintManagement.Application.Constants;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.RequestModels.CustomerRequests;
+using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
 using PrintManagement.Application.Payloads.RequestModels.DesignRequests;
 using PrintManagement.Application.Payloads.RequestModels.ImportCouponRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
@@ -14,6 +15,7 @@ using PrintManagement.Application.Payloads.RequestModels.ProjectRequests;
 using PrintManagement.Application.Payloads.RequestModels.ResourceRequests;
 using PrintManagement.Application.Payloads.RequestModels.TeamRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
+using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
 using PrintManagement.Application.Payloads.ResponseModels.DataDesign;
 using PrintManagement.Application.Payloads.ResponseModels.DataImportCoupon;
 using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
@@ -37,7 +39,8 @@ namespace PrintManagement.Api.Controllers
         private readonly IImportCouponService _importCouponService;
         private readonly ITeamService _teamService;
         private readonly IPrintJobService _printJobService;
-        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService)
+        private readonly IDeliveryService _deliveryService;
+        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService, IDeliveryService deliveryService)
         {
             _customerService = customerService;
             _projectService = projectService;
@@ -47,6 +50,7 @@ namespace PrintManagement.Api.Controllers
             _importCouponService = importCouponService;
             _teamService = teamService;
             _printJobService = printJobService;
+            _deliveryService = deliveryService;
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -239,6 +243,12 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> ConfirmDonePrintJob([FromRoute] Guid printJobId)
         {
             return Ok(await _printJobService.ConfirmDonePrintJob(printJobId));
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreateDelivery(Request_CreateDelivery request)
+        {
+            return Ok(await _deliveryService.CreateDelivery(request));
         }
     }
 }

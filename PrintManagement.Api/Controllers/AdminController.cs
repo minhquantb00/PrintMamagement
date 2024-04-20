@@ -13,6 +13,7 @@ using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.RequestModels.PrintJobRequests;
 using PrintManagement.Application.Payloads.RequestModels.ProjectRequests;
 using PrintManagement.Application.Payloads.RequestModels.ResourceRequests;
+using PrintManagement.Application.Payloads.RequestModels.ShippingMethodRequests;
 using PrintManagement.Application.Payloads.RequestModels.TeamRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
 using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
@@ -21,6 +22,7 @@ using PrintManagement.Application.Payloads.ResponseModels.DataImportCoupon;
 using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
 using PrintManagement.Application.Payloads.ResponseModels.DataProject;
 using PrintManagement.Application.Payloads.ResponseModels.DataResource;
+using PrintManagement.Application.Payloads.ResponseModels.DataShippingMethod;
 using PrintManagement.Application.Payloads.ResponseModels.DataTeam;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
@@ -40,7 +42,8 @@ namespace PrintManagement.Api.Controllers
         private readonly ITeamService _teamService;
         private readonly IPrintJobService _printJobService;
         private readonly IDeliveryService _deliveryService;
-        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService, IDeliveryService deliveryService)
+        private readonly IShippingMethodService _shipService;
+        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService, IDeliveryService deliveryService, IShippingMethodService shipService)
         {
             _customerService = customerService;
             _projectService = projectService;
@@ -51,6 +54,7 @@ namespace PrintManagement.Api.Controllers
             _teamService = teamService;
             _printJobService = printJobService;
             _deliveryService = deliveryService;
+            _shipService = shipService;
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -262,6 +266,12 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> GetRolesByUserId([FromRoute] Guid userId)
         {
             return Ok(await _authService.GetRolesByUserId(userId));
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreateShippingMethod(Request_CreateShippingMethod request)
+        {
+           return Ok(await _shipService.CreateShippingMethod(request));
         }
     }
 }

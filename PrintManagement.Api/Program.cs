@@ -1,4 +1,4 @@
-using Duende.IdentityServer;
+﻿using Duende.IdentityServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,59 +39,71 @@ builder.Services.AddCors(options =>
     });
 });
 builder.Services.AddCors();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IBaseReposiroty<User>, BaseRepository<User>>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IDbContext, ApplicationDbContext>();
+
+
+#region Đăng ký converter
 builder.Services.AddScoped<ProjectConverter>();
 builder.Services.AddScoped<DesignConverter>();
 builder.Services.AddScoped<UserConverter>();
 builder.Services.AddScoped<CustomerConverter>();
-builder.Services.AddScoped<IDesignService, DesignService>();
 builder.Services.AddScoped<DesignConverter>();
-builder.Services.AddScoped<ICustomerFeedbackService, CustomerFeedbackService>();
 builder.Services.AddScoped<CustomerFeedbackConverter>();
-builder.Services.AddScoped<CustomerFeedbackConverter>();
-builder.Services.AddScoped<IUserRepository<User>, UserRepository<User>>();
-builder.Services.AddScoped<IBaseReposiroty<RefreshToken>, BaseRepository<RefreshToken>>();
-builder.Services.AddScoped<IBaseReposiroty<ConfirmEmail>, BaseRepository<ConfirmEmail>>();
-builder.Services.AddScoped<IBaseReposiroty<Customer>, BaseRepository<Customer>>();  
-builder.Services.AddScoped<IBaseReposiroty<Project>,  BaseRepository<Project>>();
-builder.Services.AddScoped<IBaseReposiroty<Design>,  BaseRepository<Design>>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IProjectService, ProjectService>();
-builder.Services.AddScoped<IBaseReposiroty<ImportCoupon>, BaseRepository<ImportCoupon>>();
 builder.Services.AddScoped<ResourcePropertyDetailConverter>();
 builder.Services.AddScoped<ResourcePropertyConverter>();
 builder.Services.AddScoped<TeamConverter>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ResourceConverter>();
+builder.Services.AddScoped<ImportCouponConverter>();
+builder.Services.AddScoped<NotificationConverter>();
+builder.Services.AddScoped<DeliveryConverter>();
+builder.Services.AddScoped<PrintJobConverter>();
+builder.Services.AddScoped<ResourceForPrintJobConverter>();
+builder.Services.AddScoped<ConfirmReceiptConverter>();
+#endregion
+
+
+#region Đăng ký Repository
+builder.Services.AddScoped<IUserRepository<User>, UserRepository<User>>();
+builder.Services.AddScoped<IBaseReposiroty<RefreshToken>, BaseRepository<RefreshToken>>();
+builder.Services.AddScoped<IBaseReposiroty<ConfirmEmail>, BaseRepository<ConfirmEmail>>();
+builder.Services.AddScoped<IBaseReposiroty<Customer>, BaseRepository<Customer>>();
+builder.Services.AddScoped<IBaseReposiroty<Project>, BaseRepository<Project>>();
+builder.Services.AddScoped<IBaseReposiroty<Design>, BaseRepository<Design>>();
+builder.Services.AddScoped<IBaseReposiroty<ImportCoupon>, BaseRepository<ImportCoupon>>();
 builder.Services.AddScoped<IBaseReposiroty<Team>, BaseRepository<Team>>();
 builder.Services.AddScoped<IBaseReposiroty<ResourceProperty>, BaseRepository<ResourceProperty>>();
 builder.Services.AddScoped<IBaseReposiroty<ResourcePropertyDetail>, BaseRepository<ResourcePropertyDetail>>();
 builder.Services.AddScoped<IBaseReposiroty<Resource>, BaseRepository<Resource>>();
 builder.Services.AddScoped<IBaseReposiroty<Permissions>, BaseRepository<Permissions>>();
 builder.Services.AddScoped<IBaseReposiroty<Role>, BaseRepository<Role>>();
-builder.Services.AddScoped<ResourcePropertyConverter>();
-builder.Services.AddScoped<ResourceConverter>();
-builder.Services.AddScoped<ImportCouponConverter>();
-builder.Services.AddScoped<DeliveryConverter>();
 builder.Services.AddScoped<IBaseReposiroty<ShippingMethod>, BaseRepository<ShippingMethod>>();
+builder.Services.AddScoped<IBaseReposiroty<PrintJob>, BaseRepository<PrintJob>>();
+builder.Services.AddScoped<IBaseReposiroty<ResourceForPrintJob>, BaseRepository<ResourceForPrintJob>>();
+builder.Services.AddScoped<IBaseReposiroty<Notification>, BaseRepository<Notification>>();
+builder.Services.AddScoped<IBaseReposiroty<Delivery>, BaseRepository<Delivery>>();
+builder.Services.AddScoped<IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer>, BaseRepository<ConfirmReceiptOfGoodsFromCustomer>>();
+#endregion
+
+#region Khác
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IBaseReposiroty<User>, BaseRepository<User>>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDbContext, ApplicationDbContext>();
+builder.Services.AddScoped<IShippingMethodService, ShippingMethodService>();
+builder.Services.AddScoped<IDesignService, DesignService>();
+builder.Services.AddScoped<ICustomerFeedbackService, CustomerFeedbackService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IImportCouponService, ImportCouponService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
-builder.Services.AddScoped<ResourcePropertyDetailConverter>();
-builder.Services.AddScoped<IBaseReposiroty<PrintJob>, BaseRepository<PrintJob>>();
-builder.Services.AddScoped<IBaseReposiroty<ResourceForPrintJob>, BaseRepository<ResourceForPrintJob>>();
-builder.Services.AddScoped<PrintJobConverter>();
-builder.Services.AddScoped<ResourceForPrintJobConverter>();
 builder.Services.AddScoped<IPrintJobService, PrintJobService>();
-builder.Services.AddScoped<NotificationConverter>();
-builder.Services.AddScoped<IBaseReposiroty<Notification>,  BaseRepository<Notification>>();
-builder.Services.AddScoped<IBaseReposiroty<Delivery>,  BaseRepository<Delivery>>();
-builder.Services.AddScoped<IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer>, BaseRepository<ConfirmReceiptOfGoodsFromCustomer>>();
-builder.Services.AddScoped<ConfirmReceiptConverter>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+#endregion
+
+
+
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     // Set the expiration time for the OTP

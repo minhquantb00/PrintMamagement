@@ -114,26 +114,30 @@ namespace PrintManagement.Application.ImplementServices
                 project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Completed;
                 project.Progress = 100;
                 await _baseProjectRepository.UpdateAsync(project);
-                
+
                 var listUsers = await _baseUserRepository.GetAllAsync(x => x.IsActive == true);
-                foreach( var user in listUsers)
+                List<User> users = new List<User>();
+                foreach (var user in listUsers)
                 {
                     var roleOfUser = await _userRepository.GetRolesOfUserAsync(user);
-                    var role = await _roleRepository.GetAllAsync(x => x.IsActive == true);
-                    var team = await _teamRepository.GetAsync(x => x.Id ==  user.TeamId);
-                    if((roleOfUser.Contains("Manager") && team.Name.Equals("Delivery")) || roleOfUser.Contains("Admin"))
+                    var team = await _teamRepository.GetAsync(x => x.Id == user.TeamId);
+                    if ((roleOfUser.Contains("Manager") && team.Name.Equals("Delivery")) || roleOfUser.Contains("Admin"))
                     {
-                        Notification notification = new Notification
-                        {
-                            IsActive = true,
-                            Content = $"Printing process is done! Can be delivered to customers",
-                            Id = Guid.NewGuid(),
-                            IsSeen = false,
-                            Link = "",
-                            UserId = user.Id
-                        };
-                        notification = await _notificationRepository.CreateAsync(notification);
+                        users.Add(user);
                     }
+                }
+                foreach(var user in users)
+                {
+                    Notification notification = new Notification
+                    {
+                        IsActive = true,
+                        Content = $"Qúa trình in ấn đã hoàn thành! Có thể giao cho khách hàng",
+                        Id = Guid.NewGuid(),
+                        IsSeen = false,
+                        Link = "",
+                        UserId = user.Id
+                    };
+                    notification = await _notificationRepository.CreateAsync(notification);
                 }
                 var customer = await _customerRepository.GetByIDAsync(project.CustomerId);
                 var message = new EmailMessage(new string[] { customer.Email }, "Xác nhận đơn hàng của bạn: ", "Chúng tôi đã hoàn thành yêu cầu của bạn! Bắt đầu quá trình giao hàng, bạn vui lòng chú ý điện thoại! Cảm ơn rất nhiều");
@@ -143,7 +147,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponsePrintJob>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "The step for staff to do printing has begun! Please wait",
+                    Message = "Đã hoàn thành in ấn",
                     Data = _printerConverter.EntityToDTO(printJob)
                 };
             }
@@ -182,7 +186,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 var design = await _baseDesignRepository.GetByIDAsync(request.DesignId);
-                if(design == null)
+                if (design == null)
                 {
                     return new ResponseObject<DataResponsePrintJob>
                     {
@@ -212,7 +216,7 @@ namespace PrintManagement.Application.ImplementServices
                 printJob.ResourceForPrints = await CreateListResourceForPrintJob(printJob.Id, request.ResourceForPrints);
                 await _basePrintJobRepository.UpdateAsync(printJob);
 
-                
+
 
                 var project = await _baseProjectRepository.GetByIDAsync(design.ProjectId);
                 if (project == null)
@@ -228,29 +232,16 @@ namespace PrintManagement.Application.ImplementServices
                 project.Progress = 75;
                 await _baseProjectRepository.UpdateAsync(project);
 
-                Notification notification = new Notification
-                {
-                    IsActive = true,
-                    Content = $"The project's design {project.ProjectName} has begun to be printed!",
-                    Id = Guid.NewGuid(),
-                    IsSeen = false,
-                    Link = "",
-                    UserId = project.LeaderId
-                };
-                notification = await _notificationRepository.CreateAsync(notification);
+
+                var notification = await CreateNotification(project.Id);
                 return new ResponseObject<DataResponsePrintJob>
                 {
                     Status = StatusCodes.Status200OK,
                     Message = "The step for staff to do printing has begun! Please wait",
-                    Data =  new DataResponsePrintJob
-                    {
-                        Id = printJob.Id,
-                        PrintJobStatus = printJob.PrintJobStatus.ToString(),
-                        Design = _designConverter.EntityToDTOForDesign(_baseDesignRepository.GetAsync(x => x.Id == printJob.DesignId).Result),
-                        ResourceForPrints = _baseResourceForPrintJobRepository.GetAllAsync(x => x.PrintJobId == printJob.Id).Result.Select(x => _resourceForPrintJobConverter.EntityToDTO(x)),
-                    }
-            };
-            }catch (Exception ex)
+                    Data = _printerConverter.EntityToDTO(printJob)
+                };
+            }
+            catch (Exception ex)
             {
                 return new ResponseObject<DataResponsePrintJob>
                 {
@@ -261,10 +252,26 @@ namespace PrintManagement.Application.ImplementServices
             }
         }
 
+        private async Task<Notification> CreateNotification(Guid projectId)
+        {
+            var project = await _baseProjectRepository.GetByIDAsync(projectId);
+            Notification notification = new Notification
+            {
+                IsActive = true,
+                Content = $"The project's design {project.ProjectName} has begun to be printed!",
+                Id = Guid.NewGuid(),
+                IsSeen = false,
+                Link = "",
+                UserId = project.LeaderId
+            };
+            notification = await _notificationRepository.CreateAsync(notification);
+            return notification;
+        }
+
         private async Task<List<ResourceForPrintJob>> CreateListResourceForPrintJob(Guid printJobId, List<Request_CreateResourceForPrintJob> requests)
         {
             var printJob = await _basePrintJobRepository.GetByIDAsync(printJobId);
-            if(printJob == null)
+            if (printJob == null)
             {
                 throw new ArgumentNullException(nameof(printJob));
             }
@@ -272,11 +279,11 @@ namespace PrintManagement.Application.ImplementServices
             foreach (var request in requests)
             {
                 var resource = await _baseResourceRepository.GetByIDAsync(request.ResourcePropertyDetailId);
-                if(resource == null)
+                if (resource == null)
                 {
                     throw new ArgumentNullException(nameof(resource));
                 }
-                if(resource.Quantity == 0)
+                if (resource.Quantity == 0)
                 {
                     throw new ArgumentException("Out of stock");
                 }

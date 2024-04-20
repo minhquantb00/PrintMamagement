@@ -13,24 +13,37 @@ namespace PrintManagement.Application.Payloads.Mappers
     {
         private readonly IBaseReposiroty<Design> _baseDesignRepository;
         private readonly IBaseReposiroty<ResourceForPrintJob> _repository;
+        private readonly IBaseReposiroty<ResourcePropertyDetail> _propertyDetailRepository;
         private readonly ResourceForPrintJobConverter _converter;
         private readonly DesignConverter _designConverter;
-        public PrintJobConverter(IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<ResourceForPrintJob> repository, ResourceForPrintJobConverter converter, DesignConverter designConverter)
+        public PrintJobConverter(IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<ResourceForPrintJob> repository, ResourceForPrintJobConverter converter, DesignConverter designConverter, IBaseReposiroty<ResourcePropertyDetail> propertyDetailRepository)
         {
             _baseDesignRepository = baseDesignRepository;
             _repository = repository;
             _converter = converter;
             _designConverter = designConverter;
+            _propertyDetailRepository = propertyDetailRepository;
         }
 
         public DataResponsePrintJob EntityToDTO(PrintJob printJob)
         {
+            var list = _repository.GetAllAsync(x => x.PrintJobId == printJob.Id).Result;
+            List<string> result = new List<string>();
+            
+            foreach (var item in list)
+            {
+                var propertyDetail = _propertyDetailRepository.GetAllAsync(x => x.Id == item.ResourcePropertyDetailId);
+                foreach(var property in propertyDetail.Result)
+                {
+                    result.Add(property.Name);
+                }
+            }
             return new DataResponsePrintJob
             {
                 Id = printJob.Id,
                 PrintJobStatus = printJob.PrintJobStatus.ToString(),
-                Design = _designConverter.EntityToDTOForDesign(_baseDesignRepository.GetAsync(x => x.Id == printJob.DesignId).Result),
-                ResourceForPrints = _repository.GetAllAsync(x => x.PrintJobId == printJob.Id).Result.Select(x => _converter.EntityToDTO(x)),
+                DesignImage = _baseDesignRepository.GetAsync(x => x.Id == printJob.DesignId).Result.DesignImage,
+                ResourceForPrints = result.AsQueryable(),
             };
         }
     }

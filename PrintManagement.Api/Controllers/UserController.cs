@@ -58,5 +58,10 @@ namespace PrintManagement.Api.Controllers
             Guid shipperId = Guid.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await _deliveryService.ShipperConfirmOrderDelivery(shipperId, request));
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUserContainsLeaderRole()
+        {
+            return Ok(await _userService.GetAllUserContainsLeaderRole());
+        }
     }
 }

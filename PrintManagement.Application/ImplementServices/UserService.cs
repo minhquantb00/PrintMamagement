@@ -8,6 +8,7 @@ using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 using PrintManagement.Domain.Entities;
 using PrintManagement.Domain.InterfaceRepositories.InterfaceBase;
+using PrintManagement.Domain.InterfaceRepositories.InterfaceUser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,13 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<User> _baseUserRepository;
         private readonly IBaseReposiroty<Team> _baseTeamRepository;
         private readonly UserConverter _converter;
-        public UserService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> baseTeamRepository, UserConverter converter)
+        private readonly IUserRepository<User> _userRepository;
+        public UserService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> baseTeamRepository, UserConverter converter, IUserRepository<User> userRepository)
         {
             _baseUserRepository = baseUserRepository;
             _baseTeamRepository = baseTeamRepository;
             _converter = converter;
+            _userRepository = userRepository;
         }
 
         public async Task<IQueryable<DataResponseUser>> GetAllUsers(Request_InputUser request)
@@ -94,6 +97,21 @@ namespace PrintManagement.Application.ImplementServices
                     Data = null
                 };
             }
+        }
+
+        public async Task<IQueryable<DataResponseUser>> GetAllUserContainsLeaderRole()
+        {
+            var listUser = await _baseUserRepository.GetAllAsync(x => x.IsActive == true);
+            List<User> users = new List<User>();
+            foreach (var user in listUser)
+            {
+                var team = await _baseTeamRepository.GetAsync(x => x.Id == user.TeamId);
+                if (_userRepository.GetRolesOfUserAsync(user).Result.Contains("Leader") && team.Name.Equals("Technical"))
+                {
+                    users.Add(user);
+                }
+            }
+            return users.Select(x => _converter.EntityToDTOForUser(x)).AsQueryable();
         }
     }
 }

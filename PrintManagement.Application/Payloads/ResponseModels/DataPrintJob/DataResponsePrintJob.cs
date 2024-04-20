@@ -11,8 +11,8 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataPrintJob
 {
     public class DataResponsePrintJob : DataResponseBase
     {
-        public DataResponseDesign Design { get; set; }
+        public string DesignImage { get; set; }
         public string PrintJobStatus { get; set; }
-        public IQueryable<DataResponseResourceForPrintJob> ResourceForPrints { get; set; }
+        public IQueryable<string> ResourceForPrints { get; set; }
     }
 }

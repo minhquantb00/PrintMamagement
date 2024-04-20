@@ -11,6 +11,7 @@ namespace PrintManagement.Domain.Enumerates
     public enum ConfirmReceiptOfGoodsEnum
     {
         NotReceived = 0,
-        Received = 1
+        Reject = 1,
+        Received = 2
     }
 }

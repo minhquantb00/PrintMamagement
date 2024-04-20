@@ -186,7 +186,108 @@ namespace PrintManagement.Application.ImplementServices
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseObject<DataResponseDelivery>> ShipperConfirmOrderDelivery(Guid shipperId, Request_ShipperConfirmDelivery request)
+        public async Task<ResponseObject<DataResponseDelivery>> ShipperConfirmDelivery(Guid shipperId, Request_ShipperConfirmDelivery request)
+        {
+            var deliver = await _baseUserRepository.GetByIDAsync(shipperId);
+            try
+            {
+                var team = await _teamRepository.GetAsync(x => x.Id == deliver.TeamId);
+                if (team == null)
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "Phòng ban không tồn tại",
+                        Data = null
+                    };
+                }
+                if (!_userRepository.GetRolesOfUserAsync(deliver).Result.Contains("Deliver") || !team.Name.Equals("Delivery"))
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status403Forbidden,
+                        Message = "Bạn không có quyền thực hiện chức năng này",
+                        Data = null
+                    };
+                }
+                var delivery = await _baseDeliveryRepository.GetByIDAsync(request.DeliveryId);
+                if (delivery == null)
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "Thông tin giao hàng không tồn tại",
+                        Data = null
+                    };
+                }
+                if (delivery.DeliveryStatus.ToString().Equals("Delivered"))
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "Đơn hàng đã được giao từ trước đó",
+                        Data = null
+                    };
+                }
+                delivery.DeliveryStatus = Domain.Enumerates.DeliveryStatusEnum.Delivering;
+                deliver.UpdateTime = DateTime.Now;
+                await _baseDeliveryRepository.UpdateAsync(delivery);
+
+                var project = await _projectRepository.GetAsync(x => x.Id == delivery.ProjectId);
+                
+
+                var customer = await _customerRepository.GetByIDAsync(project.CustomerId);
+                var confirm = await _confirmReceiptOfGoodsFromCustomerRepository.GetAsync(x => x.DeliveryId == delivery.Id);
+                var message = new EmailMessage(new string[] { customer.Email }, "Thông báo đơn hàng của bạn: ", $"Nếu bạn đã nhận được hàng, vui lòng xác nhận với chúng tôi và phản hồi về chất lượng đơn hàng: {confirm.ConfirmReceiptOfGoods = request.ConfirmStatus}");
+                var responseMessage = _emailService.SendEmail(message);
+
+                await _confirmReceiptOfGoodsFromCustomerRepository.UpdateAsync(confirm);
+                Notification notification = new Notification
+                {
+                    IsActive = true,
+                    Content = $"Khách hàng đã phản hồi về đơn hàng! \nVui lòng kiểm tra đơn hàng:  \nPhản hồi đơn hàng: {request.ConfirmStatus}",
+                    Id = Guid.NewGuid(),
+                    IsSeen = false,
+                    Link = "",
+                    UserId = project.LeaderId
+                };
+
+                notification = await _notificationRepository.CreateAsync(notification);
+
+                if (request.ConfirmStatus.ToString().Equals("Received"))
+                {
+                    delivery.DeliveryStatus = Domain.Enumerates.DeliveryStatusEnum.Delivered;
+                    await _baseDeliveryRepository.UpdateAsync(delivery);
+                    project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Delivered;
+                    await _projectRepository.UpdateAsync(project);
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status200OK,
+                        Message = "Đơn hàng đã được giao thành công! khách hàng cũng đã nhận hàng",
+                        Data = _deliveryConverter.EntityToDTO(delivery)
+                    };
+                }
+                
+                return new ResponseObject<DataResponseDelivery>
+                {
+                    Status = StatusCodes.Status200OK,
+                    Message = "Đơn hàng bị hủy",
+                    Data = _deliveryConverter.EntityToDTO(delivery)
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ResponseObject<DataResponseDelivery>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message,
+                    Data = null
+                };
+            }
+        }
+
+        public async Task<ResponseObject<DataResponseDelivery>> ShipperConfirmOrderDelivery(Guid shipperId, Request_ShipperConfirmOrderDelivery request)
         {
             var deliver = await _baseUserRepository.GetByIDAsync(shipperId);
             try

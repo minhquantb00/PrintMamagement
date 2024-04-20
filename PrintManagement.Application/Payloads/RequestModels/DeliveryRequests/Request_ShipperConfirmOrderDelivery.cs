@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Application.Payloads.RequestModels.DeliveryRequests
 {
-    public class Request_ShipperConfirmDelivery
+    public class Request_ShipperConfirmOrderDelivery
     {
         public Guid DeliveryId { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public ConfirmReceiptOfGoodsEnum ConfirmStatus { get; set; }
     }
 }

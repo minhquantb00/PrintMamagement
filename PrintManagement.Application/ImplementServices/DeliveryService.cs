@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using PrintManagement.Application.Handle.HandleEmail;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
@@ -28,7 +29,8 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Project> _projectRepository;
         private readonly IBaseReposiroty<Customer> _customerRepository;
         private readonly IBaseReposiroty<Notification> _notificationRepository;
-        public DeliveryService(IBaseReposiroty<Delivery> baseDeliveryRepository, IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer> confirmReceiptOfGoodsFromCustomerRepository, DeliveryConverter deliveryConverter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<Customer> customerRepository, IBaseReposiroty<Notification> notificationRepository)
+        private readonly IEmailService _emailService;
+        public DeliveryService(IBaseReposiroty<Delivery> baseDeliveryRepository, IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer> confirmReceiptOfGoodsFromCustomerRepository, DeliveryConverter deliveryConverter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<Customer> customerRepository, IBaseReposiroty<Notification> notificationRepository, IEmailService emailService)
         {
             _baseDeliveryRepository = baseDeliveryRepository;
             _confirmReceiptOfGoodsFromCustomerRepository = confirmReceiptOfGoodsFromCustomerRepository;
@@ -38,6 +40,7 @@ namespace PrintManagement.Application.ImplementServices
             _baseUserRepository = baseUserRepository;
             _teamRepository = teamRepository;
             _notificationRepository = notificationRepository;
+            _emailService = emailService;
         }
 
         public async Task<ResponseObject<DataResponseDelivery>> CreateDelivery(Request_CreateDelivery request)
@@ -108,7 +111,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 var teamDeliver = await _teamRepository.GetAsync(x => x.Id == deliver.TeamId);
-                if(!_userRepository.GetRolesOfUserAsync(deliver).Result.Equals("Deliver") || !team.Name.Equals("Delivery"))
+                if(!_userRepository.GetRolesOfUserAsync(deliver).Result.Contains("Deliver") || !team.Name.Equals("Delivery"))
                 {
                     return new ResponseObject<DataResponseDelivery>
                     {
@@ -165,6 +168,93 @@ namespace PrintManagement.Application.ImplementServices
                     Status = StatusCodes.Status200OK,
                     Message = "Tạo thông tin giao hàng thành công",
                     Data = _deliveryConverter.EntityToDTO(delivery),
+                };
+
+            }catch (Exception ex)
+            {
+                return new ResponseObject<DataResponseDelivery>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message,
+                    Data = null
+                };
+            }
+        }
+
+        public async Task<ResponseObject<DataResponseDelivery>> CustomerConfirmDelivery(Guid deliveryId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ResponseObject<DataResponseDelivery>> ShipperConfirmOrderDelivery(Guid shipperId, Request_ShipperConfirmDelivery request)
+        {
+            var deliver = await _baseUserRepository.GetByIDAsync(shipperId);
+            try
+            {
+                var team = await _teamRepository.GetAsync(x => x.Id == deliver.TeamId);
+                if(team == null)
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "Phòng ban không tồn tại",
+                        Data = null
+                    };
+                }
+                if (!_userRepository.GetRolesOfUserAsync(deliver).Result.Contains("Deliver") || !team.Name.Equals("Delivery"))
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status403Forbidden,
+                        Message = "Bạn không có quyền thực hiện chức năng này",
+                        Data = null
+                    };
+                }
+                var delivery = await _baseDeliveryRepository.GetByIDAsync(request.DeliveryId);
+                if(delivery == null)
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "Thông tin giao hàng không tồn tại",
+                        Data = null
+                    };
+                }
+                if (delivery.DeliveryStatus.ToString().Equals("Delivered"))
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Message = "Đơn hàng đã được giao từ trước đó",
+                        Data = null 
+                    };
+                }
+                delivery.DeliveryStatus = Domain.Enumerates.DeliveryStatusEnum.Delivering;
+                deliver.UpdateTime = DateTime.Now;
+                await _baseDeliveryRepository.UpdateAsync(delivery);
+
+                var project = await _projectRepository.GetAsync(x => x.Id == delivery.ProjectId);
+                Notification notification = new Notification
+                {
+                    IsActive = true,
+                    Content = "Người giao hàng đã nhận giao đơn!",
+                    Id = Guid.NewGuid(),
+                    IsSeen = false,
+                    Link = "",
+                    UserId = project.LeaderId
+                };
+
+                notification = await _notificationRepository.CreateAsync(notification);
+
+                var customer = await _customerRepository.GetByIDAsync(project.CustomerId);
+                var message = new EmailMessage(new string[] { customer.Email }, "Thông báo đơn hàng của bạn: ", "Đơn đặt hàng của bạn đang được giao");
+                var responseMessage = _emailService.SendEmail(message);
+
+                return new ResponseObject<DataResponseDelivery>
+                {
+                    Status = StatusCodes.Status200OK,
+                    Message = "Xác nhận nhiệm vụ giao đơn hàng",
+                    Data = _deliveryConverter.EntityToDTO(delivery)
                 };
 
             }catch (Exception ex)

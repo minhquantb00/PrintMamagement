@@ -250,5 +250,11 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _deliveryService.CreateDelivery(request));
         }
+        [HttpGet("{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRolesByUserId([FromRoute] Guid userId)
+        {
+            return Ok(await _authService.GetRolesByUserId(userId));
+        }
     }
 }

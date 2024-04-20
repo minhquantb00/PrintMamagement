@@ -403,7 +403,12 @@ namespace PrintManagement.Application.ImplementServices
                 RoleName = x.RoleName
             });
         }
-
+        public async Task<IQueryable<string>> GetRolesByUserId(Guid userId)
+        {
+            var user = await _baseUserRepository.GetByIDAsync(userId);
+            var query = await _userRepository.GetRolesOfUserAsync(user);
+            return query.AsQueryable();
+        }
 
         #region PrivateMethods
         private JwtSecurityToken GetToken(List<Claim> authClaims)

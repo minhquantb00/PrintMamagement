@@ -12,5 +12,7 @@ namespace PrintManagement.Application.InterfaceServices
     public interface IDeliveryService
     {
         Task<ResponseObject<DataResponseDelivery>> CreateDelivery(Request_CreateDelivery request);
+        Task<ResponseObject<DataResponseDelivery>> ShipperConfirmOrderDelivery(Guid shipperId, Request_ShipperConfirmDelivery request);
+        Task<ResponseObject<DataResponseDelivery>> CustomerConfirmDelivery(Guid deliveryId);
     }
 }

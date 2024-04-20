@@ -22,5 +22,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<string> ConfirmCreateNewPassword(Request_ConfirmCreateNewPassword request);
         Task<ResponseObject<DataResponseUser>> AddRoleToUser(Guid userId, List<string> roles);
         Task<IQueryable<DataResponseRole>> GetAllRoles();
+        Task<IQueryable<string>> GetRolesByUserId(Guid userId);
     }
 }

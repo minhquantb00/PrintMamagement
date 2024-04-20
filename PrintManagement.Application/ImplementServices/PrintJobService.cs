@@ -131,7 +131,7 @@ namespace PrintManagement.Application.ImplementServices
                     }
                 }
                 var customer = await _customerRepository.GetByIDAsync(project.CustomerId);
-                var message = new EmailMessage(new string[] { customer.Email }, "Notification about your order: ", "We have completed the design and printing process! Please pay attention to the phone number for delivery. Thank you");
+                var message = new EmailMessage(new string[] { customer.Email }, "Xác nhận đơn hàng của bạn: ", "Chúng tôi đã hoàn thành yêu cầu của bạn! Bắt đầu quá trình giao hàng, bạn vui lòng chú ý điện thoại! Cảm ơn rất nhiều");
                 var responseMessage = _emailService.SendEmail(message);
 
 

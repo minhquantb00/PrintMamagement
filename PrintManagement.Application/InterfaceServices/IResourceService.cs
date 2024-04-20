@@ -1,6 +1,7 @@
 ﻿using PrintManagement.Application.Payloads.RequestModels.ResourceRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataResource;
 using PrintManagement.Application.Payloads.Responses;
+using PrintManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<string> DeleteResource(Guid resourceId);
         Task<IQueryable<DataResponseResource>> GetAll(string? resourceName);
         Task<DataResponseResource> GetById(Guid resourceId);
+        Task<ResponseObject<DataResponseResource>> CreateResourcePropertyAsync(Guid resourceId, IEnumerable<Request_CreateResourceProperty> request);
     }
 }

@@ -11,6 +11,6 @@ namespace PrintManagement.Application.Payloads.RequestModels.ResourceRequests
     public class Request_CreateResourcePropertyDetail
     {
         public string Name { get; set; }
-        public IFormFile Image { get; set; }
+        public decimal Price { get; set; }
     }
 }

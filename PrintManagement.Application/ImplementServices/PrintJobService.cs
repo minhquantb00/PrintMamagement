@@ -31,12 +31,15 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Permissions> _permissionsRepository;
         private readonly IBaseReposiroty<Role> _roleRepository;
         private readonly IAuthService _authService;
+        private readonly ResourceForPrintJobConverter _resourceForPrintJobConverter;
         private readonly IUserRepository<User> _userRepository;
         private readonly IBaseReposiroty<Team> _teamRepository;
         private readonly IBaseReposiroty<ConfirmEmail> _confirmEmailRepository;
         private readonly IBaseReposiroty<Customer> _customerRepository;
         private readonly IEmailService _emailService;
-        public PrintJobService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<PrintJob> basePrintJobRepository, IBaseReposiroty<ResourceForPrintJob> baseResourceForPrintJobRepository, IBaseReposiroty<ResourcePropertyDetail> baseResourceRepository, IHttpContextAccessor contextAccessor, PrintJobConverter printerConverter, IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<Notification> notificationRepository, IBaseReposiroty<Permissions> permissionsRepository, IBaseReposiroty<Role> roleRepository, IAuthService authService, IUserRepository<User> userRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, IBaseReposiroty<Customer> customerRepository, IEmailService emailService)
+        private readonly DesignConverter _designConverter;
+
+        public PrintJobService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<PrintJob> basePrintJobRepository, IBaseReposiroty<ResourceForPrintJob> baseResourceForPrintJobRepository, IBaseReposiroty<ResourcePropertyDetail> baseResourceRepository, IHttpContextAccessor contextAccessor, PrintJobConverter printerConverter, IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<Notification> notificationRepository, IBaseReposiroty<Permissions> permissionsRepository, IBaseReposiroty<Role> roleRepository, IAuthService authService, IUserRepository<User> userRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, IBaseReposiroty<Customer> customerRepository, IEmailService emailService, DesignConverter designConverter, ResourceForPrintJobConverter resourceForPrintJobConverter)
         {
             _baseUserRepository = baseUserRepository;
             _baseProjectRepository = baseProjectRepository;
@@ -55,6 +58,8 @@ namespace PrintManagement.Application.ImplementServices
             _confirmEmailRepository = confirmEmailRepository;
             _customerRepository = customerRepository;
             _emailService = emailService;
+            _designConverter = designConverter;
+            _resourceForPrintJobConverter = resourceForPrintJobConverter;
         }
 
         public async Task<ResponseObject<DataResponsePrintJob>> ConfirmDonePrintJob(Guid printJobId)
@@ -237,8 +242,14 @@ namespace PrintManagement.Application.ImplementServices
                 {
                     Status = StatusCodes.Status200OK,
                     Message = "The step for staff to do printing has begun! Please wait",
-                    Data = _printerConverter.EntityToDTO(printJob)
-                };
+                    Data =  new DataResponsePrintJob
+                    {
+                        Id = printJob.Id,
+                        PrintJobStatus = printJob.PrintJobStatus.ToString(),
+                        Design = _designConverter.EntityToDTOForDesign(_baseDesignRepository.GetAsync(x => x.Id == printJob.DesignId).Result),
+                        ResourceForPrints = _baseResourceForPrintJobRepository.GetAllAsync(x => x.PrintJobId == printJob.Id).Result.Select(x => _resourceForPrintJobConverter.EntityToDTO(x)),
+                    }
+            };
             }catch (Exception ex)
             {
                 return new ResponseObject<DataResponsePrintJob>

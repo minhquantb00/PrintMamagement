@@ -67,7 +67,6 @@ namespace PrintManagement.Application.ImplementServices
                     ResourceStatus = Domain.Enumerates.ResourceStatusEnum.OutOfStock
                 };
                 resource = await _baseResourceRepository.CreateAsync(resource);
-                resource.ResourceProperties =   CreateResourcePropertyAsync(resource.Id, request.requests).Result.ToList();
                 return new ResponseObject<DataResponseResource>
                 {
                     Status = StatusCodes.Status200OK,
@@ -162,7 +161,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 resource.ResourceName = resource.ResourceName;
-                resource.Image = await HandleUploadFile.WriteFile(request.Image);
+                resource.Image = await HandleUploadFile.Upfile(request.Image);
                 await _baseResourceRepository.UpdateAsync(resource);
                 return new ResponseObject<DataResponseResource>
                 {
@@ -184,14 +183,19 @@ namespace PrintManagement.Application.ImplementServices
 
 
         #region Private methods
-        private async Task<IQueryable<ResourceProperty>> CreateResourcePropertyAsync(Guid resourceId, IEnumerable<Request_CreateResourceProperty> request)
+        public async Task<ResponseObject<DataResponseResource>> CreateResourcePropertyAsync(Guid resourceId, IEnumerable<Request_CreateResourceProperty> request)
         {
             try
             {
                 var resource = await _baseResourceRepository.GetByIDAsync(resourceId);
                 if (resource == null)
                 {
-                    throw new ArgumentNullException("Resource not found");
+                    return new ResponseObject<DataResponseResource>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "Tài nguyên không tồn tại",
+                        Data = null
+                    };
                 }
                 List<ResourceProperty> resourceProperties = new List<ResourceProperty>();
                 foreach (var property in request)
@@ -211,10 +215,20 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 resource.ResourceProperties = resourceProperties;
                 await _baseResourceRepository.UpdateAsync(resource);
-                return resourceProperties.AsQueryable();
+                return new ResponseObject<DataResponseResource> 
+                { 
+                    Status = StatusCodes.Status200OK,
+                    Message = "Thêm thuộc tính tài nguyên thành công",
+                    Data = _converter.EntityToDTO(resource)
+                };
             }catch (Exception ex)
             {
-                throw;
+                return new ResponseObject<DataResponseResource>
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Message = ex.Message,
+                    Data = null
+                };
             }
         }
 
@@ -223,6 +237,7 @@ namespace PrintManagement.Application.ImplementServices
             try
             {
                 var resourceProperty = await _baseResourcePropertyRepository.GetByIDAsync(resourcePropertyId);
+                var resource = await _baseResourceRepository.GetByIDAsync(resourceProperty.ResourceId);
                 if (resourceProperty == null)
                 {
                     throw new ArgumentNullException("ResourceProperty not found");
@@ -235,9 +250,9 @@ namespace PrintManagement.Application.ImplementServices
                         IsActive= true,
                         Id = Guid.NewGuid(),
                         Name = resourcePropertyDetail.Name,
-                        Price = 0,
+                        Price = resourcePropertyDetail.Price,
                         Quantity = 0,
-                        Image = await HandleUploadFile.WriteFile(resourcePropertyDetail.Image),
+                        Image = resource.Image,
                         ResourcePropertyId = resourcePropertyId
                     };
                     listResult.Add(item);

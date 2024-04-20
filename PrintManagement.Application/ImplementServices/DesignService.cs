@@ -46,25 +46,25 @@ namespace PrintManagement.Application.ImplementServices
             {
                 if (!currentUser.Identity.IsAuthenticated)
                 {
-                    return "UnAuthenticated user";
+                    return "Người dùng chưa được xác thực";
                 }
                 if (!currentUser.IsInRole("Leader"))
                 {
-                    return "You do not have permission to perform this function";
+                    return "Bạn không có quyền thực hiện chức năng này";
                 }
                 var design = await _baseDesignRepository.GetByIDAsync(request.DesignId);
                 if(design == null)
                 {
-                    return "Design not found";
+                    return "Không tìm thấy thiết kế";
                 }
                 var project = await _baseProjectReposiroty.GetByIDAsync(design.ProjectId);
                 if(Guid.Parse(leader) != project.LeaderId)
                 {
-                    return "You are not the leader of this project";
+                    return "Bạn không phải là leader của dự án này";
                 }
                 if (design.DesignStatus.ToString().Equals("HasBeenApproved"))
                 {
-                    return "You have already approved this design";
+                    return "Thiết kế này đã được duyệt trước đó";
                 }
                 if (request.DesignApproval.ToString().Equals("Agree"))
                 {
@@ -78,7 +78,7 @@ namespace PrintManagement.Application.ImplementServices
                     Notification notification = new Notification
                     {
                         IsActive = true,
-                        Content = "Your design has been approved! please check",
+                        Content = "Thiết kế của bạn đã được duyệt",
                         Id = Guid.NewGuid(),
                         IsSeen = false,
                         Link = "",
@@ -86,7 +86,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
 
                     notification = await _notificationRepository.CreateAsync(notification);
-                    return "Approved design";
+                    return "Đã duyệt thiết kế";
                 }
                 else
                 {
@@ -99,7 +99,7 @@ namespace PrintManagement.Application.ImplementServices
                     Notification notification = new Notification
                     {
                         IsActive = true,
-                        Content = "Your design has been rejected! please check",
+                        Content = "Thiết kế của bạn bị từ chối phê duyệt",
                         Id = Guid.NewGuid(),
                         IsSeen = false,
                         Link = "",
@@ -107,7 +107,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
 
                     notification = await _notificationRepository.CreateAsync(notification);
-                    return "Design not approved";
+                    return "Không duyệt thiết kế";
                 }
             }
             catch(Exception ex)

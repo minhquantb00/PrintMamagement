@@ -154,6 +154,13 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _resourceService.CreateResourceInformation(request));
         }
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateResourcePropertyInformation(Guid resourceId, IEnumerable<Request_CreateResourceProperty> requests)
+        {
+            return Ok(await _resourceService.CreateResourcePropertyAsync(resourceId, requests));
+        }
+
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Consumes(contentType: "multipart/form-data")]

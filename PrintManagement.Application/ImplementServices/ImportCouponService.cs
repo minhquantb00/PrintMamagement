@@ -46,7 +46,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseImportCoupon>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa được xác thực",
                         Data = null
                     };
                 }
@@ -55,7 +55,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseImportCoupon>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }
@@ -66,7 +66,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseImportCoupon>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "This item was not found",
+                        Message = "Không tìm thấy dữ liệu",
                         Data = null
                     };
                 }
@@ -95,7 +95,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseImportCoupon>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Imported goods successfully",
+                    Message = "Thêm tài nguyên thành công",
                     Data = _converter.EntityToDTO(coupon)
                 };
             }catch(Exception ex)

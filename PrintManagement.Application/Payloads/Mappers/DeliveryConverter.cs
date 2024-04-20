@@ -42,7 +42,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 DeliveryStatus = delivery.DeliveryStatus.ToString(),
                 Id = delivery.Id,
                 EstimateDeliveryTime = delivery.EstimateDeliveryTime,
-                Customer = _customerConverter.EntityToDTOForCustomer(_baseCustomerRepository.GetAsync(x => x.Id == delivery.Id).Result),
+                Customer = _customerConverter.EntityToDTOForCustomer(_baseCustomerRepository.GetAsync(x => x.Id == delivery.CustomerId).Result),
                 Deliver = _userConverter.EntityToDTOForUser(_baseUserRepository.GetAsync(x => x.Id == delivery.DeliverId).Result),
                 Project = _projectConverter.EntityToDTOForProject(_baseProjectRepository.GetAsync(x => x.Id == delivery.ProjectId).Result),
                 ShippingMethodName = _baseShippingMethodRepository.GetAsync(x => x.Id == delivery.ShippingMethodId).Result.ShippingMethodName,

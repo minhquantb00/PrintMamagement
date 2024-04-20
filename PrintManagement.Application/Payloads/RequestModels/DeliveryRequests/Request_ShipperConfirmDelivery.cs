@@ -12,6 +12,6 @@ namespace PrintManagement.Application.Payloads.RequestModels.DeliveryRequests
     {
         public Guid DeliveryId { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public ConfirmReceiptOfGoodsEnum ConfirmStatus { get; set; }
+        public ConfirmReceiptOfGoodsEnum? ConfirmStatus { get; set; }
     }
 }

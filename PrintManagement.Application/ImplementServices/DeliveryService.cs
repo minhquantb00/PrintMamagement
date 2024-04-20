@@ -30,7 +30,7 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Customer> _customerRepository;
         private readonly IBaseReposiroty<Notification> _notificationRepository;
         private readonly IEmailService _emailService;
-        public DeliveryService(IBaseReposiroty<Delivery> baseDeliveryRepository, IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer> confirmReceiptOfGoodsFromCustomerRepository, DeliveryConverter deliveryConverter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<Customer> customerRepository, IBaseReposiroty<Notification> notificationRepository, IEmailService emailService)
+        public DeliveryService(IBaseReposiroty<Delivery> baseDeliveryRepository, IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer> confirmReceiptOfGoodsFromCustomerRepository, DeliveryConverter deliveryConverter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<Customer> customerRepository, IBaseReposiroty<Notification> notificationRepository, IEmailService emailService, IBaseReposiroty<Project> projectRepository, IBaseReposiroty<ShippingMethod> shippingMethodRepository)
         {
             _baseDeliveryRepository = baseDeliveryRepository;
             _confirmReceiptOfGoodsFromCustomerRepository = confirmReceiptOfGoodsFromCustomerRepository;
@@ -41,6 +41,9 @@ namespace PrintManagement.Application.ImplementServices
             _teamRepository = teamRepository;
             _notificationRepository = notificationRepository;
             _emailService = emailService;
+            _projectRepository = projectRepository;
+            _customerRepository = customerRepository;
+            _shippingMethodRepository = shippingMethodRepository;
         }
 
         public async Task<ResponseObject<DataResponseDelivery>> CreateDelivery(Request_CreateDelivery request)

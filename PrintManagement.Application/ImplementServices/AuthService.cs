@@ -242,6 +242,10 @@ namespace PrintManagement.Application.ImplementServices
                 };
                 user = await _baseUserRepository.CreateAsync(user);
                 await _userRepository.AddUserToRoleAsync(user, new List<string> {"Employee" });
+
+                var team = await _baseTeamRepository.GetAsync(x => x.Id == user.TeamId);
+                team.NumberOfMember = await _baseTeamRepository.CountAsync(x => x.Id == user.TeamId);
+                await _baseTeamRepository.UpdateAsync(team);
                 return new ResponseObject<DataResponseUser>
                 {
                     Status = StatusCodes.Status200OK,

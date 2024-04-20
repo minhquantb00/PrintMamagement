@@ -63,25 +63,23 @@ namespace PrintManagement.Api.Controllers
             return Ok(await _customerService.CreateCustomer(request));
         }
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateCustomer([FromBody] Request_UpdateCustomer request)
         {
             return Ok(await _customerService.UpdateCustomer(request));
         }
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DeleteCustomer([FromRoute] Guid id)
         {
             return Ok(await _customerService.DeleteCustomer(id));
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllCustomers([FromQuery] Request_InputCustomer request)
         {
             return Ok(await _customerService.GetAllCustomers(request));
         }
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetCustomerById([FromRoute] Guid id)
         {
             return Ok(await _customerService.GetCustomerById(id));

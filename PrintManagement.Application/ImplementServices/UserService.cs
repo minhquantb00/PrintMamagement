@@ -74,7 +74,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseUser>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Email already exists",
+                        Message = "Email đã tồn tại trên hệ thống",
                         Data = null
                     };
                 }
@@ -84,7 +84,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseUser>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Updated user successfully",
+                    Message = "Cập nhật thông tin thành công",
                     Data = _converter.EntityToDTOForUser(user)
                 };
             }

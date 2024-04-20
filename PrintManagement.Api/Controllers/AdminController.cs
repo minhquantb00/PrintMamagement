@@ -10,6 +10,7 @@ using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
 using PrintManagement.Application.Payloads.RequestModels.DesignRequests;
 using PrintManagement.Application.Payloads.RequestModels.ImportCouponRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
+using PrintManagement.Application.Payloads.RequestModels.KPIRequests;
 using PrintManagement.Application.Payloads.RequestModels.PrintJobRequests;
 using PrintManagement.Application.Payloads.RequestModels.ProjectRequests;
 using PrintManagement.Application.Payloads.RequestModels.ResourceRequests;
@@ -19,6 +20,7 @@ using PrintManagement.Application.Payloads.ResponseModels.DataCustomer;
 using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
 using PrintManagement.Application.Payloads.ResponseModels.DataDesign;
 using PrintManagement.Application.Payloads.ResponseModels.DataImportCoupon;
+using PrintManagement.Application.Payloads.ResponseModels.DataKPI;
 using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
 using PrintManagement.Application.Payloads.ResponseModels.DataProject;
 using PrintManagement.Application.Payloads.ResponseModels.DataResource;
@@ -43,7 +45,8 @@ namespace PrintManagement.Api.Controllers
         private readonly IPrintJobService _printJobService;
         private readonly IDeliveryService _deliveryService;
         private readonly IShippingMethodService _shipService;
-        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService, IDeliveryService deliveryService, IShippingMethodService shipService)
+        private readonly IKPIService _KPService;
+        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService, IDeliveryService deliveryService, IShippingMethodService shipService, IKPIService kPIService)
         {
             _customerService = customerService;
             _projectService = projectService;
@@ -55,6 +58,7 @@ namespace PrintManagement.Api.Controllers
             _printJobService = printJobService;
             _deliveryService = deliveryService;
             _shipService = shipService;
+            _KPService = kPIService;
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -270,6 +274,13 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> CreateShippingMethod(Request_CreateShippingMethod request)
         {
            return Ok(await _shipService.CreateShippingMethod(request));
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreateKPIForEmployee(Request_CreateKPI request)
+        {
+            return Ok(await _KPService.CreateKPIForEmployee(request));
         }
     }
 }

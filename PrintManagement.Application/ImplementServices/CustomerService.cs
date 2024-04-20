@@ -42,7 +42,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa được xác thực",
                         Data = null
                     };
                 }
@@ -53,7 +53,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You must be an employee in the sales department",
+                        Message = "Bạn phải là thành viên của phòng ban Sales",
                         Data = null
                     };
                 }
@@ -62,7 +62,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Invalid phone number format",
+                        Message = "Định dạng số điện thoại không hợp lệ",
                         Data = null
                     };
                 }
@@ -71,7 +71,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Invalid email format",
+                        Message = "Định dạng email không hợp lệ",
                         Data = null
                     };
                 }
@@ -81,7 +81,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Phone number existed",
+                        Message = "Số điện thoại đã tồn tại trên hệ thống",
                         Data = null
                     };
                 }
@@ -92,13 +92,14 @@ namespace PrintManagement.Application.ImplementServices
                     IsActive = true,
                     FullName = request.FullName,
                     Id = Guid.NewGuid(),
-                    PhoneNumber = request.PhoneNumber
+                    PhoneNumber = request.PhoneNumber,
+                    Email = request.Email
                 };
                 customer = await _baseCustomerRepository.CreateAsync(customer);
                 return new ResponseObject<DataResponseCustomer>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Customer created successfully",
+                    Message = "Tạo thông tin khách hàng thành công",
                     Data = _mapper.EntityToDTOForCustomer(customer)
                 };
             }
@@ -121,19 +122,19 @@ namespace PrintManagement.Application.ImplementServices
                 var customer = await _baseCustomerRepository.GetByIDAsync(id);
                 if (!currentUser.Identity.IsAuthenticated)
                 {
-                    return "UnAuthenticated user";
+                    return "Người dùng chưa xác thực";
                 }
                 if (!currentUser.IsInRole("Admin"))
                 {
-                    return "You do not have permission to perform this function";
+                    return "Bạn không có quyền thực hiện chức năng này";
                 }
                 if(customer == null)
                 {
-                    return "Customer not found";
+                    return "Thông tin khách hàng không tồn tại";
                 }
                 customer.IsActive = false;
                 await _baseCustomerRepository.UpdateAsync(customer);
-                return "Successfully deleted the customer";
+                return "Xóa thông tin khách hàng thành công";
             }catch(Exception ex)
             {
                 return "Error: " + ex.Message;
@@ -186,7 +187,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa xác thực",
                         Data = null
                     };
                 }
@@ -197,7 +198,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You must be an employee in the sales department",
+                        Message = "Bạn phải là nhân viên trong phòng ban kinh doanh",
                         Data = null
                     };
                 }
@@ -206,7 +207,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Invalid phone number format",
+                        Message = "Định dạng số điện thoại không hợp lệ",
                         Data = null
                     };
                 }
@@ -215,7 +216,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Invalid email format",
+                        Message = "Định dạng email không hợp lệ",
                         Data = null
                     };
                 }
@@ -225,7 +226,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status404NotFound, 
-                        Message = "Customer not found",
+                        Message = "Không tìm thấy thông tin khách hàng",
                         Data = null
                     };
                 }
@@ -234,18 +235,19 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseCustomer>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "This customer has been deleted",
+                        Message = "Khách hàng đã bị xóa",
                         Data = null
                     };
                 }
                 customer.Address = request.Address;
                 customer.FullName = request.FullName;
                 customer.PhoneNumber = request.PhoneNumber;
+                customer.Email = request.Email;
                 await _baseCustomerRepository.UpdateAsync(customer);
                 return new ResponseObject<DataResponseCustomer>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Successfully updated successfully",
+                    Message = "Cập nhật thông tin khách hàng thành công",
                     Data= _mapper.EntityToDTOForCustomer(customer)
                 };
             }catch(Exception ex)

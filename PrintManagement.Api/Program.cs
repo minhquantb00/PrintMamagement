@@ -58,6 +58,7 @@ builder.Services.AddScoped<DeliveryConverter>();
 builder.Services.AddScoped<PrintJobConverter>();
 builder.Services.AddScoped<ResourceForPrintJobConverter>();
 builder.Services.AddScoped<ConfirmReceiptConverter>();
+builder.Services.AddScoped<KPIConverter>();
 #endregion
 
 
@@ -81,6 +82,7 @@ builder.Services.AddScoped<IBaseReposiroty<ResourceForPrintJob>, BaseRepository<
 builder.Services.AddScoped<IBaseReposiroty<Notification>, BaseRepository<Notification>>();
 builder.Services.AddScoped<IBaseReposiroty<Delivery>, BaseRepository<Delivery>>();
 builder.Services.AddScoped<IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer>, BaseRepository<ConfirmReceiptOfGoodsFromCustomer>>();
+builder.Services.AddScoped<IBaseReposiroty<KeyPerformanceIndicators>, BaseRepository<KeyPerformanceIndicators>>();
 #endregion
 
 #region Khác
@@ -100,6 +102,7 @@ builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddScoped<IPrintJobService, PrintJobService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<IKPIService, KPIService>();
 #endregion
 
 

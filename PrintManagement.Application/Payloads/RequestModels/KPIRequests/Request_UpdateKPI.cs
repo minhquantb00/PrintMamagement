@@ -5,16 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrintManagement.Domain.Entities
+namespace PrintManagement.Application.Payloads.RequestModels.KPIRequests
 {
-    public class KeyPerformanceIndicators : BaseEntity
+    public class Request_UpdateKPI
     {
+        public Guid KpiId { get; set; }
         public Guid EmployeeId { get; set; }
-        public virtual User? Employee { get; set; }
         public string IndicatorName { get; set; }
         public int Target { get; set; }
-        public int ActuallyAchieved { get; set; } = 0;
         public KPIEnum? Period { get; set; } = KPIEnum.Month;
-        public bool? AchieveKPI { get; set; } = false;
     }
 }

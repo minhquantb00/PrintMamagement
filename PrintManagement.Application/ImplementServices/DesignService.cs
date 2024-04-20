@@ -126,7 +126,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseDesign>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa được xác thực",
                         Data = null
                     };
                 }
@@ -135,7 +135,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseDesign>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }
@@ -146,7 +146,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseDesign>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "The user must belong to the technical department",
+                        Message = "Người dùng này không trong phòng ban kĩ thuật",
                         Data = null
                     };
                 }
@@ -156,7 +156,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseDesign> 
                     { 
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "This project already has an approved design",
+                        Message = "Dự án này đã có thiết kế được phê duyệt",
                         Data = null
                     };
                 }
@@ -165,7 +165,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseDesign>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "The user must have designer rights",
+                        Message = "Người dùng không có quyền design",
                         Data = null
                     };
                 }
@@ -175,7 +175,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseDesign>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Project not found",
+                        Message = "Thông tin dự án không tồn tại",
                         Data = null
                     };
                 }
@@ -199,7 +199,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseDesign>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Design created successfully",
+                    Message = "Tạo bản thiết kế thành công",
                     Data = _mapper.EntityToDTOForDesign(design)
                 };
             }catch(Exception ex)

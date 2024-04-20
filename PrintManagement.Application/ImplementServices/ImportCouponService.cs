@@ -116,16 +116,16 @@ namespace PrintManagement.Application.ImplementServices
             {
                 if (!currentUser.Identity.IsAuthenticated)
                 {
-                    return "UnAuthenticated user";
+                    return "Người dùng chưa xác thực";
                 }
                 if (!currentUser.IsInRole("Admin") && !currentUser.IsInRole("Leader"))
                 {
-                    return "You do not have permission to perform this function";
+                    return "Bạn không có quyền thực hiện chức năng này";
                 }
                 var coupon = await _baseImportCouponRepository.GetByIDAsync(couponId);
                 if(coupon == null)
                 {
-                    return "Coupon not found";
+                    return "Không tìm thấy phiếu nhập";
                 }
                 coupon.IsActive = false;
                 await _baseImportCouponRepository.UpdateAsync(coupon);
@@ -142,7 +142,7 @@ namespace PrintManagement.Application.ImplementServices
                 resource.AvailableQuantity -= coupon.Quantity;
                 await _baseResourceRepository.UpdateAsync(resource);
 
-                return "Coupon deleted successfully";
+                return "Xóa thông tin phiếu nhập thành công";
             }
             catch(Exception ex)
             {

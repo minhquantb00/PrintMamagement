@@ -240,7 +240,7 @@ namespace PrintManagement.Application.ImplementServices
                 var resource = await _baseResourceRepository.GetByIDAsync(resourceProperty.ResourceId);
                 if (resourceProperty == null)
                 {
-                    throw new ArgumentNullException("ResourceProperty not found");
+                    throw new ArgumentNullException("Không tìm thấy thuộc tính tài nguyên");
                 }
                 List<ResourcePropertyDetail> listResult = new List<ResourcePropertyDetail>();
                 foreach(var resourcePropertyDetail in requets)

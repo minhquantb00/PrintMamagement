@@ -38,32 +38,32 @@ namespace PrintManagement.Application.ImplementServices
             {
                 if (!currentUser.Identity.IsAuthenticated)
                 {
-                    return "UnAuthenticated user";
+                    return "Người dùng chưa xác thực";
                 }
                 if (!currentUser.IsInRole("Admin"))
                 {
-                    return "You do not have permission to perform this function";
+                    return "Bạn không có quyền thực hiện chức năng này";
                 }
                 var employee = await _baseUserRepository.GetByIDAsync(request.EmployeeId);
                 if(employee == null)
                 {
-                    return "Employee not found";
+                    return "Không tìm thấy nhân viên này";
                 }
                 if (_userRepository.GetRolesOfUserAsync(employee).Result.Contains("Manager"))
                 {
-                    return "Failed! This person is the head of the department";
+                    return "Thực hiện không thành công! Người này đang giữ chức vụ trưởng phòng";
                 }
                 var team = await _baseTeamRepository.GetByIDAsync(request.TeamId);
                 if(team == null)
                 {
-                    return "Team not found";
+                    return "Không tìm thấy phòng ban";
                 }
                 employee.TeamId = request.TeamId;
                 employee.UpdateTime = DateTime.Now;
                 await _baseUserRepository.UpdateAsync(employee);
                 team.NumberOfMember = await _baseUserRepository.CountAsync(x => x.TeamId == team.Id);
                 await _baseTeamRepository.UpdateAsync(team);
-                return "Change department for user successfully";
+                return "Thay đổi phòng ban cho người dùng thành công";
             }catch(Exception ex)
             {
                 return ex.Message;
@@ -80,7 +80,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa xác thực",
                         Data = null
                     };
                 }
@@ -89,7 +89,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }
@@ -99,7 +99,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "This person does not have the authority to head the department",
+                        Message = "Người này không có quyền quản lý",
                         Data = null
                     };
                 }
@@ -109,7 +109,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Team not found",
+                        Message = "Không tìm thấy phòng ban",
                         Data = null
                     };
                 }
@@ -119,7 +119,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseTeam>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Change manager for team successfully",
+                    Message = "Thay đổi trưởng phòng thành công",
                     Data = _converter.EntityToDTO(team)
                 };
             }
@@ -144,7 +144,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa xác thực",
                         Data = null
                     };
                 }
@@ -153,7 +153,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }
@@ -163,7 +163,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "User not found",
+                        Message = "Không tìm thấy người dùng",
                         Data = null
                     };
                 }
@@ -172,7 +172,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "This person is not qualified to be a manager",
+                        Message = "Người này không có quyền manager",
                         Data = null
                     };
                 }
@@ -191,7 +191,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseTeam>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Created team successfully",
+                    Message = "Tạo thông tin phòng ban thành công",
                     Data = _converter.EntityToDTO(team)
                 };
 
@@ -213,22 +213,22 @@ namespace PrintManagement.Application.ImplementServices
             {
                 if (!currentUser.Identity.IsAuthenticated)
                 {
-                    return "UnAuthenticated user";
+                    return "Người dùng chưa xác thực";
                 }
                 if (!currentUser.IsInRole("Admin"))
                 {
-                    return "You do not have permission to perform this function";
+                    return "Bạn không có quyền thực hiện chức năng này";
                 }
 
                 var team = await _baseTeamRepository.GetByIDAsync(teamId);
                 if(team == null)
                 {
-                    return "Team not found";
+                    return "Không tìm thấy phòng ban";
                 }
                 team.IsActive = false;
                 team.UpdateTime = DateTime.Now;
                 await _baseTeamRepository.UpdateAsync(team);
-                return "Updated team successfully";
+                return "Cập nhật thông tin phòng ban thành công";
             }
             catch(Exception ex)
             {
@@ -257,7 +257,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa xác thực",
                         Data = null
                     };
                 }
@@ -266,7 +266,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }
@@ -276,7 +276,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "User not found",
+                        Message = "Không tìm thấy người dùng",
                         Data = null
                     };
                 }
@@ -285,7 +285,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "This person is not qualified to be a manager",
+                        Message = "Người dùng này không có quyền quản lý",
                         Data = null
                     };
                 }
@@ -296,7 +296,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseTeam>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Team not found",
+                        Message = "Không tìm thấy phòng ban",
                         Data = null
                     };
                 }
@@ -308,7 +308,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseTeam>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Created team successfully",
+                    Message = "Cập nhật thông tin phòng ban thành công",
                     Data = _converter.EntityToDTO(team)
                 };
 

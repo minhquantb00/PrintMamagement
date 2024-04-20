@@ -130,7 +130,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseLogin>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Account doesn't exist",
+                        Message = "Tài khoản chính xác",
                         Data = null
                     };
                 }
@@ -140,14 +140,14 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseLogin>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Incorrect password",
+                        Message = "Mật khẩu không chính xác",
                         Data = null
                     };
                 }
                 return new ResponseObject<DataResponseLogin>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Successful login",
+                    Message = "Đăng nhập thành công",
                     Data = new DataResponseLogin
                     {
                         AccessToken = GetJwtTokenAsync(user).Result.Data.AccessToken,
@@ -185,7 +185,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseUser>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Email already exists",
+                        Message = "Email đã tồn tại trên hệ thống",
                         Data = null
                     };
                 }
@@ -194,7 +194,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseUser>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Phone number already exists",
+                        Message = "Số điện thoại đã tồn tại trên hệ thống",
                         Data = null
                     };
                 }
@@ -203,7 +203,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseUser>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Username already exists",
+                        Message = "Tên tài khoản đã tồn tại",
                         Data = null
                     };
                 }
@@ -212,7 +212,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseUser>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Invalid email format",
+                        Message = "Định dạng email không hợp lệ",
                         Data = null
                     };
                 }
@@ -221,7 +221,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseUser>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "Invalid phone number format",
+                        Message = "Định dạng số điện thoại không hợp lệ",
                         Data = null
                     };
                 }
@@ -249,7 +249,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseUser>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "User created successfully",
+                    Message = "Đăng ký tài khoản thành công",
                     Data = new DataResponseUser
                     {
                         Id = user.Id,
@@ -284,16 +284,16 @@ namespace PrintManagement.Application.ImplementServices
                 bool checkPassword = BcryptNet.Verify(request.OldPassword, user.Password); // check mật khẩu cũ mà mình truyền vào có trùng với mật khẩu trong db hay không
                 if (!checkPassword)
                 {
-                    return "Incorrect password"; // mật khẩu không chính xác
+                    return "Mật khẩu không chính xác"; // mật khẩu không chính xác
                 }
                 if (!request.NewPassword.Equals(request.ConfirmPassword))
                 {
-                    return "Passwords do not match";
+                    return "Mật khẩu không trùng khớp";
                 }
                 // nếu chính xác thì gán mật khẩu mới vào
                 user.Password = BcryptNet.HashPassword(request.NewPassword);
                 await _baseUserRepository.UpdateAsync(user);
-                return "Change password successfully";
+                return "Đổi mật khẩu thành công";
 
             }
             catch (Exception ex)
@@ -312,7 +312,7 @@ namespace PrintManagement.Application.ImplementServices
                 var user = await _userRepository.GetUserByEmail(email);
                 if(user == null)
                 {
-                    return "User doesn't exist";
+                    return "Người dùng không tồn tại";
                 }
                 await _confirmEmailRepository.DeleteAsync(x => x.UserId == user.Id);
                 ConfirmEmail confirmEmail = new ConfirmEmail
@@ -324,9 +324,9 @@ namespace PrintManagement.Application.ImplementServices
                     UserId = user.Id
                 };
                 confirmEmail = await _confirmEmailRepository.CreateAsync(confirmEmail);
-                var message = new EmailMessage(new string[] { email }, "Get confirmation code here", $"Confirm code: {confirmEmail.ConfirmCode}");
+                var message = new EmailMessage(new string[] { email }, "Nhận mã xác nhận tại đây: ", $"Mã xác nhận: {confirmEmail.ConfirmCode}");
                 var responseMessage = _emailService.SendEmail(message);
-                return "Confirmation code sent to email! Please check your email";
+                return "Mã xác nhận đã được gửi về email của bạn! Vui lòng check Email";
             }
             catch(Exception ex)
             {
@@ -341,22 +341,22 @@ namespace PrintManagement.Application.ImplementServices
                 var confirmEmail = await _confirmEmailRepository.GetAsync(x => x.ConfirmCode.Equals(request.ConfirmCode));
                 if(confirmEmail == null)
                 {
-                    return "Invalid verification code";
+                    return "Mã xác nhận không hợp lệ";
                 }
                 if(confirmEmail.ExpiryTime < DateTime.Now)
                 {
-                    return "Token has expired";
+                    return "Mã xác nhận đã hết hạn";
                 }
                 var user = await _baseUserRepository.GetByIDAsync(confirmEmail.UserId);
                 if (!request.Password.Equals(request.ConfirmPassword))
                 {
-                    return "Passwords do not match";
+                    return "Mật khẩu không trùng khớp";
                 }
                 user.Password = BcryptNet.HashPassword(request.Password);
                 await _baseUserRepository.UpdateAsync(user);
                 confirmEmail.IsConfirm = true;
                 await _confirmEmailRepository.UpdateAsync(confirmEmail);
-                return "Created new password successfully";
+                return "Tạo mật khẩu mới thành công";
             }
             catch(Exception ex)
             {
@@ -374,7 +374,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseUser>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "User not found",
+                        Message = "Không tìm thấy thông tin người dùng",
                         Data = null
                     };
                 }
@@ -382,7 +382,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseUser>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Add roles to user successfully",
+                    Message = "Thêm quyền hạn cho người dùng thành công",
                     Data = _mapper.EntityToDTOForUser(user)
                 };
             }

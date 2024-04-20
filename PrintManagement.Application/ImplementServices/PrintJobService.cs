@@ -72,7 +72,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponsePrintJob>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa được xác thực",
                         Data = null
                     };
                 }
@@ -81,7 +81,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponsePrintJob>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }
@@ -91,7 +91,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponsePrintJob>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Print job not found"
+                        Message = "Thông tin in ấn không tồn tại"
                     };
                 }
                 var design = await _baseDesignRepository.GetByIDAsync(printJob.DesignId);
@@ -107,7 +107,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponsePrintJob>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Project not found",
+                        Message = "Không tìm thấy dự án",
                         Data = null
                     };
                 }
@@ -172,7 +172,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponsePrintJob>
                     {
                         Status = StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa xác thực",
                         Data = null
                     };
                 }
@@ -181,7 +181,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponsePrintJob>
                     {
                         Status = StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }
@@ -191,7 +191,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponsePrintJob>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Design not found",
+                        Message = "Không tìm thấy thiết kế",
                         Data = null
                     };
                 }
@@ -201,7 +201,7 @@ namespace PrintManagement.Application.ImplementServices
                     {
                         Status = StatusCodes.Status400BadRequest,
                         Data = null,
-                        Message = "This design has not been approved or has been rejected"
+                        Message = "Thiết kế này chưa được duyệt hoặc đã bị từ chối"
                     };
                 }
 
@@ -224,7 +224,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponsePrintJob>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Project not found",
+                        Message = "Không tìm thấy thông tin dự án",
                         Data = null
                     };
                 }
@@ -237,7 +237,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponsePrintJob>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "The step for staff to do printing has begun! Please wait",
+                    Message = "Đã bắt đầu quy trình in ấn",
                     Data = _printerConverter.EntityToDTO(printJob)
                 };
             }
@@ -258,7 +258,7 @@ namespace PrintManagement.Application.ImplementServices
             Notification notification = new Notification
             {
                 IsActive = true,
-                Content = $"The project's design {project.ProjectName} has begun to be printed!",
+                Content = $"Thiết kế của dự án {project.ProjectName} bắt đầu được in!",
                 Id = Guid.NewGuid(),
                 IsSeen = false,
                 Link = "",
@@ -285,7 +285,7 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 if (resource.Quantity == 0)
                 {
-                    throw new ArgumentException("Out of stock");
+                    throw new ArgumentException("Hết hàng");
                 }
                 ResourceForPrintJob item = new ResourceForPrintJob
                 {

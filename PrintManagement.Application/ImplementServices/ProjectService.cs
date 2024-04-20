@@ -53,7 +53,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseProject>
                     {
                         Status =  StatusCodes.Status401Unauthorized,
-                        Message = "UnAuthenticated user",
+                        Message = "Người dùng chưa xác thực",
                         Data = null
                     };
                 }
@@ -62,7 +62,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseProject>
                     {
                         Status =  StatusCodes.Status403Forbidden,
-                        Message = "You do not have permission to perform this function",
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }
@@ -72,7 +72,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseProject>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Leader not found",
+                        Message = "Không tìm thấy leader",
                         Data = null
                     };
                 }
@@ -82,7 +82,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseProject>
                     {
                         Status = StatusCodes.Status400BadRequest,
-                        Message = "This person is not an employee in the technical department",
+                        Message = "Người dùng này không phải nhân viên phòng ban kĩ thuật",
                         Data = null
                     };
                 }
@@ -96,7 +96,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseProject>
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Message = "Customer not found",
+                        Message = "Không tìm thấy khách hàng",
                         Data = null
                     };
                 }
@@ -118,7 +118,7 @@ namespace PrintManagement.Application.ImplementServices
                 Notification notification = new Notification
                 {
                     IsActive = true,
-                    Content = $"You have been assigned a project {project.ProjectName} read the announcement for more details",
+                    Content = $"Bạn đã được phân công dự án {project.ProjectName} Vui lòng kiểm tra thông báo",
                     Link = "",
                     Id = Guid.NewGuid(),
                     IsSeen = false,
@@ -130,7 +130,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseProject>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Project created successfully",
+                    Message = "Tạo thông tin dự án thành công",
                     Data = _mapper.EntityToDTOForProject(project)
                 };
             }
@@ -152,11 +152,11 @@ namespace PrintManagement.Application.ImplementServices
                 var project = await _baseProjectRepository.GetByIDAsync(projectId);
                 if (project == null)
                 {
-                    return "Project not found";
+                    return "Không tìm thấy người dùng";
                 }
                 project.IsActive = false;
                 await _baseProjectRepository.UpdateAsync(project);
-                return "Project deleted successfully";
+                return "Dự án đã xóa thành công";
             }catch(Exception ex)
             {
                 return "Error: " + ex.Message;
@@ -205,7 +205,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseProject>
                     {
                         Data = null,
-                        Message = "Project not found",
+                        Message = "Không tìm thấy thông tin dự án",
                         Status = StatusCodes.Status404NotFound
                     };
                 }
@@ -215,7 +215,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseProject>
                     {
                         Data = null,
-                        Message = "Leader not found",
+                        Message = "Không tìm thấy thông tin leader",
                         Status = StatusCodes.Status404NotFound
                     };
                 }
@@ -229,7 +229,7 @@ namespace PrintManagement.Application.ImplementServices
                     return new ResponseObject<DataResponseProject>
                     {
                         Data = null,
-                        Message = "Customer not found",
+                        Message = "Không tìm thấy thông tin khách hàng",
                         Status = StatusCodes.Status404NotFound
                     };
                 }
@@ -243,7 +243,7 @@ namespace PrintManagement.Application.ImplementServices
                 Notification notification = new Notification
                 {
                     IsActive = true,
-                    Content = $"Project information {project.ProjectName} that you are the leader of has been updated! please check",
+                    Content = $"Thông tin dự án {project.ProjectName} mà bạn là leader có cập nhật! Vui lòng kiểm tra lại",
                     Link = "",
                     Id = Guid.NewGuid(),
                     IsSeen = false,
@@ -254,7 +254,7 @@ namespace PrintManagement.Application.ImplementServices
                 return new ResponseObject<DataResponseProject>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Project updated successfully",
+                    Message = "Tạo thông tin dự án thành công",
                     Data = _mapper.EntityToDTOForProject(project)
                 };
             }

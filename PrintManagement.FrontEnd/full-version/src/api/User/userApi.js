@@ -55,7 +55,28 @@ export const userApi = defineStore("user", {
       console.log(id);
       return new Promise((resolve, reject) => {
         axios
-          .get(`User/GetUserById/${id}`)
+          .get(`/User/GetUserById/${id}`)
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    getRolesByIdUser(id) {
+      console.log(id);
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`/Admin/GetRolesByUserId/${id}`, {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    getAllUserContainsLeaderRole() {
+      return new Promise((resolve, reject) => {
+        axios
+          .get("/User/GetAllUserContainsLeaderRole")
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

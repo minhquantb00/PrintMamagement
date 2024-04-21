@@ -26,11 +26,11 @@ export default [
   //   ],
   // },
   // {
-  //   title: 'User',
-  //   icon: { icon: 'tabler-users' },
+  //   title: "User",
+  //   icon: { icon: "tabler-users" },
   //   children: [
-  //     { title: 'List', to: 'apps-user-list' },
-  //     { title: 'View', to: { name: 'apps-user-view-id', params: { id: 21 } } },
+  //     { title: "List", to: "apps-user-list" },
+  //     { title: "View", to: { name: "apps-user-view" } },
   //   ],
   // },
   // {
@@ -119,15 +119,16 @@ export default [
   //     { title: 'Create Deal', to: { name: 'wizard-examples-create-deal' } },
   //   ],
   // },
-  {
-    // icons: "mail-opened",
-    title: "Dự án",
-    to: "wizard-examples-checkout" ,
-  },
-
   // {
-  //   title: 'Dialog Examples',
-  //   icon: { icon: 'tabler-square' },
-  //   to: 'pages-dialog-examples',
+  //   // icons: "mail-opened",
+  //   title: "Dự án",
+  //   to: "wizard-examples-checkout",
+  //   icon: { icon: "tabler-square" },
   // },
+
+  {
+    title: "Quản lí dự án",
+    icon: { icon: "tabler-square" },
+    to: "pages-dialog-examples",
+  },
 ];

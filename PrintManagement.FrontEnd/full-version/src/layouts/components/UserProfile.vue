@@ -14,6 +14,7 @@ const logout = () => {
 
   // Remove "accessToken" from localStorage
   localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken"); 
   router.push("/login").then(() => {
     // Remove "userAbilities" from localStorage
     localStorage.removeItem("userAbilities");
@@ -137,7 +138,9 @@ const userProfileList = [
             <VListItemTitle class="font-weight-medium">
               {{ userData.FullName || userData.Email }}
             </VListItemTitle>
-            <VListItemSubtitle style="font-size:11px">{{ userData.Email }}</VListItemSubtitle>
+            <VListItemSubtitle style="font-size: 11px">{{
+              userData.Email
+            }}</VListItemSubtitle>
           </VListItem>
 
           <PerfectScrollbar :options="{ wheelPropagation: false }">

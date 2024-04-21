@@ -12,22 +12,19 @@ const props = defineProps({
     type: null,
     required: false,
   },
-})
+});
 
-const emit = defineEmits(['update:selectedRadio'])
+const emit = defineEmits(["update:selectedRadio"]);
 
-const selectedOption = ref(structuredClone(toRaw(props.selectedRadio)))
+const selectedOption = ref(structuredClone(toRaw(props.selectedRadio)));
 
 watch(selectedOption, () => {
-  emit('update:selectedRadio', selectedOption.value)
-})
+  emit("update:selectedRadio", selectedOption.value);
+});
 </script>
 
 <template>
-  <VRadioGroup
-    v-if="props.radioContent"
-    v-model="selectedOption"
-  >
+  <VRadioGroup v-if="props.radioContent" v-model="selectedOption">
     <VRow>
       <VCol
         v-for="item in props.radioContent"
@@ -44,18 +41,23 @@ watch(selectedOption, () => {
           <slot :item="item">
             <div class="flex-grow-1">
               <div class="d-flex align-center mb-1">
-                <h6 class="cr-title text-base">
-                  {{ item.title }}
-                </h6>
-                <VSpacer />
-                <span
-                  v-if="item.subtitle"
-                  class="text-disabled text-base"
-                >{{ item.subtitle }}</span>
+                <VImg :src="item.src" style="width: 200px; height: 500px">
+                </VImg>
               </div>
-              <p class="text-sm mb-0">
-                {{ item.desc }}
-              </p>
+              <div class="mt-4">
+                <h4 class="mb-2">
+                  Người tạo:
+                  {{ item.user }}
+                </h4>
+                <h4 class="mb-2">
+                  Ngày tạo:
+                  {{ item.time }}
+                </h4>
+                <h4 class="mb-2">
+                  Trạng thái:
+                  {{ item.status }}
+                </h4>
+              </div>
             </div>
           </slot>
         </VLabel>

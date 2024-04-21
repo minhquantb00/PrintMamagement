@@ -8,257 +8,129 @@ const props = defineProps({
     type: null,
     required: true,
   },
-})
+});
 
-const emit = defineEmits([
-  'update:currentStep',
-  'update:checkout-data',
-])
+const emit = defineEmits(["update:currentStep", "update:checkout-data"]);
 
-const checkoutAddressDataLocal = ref(props.checkoutData)
+const checkoutAddressDataLocal = ref(props.checkoutData);
 
 const deliveryOptions = [
   {
-    icon: { icon: 'tabler-user' },
-    title: 'Standard',
-    desc: 'Get your product in 1 Week.',
-    value: 'free',
+    icon: { icon: "tabler-user" },
+    title: "Standard",
+    desc: "Get your product in 1 Week.",
+    value: "free",
   },
   {
-    icon: { icon: 'tabler-crown' },
-    title: 'Express',
-    desc: 'Get your product in 3-4 days.',
-    value: 'express',
+    icon: { icon: "tabler-crown" },
+    title: "Express",
+    desc: "Get your product in 3-4 days.",
+    value: "express",
   },
   {
-    icon: { icon: 'tabler-rocket' },
-    title: 'Overnight',
-    desc: 'Get your product in 1 day.',
-    value: 'overnight',
+    icon: { icon: "tabler-rocket" },
+    title: "Overnight",
+    desc: "Get your product in 1 day.",
+    value: "overnight",
   },
-]
+];
 
 const resolveAddressBadgeColor = {
-  home: 'primary',
-  office: 'success',
-}
+  home: "primary",
+  office: "success",
+};
 
 const resolveDeliveryBadgeData = {
   free: {
-    color: 'success',
-    price: 'Free',
+    color: "success",
+    price: "Free",
   },
   express: {
-    color: 'secondary',
+    color: "secondary",
     price: 10,
   },
   overnight: {
-    color: 'secondary',
+    color: "secondary",
     price: 15,
   },
-}
+};
 
 const totalPriceWithDeliveryCharges = computed(() => {
-  checkoutAddressDataLocal.value.deliveryCharges = 0
-  if (checkoutAddressDataLocal.value.deliverySpeed !== 'free')
-    checkoutAddressDataLocal.value.deliveryCharges = resolveDeliveryBadgeData[checkoutAddressDataLocal.value.deliverySpeed].price
-  
-  return checkoutAddressDataLocal.value.orderAmount + checkoutAddressDataLocal.value.deliveryCharges
-})
+  checkoutAddressDataLocal.value.deliveryCharges = 0;
+  if (checkoutAddressDataLocal.value.deliverySpeed !== "free")
+    checkoutAddressDataLocal.value.deliveryCharges =
+      resolveDeliveryBadgeData[
+        checkoutAddressDataLocal.value.deliverySpeed
+      ].price;
+
+  return (
+    checkoutAddressDataLocal.value.orderAmount +
+    checkoutAddressDataLocal.value.deliveryCharges
+  );
+});
 
 const updateAddressData = () => {
-  emit('update:checkout-data', checkoutAddressDataLocal.value)
-}
+  emit("update:checkout-data", checkoutAddressDataLocal.value);
+};
 
 const nextStep = () => {
-  updateAddressData()
-  emit('update:currentStep', props.currentStep ? props.currentStep + 1 : 1)
-}
+  updateAddressData();
+  emit("update:currentStep", props.currentStep ? props.currentStep + 1 : 1);
+};
 
-watch(() => props.currentStep, updateAddressData)
+watch(() => props.currentStep, updateAddressData);
 </script>
 
 <template>
   <VRow>
-    <VCol
-      cols="12"
-      md="8"
-    >
-      <!-- 👉 Address options -->
-      <h6 class="text-base font-weight-regular mb-4">
-        Select your preferable address
-      </h6>
-
+    <VCol cols="12" md="8">
       <!-- 👉 Address custom input -->
       <CustomRadios
         v-model:selected-radio="checkoutAddressDataLocal.deliveryAddress"
-        :radio-content="checkoutAddressDataLocal.addresses"
+        :radio-content="checkoutAddressDataLocal.thietKe"
         :grid-column="{ cols: '12', sm: '6' }"
       >
-        <template #default="{ item }">
-          <div class="w-100">
-            <div class="d-flex justify-space-between mb-3">
-              <h6 class="text-base font-weight-medium">
-                {{ item.title }}
-              </h6>
-
-              <VChip
-                :color="resolveAddressBadgeColor[item.value]"
-                label
-                class="text-capitalize"
-              >
-                {{ item.value }}
-              </VChip>
-            </div>
-
-            <p class="mb-0 text-sm">
-              {{ item.desc }}
-            </p>
-            <p class="text-sm">
-              Mobile: {{ item.subtitle }}
-            </p>
-            <VDivider />
-            <div class="pt-4">
-              <a
-                href="#"
-                class="me-3"
-              >Edit</a>
-              <a href="#">Remove</a>
-            </div>
-          </div>
-        </template>
       </CustomRadios>
 
       <!-- 👉 Add New Address -->
-      <VBtn
-        variant="tonal"
-        class="mt-5 mb-8"
-      >
-        Add New Address
+      <VBtn variant="tonal" class="mt-5 mb-8">
+        <v-icon
+          icon="mdi-folder-upload-outline"
+          style="font-size: 25px"
+          class="mr-2"
+        ></v-icon>
+        Tải file
       </VBtn>
-
-      <!-- 👉 Delivery options -->
-      <h6 class="text-base font-weight-regular mb-4">
-        Choose Delivery Speed
-      </h6>
-
-      <!-- 👉 Delivery options custom input -->
-      <CustomRadiosWithIcon
-        v-model:selected-radio="checkoutAddressDataLocal.deliverySpeed"
-        :radio-content="deliveryOptions"
-        :grid-column="{ cols: '12', sm: '4' }"
-      >
-        <template #default="{ item }">
-          <div class="d-flex flex-column align-center gap-2 w-100">
-            <div class="d-flex justify-end w-100 mb-n3">
-              <VChip
-                :color="resolveDeliveryBadgeData[item.value].color"
-                label
-              >
-                {{
-                  resolveDeliveryBadgeData[item.value].price === 'Free'
-                    ? resolveDeliveryBadgeData[item.value].price : `$${resolveDeliveryBadgeData[item.value].price}`
-                }}
-              </VChip>
-            </div>
-
-            <VIcon v-bind="item.icon" />
-
-            <h6 class="text-base font-weight-medium">
-              {{ item.title }}
-            </h6>
-            <p class="text-sm text-center mb-0">
-              {{ item.desc }}
-            </p>
-          </div>
-        </template>
-      </CustomRadiosWithIcon>
     </VCol>
 
-    <VCol
-      cols="12"
-      md="4"
-    >
-      <VCard
-        flat
-        variant="outlined"
-      >
+    <VCol cols="12" md="4">
+      <VCard flat variant="outlined">
         <!-- 👉 Delivery estimate date -->
-        <VCardText>
-          <h6 class="text-base font-weight-medium mb-5">
-            Estimated Delivery Date
-          </h6>
+        <VCardText >
+          <h6 class="text-base font-weight-medium mb-5">Thông tin dự án</h6>
 
-          <VList class="card-list">
+          <VList class="card-list bg-var-theme-background rounded pa-5">
             <VListItem
-              v-for="product in checkoutAddressDataLocal.cartItems"
-              :key="product.name"
+              v-for="product in checkoutAddressDataLocal.thietKe"
+              :key="product.value"
             >
-              <template #prepend>
-                <VImg
-                  width="60"
-                  :src="product.image"
-                  class="me-2"
-                />
-              </template>
-
-              <VListItemSubtitle>{{ product.name }}</VListItemSubtitle>
+              <VListItemSubtitle class="text-h6 mb-4"
+                >Khách hàng {{ product.khachHang }}</VListItemSubtitle
+              >
+              <span>Mô tả: </span>
               <span class="font-weight-medium text-sm">
-                {{ product.estimatedDelivery }}
+                {{ product.moTa }}
               </span>
             </VListItem>
           </VList>
         </VCardText>
-
-        <VDivider />
-
-        <!-- 👉 Price details -->
-        <VCardText>
-          <h6 class="text-base font-weight-medium mb-5">
-            Price Details
-          </h6>
-
-          <div class="d-flex align-center justify-space-between mb-2">
-            <span class="text-high-emphasis">Order Total</span>
-            <span>${{ checkoutAddressDataLocal.orderAmount }}</span>
-          </div>
-
-          <div class="d-flex align-center justify-space-between">
-            <span class="text-high-emphasis">Delivery Charges</span>
-            <div class="text-end">
-              <span
-                v-if="checkoutAddressDataLocal.deliverySpeed === 'free'"
-                class="text-decoration-line-through me-1 text-disabled"
-              > $5.00 </span>
-
-              <VChip
-                v-if="checkoutAddressDataLocal.deliverySpeed === 'free'"
-                color="success"
-                label
-              >
-                Free
-              </VChip>
-              <span v-else>${{ resolveDeliveryBadgeData[checkoutAddressDataLocal.deliverySpeed ].price }}.00</span>
-            </div>
-          </div>
-        </VCardText>
-
-        <VDivider />
-
-        <VCardText class="d-flex align-center justify-space-between text-high-emphasis py-3">
-          <span class="text-base font-weight-medium">Total</span>
-          <span class="text-base font-weight-medium">
-            ${{ totalPriceWithDeliveryCharges }}
-          </span>
-        </VCardText>
       </VCard>
 
-      <VBtn
-        block
-        class="mt-4"
-        @click="nextStep"
-      >
-        Place Order
+      <VBtn block class="mt-4" @click="nextStep">
+        In ấn <v-icon icon=" mdi-arrow-right" class="ml-3"></v-icon>
+      </VBtn>
+      <VBtn block variant="outlined" class="mt-4" @click="nextStep">
+        Không phê duyệt
       </VBtn>
     </VCol>
   </VRow>

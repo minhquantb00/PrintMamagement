@@ -72,6 +72,7 @@ const isCardDetailsVisible = ref(false);
                 v-bind="activatorProps"
                 style="font-size: 20px"
                 density="comfortable"
+                @click="findByIdUser(user.id)"
                 icon="mdi-pencil-outline"
                 class="mr-4"
               ></v-btn>
@@ -82,22 +83,25 @@ const isCardDetailsVisible = ref(false);
                 <div class="text-center mb-4">
                   <h2>Cập nhật nhân viên</h2>
                 </div>
-                <v-select
+                <VSelect
                   class="mb-6"
                   clearable
-                  chips
+                  v-model="selectedRoles"
                   label="Quyền hạn"
                   :items="dataRoles"
-                  item-title="roleCode"
+                  item-title="roleName"
                   item-value="id"
+                  :chips="true"
                   multiple
-                  variant="outlined"
-                ></v-select>
+                  v-if="updateUserRoles.length > 0"
+                >
+                </VSelect>
                 <v-select
                   class="mb-6"
                   clearable
                   label="Phòng ban"
                   :items="dataTeam"
+                  v-model="updateUser.teamName"
                   item-title="name"
                   item-value="id"
                   variant="outlined"
@@ -170,7 +174,10 @@ export default {
       authApi: authApi(),
       dataUser: [],
       dataTeam: [],
+      selectedRoles: [],
       dataRoles: [],
+      updateUser: {},
+      updateUserRoles: [],
       searchQuery: "",
       filterUser: {
         email: "",
@@ -189,11 +196,43 @@ export default {
     console.log(this.dataTeam);
     const dataRoles = await this.authApi.getAllRoles();
     this.dataRoles = dataRoles.data;
+    console.log(this.dataRoles);
   },
   methods: {
     async filterUsers() {
       const res = await this.userApi.filterUser(this.filterUser);
       this.dataUser = res.data;
+    },
+    async findByIdUser(id) {
+      try {
+        const res = await this.userApi.getUserById(id);
+        this.updateUser = res.data;
+
+        const getByRolesUserId = await this.userApi.getRolesByIdUser(id);
+        this.updateUserRoles = getByRolesUserId.data;
+
+        // Loop through updateUserRoles to check if each role exists in dataRoles
+        this.updateUserRoles.forEach((role) => {
+          const foundRole = this.dataRoles.find((item) => item.id === role.id);
+          if (foundRole) {
+            // If the role exists in dataRoles, add it to selectedRoles
+            this.selectedRoles.push(foundRole.id);
+          }
+        });
+
+        console.log("update");
+        console.log(this.updateUserRoles);
+      } catch (error) {
+        console.error("Error while fetching user data:", error);
+      }
+    },
+  },
+  watch: {
+    updateUserRoles: {
+      handler() {
+        this.selectedRoles = this.updateUserRoles;
+      },
+      immediate: true,
     },
   },
 };

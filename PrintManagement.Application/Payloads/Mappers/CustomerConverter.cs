@@ -23,7 +23,8 @@ namespace PrintManagement.Application.Payloads.Mappers
                 Address = customer.Address,
                 FullName = customer.FullName,
                 Id = customer.Id,
-                PhoneNumber = customer.PhoneNumber
+                PhoneNumber = customer.PhoneNumber,
+                Email = customer.Email,
             };
         }
     }

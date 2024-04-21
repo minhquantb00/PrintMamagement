@@ -38,8 +38,12 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Customer> _customerRepository;
         private readonly IEmailService _emailService;
         private readonly DesignConverter _designConverter;
+        private readonly IBaseReposiroty<KeyPerformanceIndicators> _keyPerformanceIndicatorsRepository;
+        private readonly IBaseReposiroty<Resource> _resourceRepo;
+        private readonly IBaseReposiroty<ResourceProperty> _resourcePropertyRepo;
+        private readonly IBaseReposiroty<ResourceType> _resourceTypeRepo;
 
-        public PrintJobService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<PrintJob> basePrintJobRepository, IBaseReposiroty<ResourceForPrintJob> baseResourceForPrintJobRepository, IBaseReposiroty<ResourcePropertyDetail> baseResourceRepository, IHttpContextAccessor contextAccessor, PrintJobConverter printerConverter, IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<Notification> notificationRepository, IBaseReposiroty<Permissions> permissionsRepository, IBaseReposiroty<Role> roleRepository, IAuthService authService, IUserRepository<User> userRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, IBaseReposiroty<Customer> customerRepository, IEmailService emailService, DesignConverter designConverter, ResourceForPrintJobConverter resourceForPrintJobConverter)
+        public PrintJobService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<PrintJob> basePrintJobRepository, IBaseReposiroty<ResourceForPrintJob> baseResourceForPrintJobRepository, IBaseReposiroty<ResourcePropertyDetail> baseResourceRepository, IHttpContextAccessor contextAccessor, PrintJobConverter printerConverter, IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<Notification> notificationRepository, IBaseReposiroty<Permissions> permissionsRepository, IBaseReposiroty<Role> roleRepository, IAuthService authService, IUserRepository<User> userRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, IBaseReposiroty<Customer> customerRepository, IEmailService emailService, DesignConverter designConverter, ResourceForPrintJobConverter resourceForPrintJobConverter, IBaseReposiroty<KeyPerformanceIndicators> keyPerformanceIndicatorsRepository, IBaseReposiroty<Resource> resourceRepo, IBaseReposiroty<ResourceProperty> resourcePropertyRepo, IBaseReposiroty<ResourceType> resourceTypeRepo)
         {
             _baseUserRepository = baseUserRepository;
             _baseProjectRepository = baseProjectRepository;
@@ -60,6 +64,10 @@ namespace PrintManagement.Application.ImplementServices
             _emailService = emailService;
             _designConverter = designConverter;
             _resourceForPrintJobConverter = resourceForPrintJobConverter;
+            _keyPerformanceIndicatorsRepository = keyPerformanceIndicatorsRepository;
+            _resourcePropertyRepo = resourcePropertyRepo;
+            _resourceRepo = resourceRepo;
+            _resourceTypeRepo = resourceTypeRepo;
         }
 
         public async Task<ResponseObject<DataResponsePrintJob>> ConfirmDonePrintJob(Guid printJobId)
@@ -99,7 +107,7 @@ namespace PrintManagement.Application.ImplementServices
                 printJob.PrintJobStatus = Domain.Enumerates.PrintJobStatusEnum.Completed;
                 await _basePrintJobRepository.UpdateAsync(printJob);
 
-
+                
 
                 var project = await _baseProjectRepository.GetByIDAsync(design.ProjectId);
                 if (project == null)
@@ -113,7 +121,33 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Completed;
                 project.Progress = 100;
+                project.ActualEndDate = DateTime.Now;
                 await _baseProjectRepository.UpdateAsync(project);
+                var resourceForProject = await _baseResourceForPrintJobRepository.GetAllAsync(x => x.PrintJobId == printJobId);
+                foreach(var resource in resourceForProject)
+                {
+                    var resourceDetail = await _baseResourceRepository.GetAsync(x => x.Id == resource.ResourcePropertyDetailId);
+                    project.StartingPrice += resourceDetail.Price * resourceDetail.Quantity;
+                }
+                await _baseProjectRepository.UpdateAsync(project);
+                var kpi = await _keyPerformanceIndicatorsRepository.GetAsync(x => x.EmployeeId == project.EmployeeCreateId);
+                kpi.ActuallyAchieved += 1;
+                await _keyPerformanceIndicatorsRepository.UpdateAsync(kpi);
+                if(kpi.ActuallyAchieved >= kpi.Target)
+                {
+                    kpi.AchieveKPI = true;
+                    await _keyPerformanceIndicatorsRepository.UpdateAsync(kpi);
+                    Notification notification = new Notification
+                    {
+                        IsActive = true,
+                        Content = $"Chúc mừng bạn đã hoàn thành KPI! chúng tôi sẽ có hình thức khen thưởng đối với bạn",
+                        Id = Guid.NewGuid(),
+                        IsSeen = false,
+                        Link = "",
+                        UserId = project.EmployeeCreateId
+                    };
+                    notification = await _notificationRepository.CreateAsync(notification);
+                }
 
                 var listUsers = await _baseUserRepository.GetAllAsync(x => x.IsActive == true);
                 List<User> users = new List<User>();
@@ -287,14 +321,30 @@ namespace PrintManagement.Application.ImplementServices
                 {
                     throw new ArgumentException("Hết hàng");
                 }
+                if(request.Quantity > resource.Quantity)
+                {
+                    throw new ArgumentException("Không đủ số lượng");
+                }
                 ResourceForPrintJob item = new ResourceForPrintJob
                 {
                     IsActive = true,
                     Id = Guid.NewGuid(),
                     PrintJobId = printJobId,
+                    Quantity = request.Quantity,
                     ResourcePropertyDetailId = request.ResourcePropertyDetailId
                 };
                 item = await _baseResourceForPrintJobRepository.CreateAsync(item);
+                var resourceProperty = await _resourcePropertyRepo.GetAsync(x => x.Id == resource.ResourcePropertyId);
+                var resourceItem = await _resourceRepo.GetAsync(x => x.Id == resourceProperty.ResourceId);
+                var resourceType = await _resourceTypeRepo.GetAsync(x => x.Id == resourceItem.ResourceTypeId);
+                if (!resourceType.NameOfResourceType.Equals("Machines"))
+                {
+                    resource.Quantity -= request.Quantity;
+                    await _baseResourceRepository.UpdateAsync(resource);
+
+                    resourceItem.AvailableQuantity -= request.Quantity;
+                    await _resourceRepo.UpdateAsync(resourceItem);
+                }
                 listResult.Add(item);
             }
             return listResult;

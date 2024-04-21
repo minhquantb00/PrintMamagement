@@ -22,13 +22,15 @@ namespace PrintManagement.Application.ImplementServices
         private readonly TeamConverter _converter;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IUserRepository<User> _userRepository;
-        public TeamService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> baseTeamRepository, TeamConverter converter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository)
+        private readonly IBaseReposiroty<Notification> _notificationRepository;
+        public TeamService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> baseTeamRepository, TeamConverter converter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<Notification> notificationRepository)
         {
             _baseUserRepository = baseUserRepository;
             _baseTeamRepository = baseTeamRepository;
             _converter = converter;
             _contextAccessor = contextAccessor;
             _userRepository = userRepository;
+            _notificationRepository = notificationRepository;
         }
 
         public async Task<string> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request)
@@ -188,6 +190,18 @@ namespace PrintManagement.Application.ImplementServices
                     NumberOfMember = 0
                 };
                 team = await _baseTeamRepository.CreateAsync(team);
+
+                Notification notification = new Notification
+                {
+                    IsActive = true,
+                    Content = $"Bạn đã được chuyển lên làm quản lý của phòng ban {team.Name}!",
+                    Id = Guid.NewGuid(),
+                    IsSeen = false,
+                    Link = "",
+                    UserId = manager.Id
+                };
+                notification = await _notificationRepository.CreateAsync(notification);
+
                 return new ResponseObject<DataResponseTeam>
                 {
                     Status = StatusCodes.Status200OK,
@@ -261,15 +275,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if (!currentUser.IsInRole("Admin"))
-                {
-                    return new ResponseObject<DataResponseTeam>
-                    {
-                        Status = StatusCodes.Status403Forbidden,
-                        Message = "Bạn không có quyền thực hiện chức năng này",
-                        Data = null
-                    };
-                }
+                
                 var manager = await _baseUserRepository.GetByIDAsync(request.ManagerId);
                 if (manager == null)
                 {
@@ -289,7 +295,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-
+                var user = await _baseUserRepository.GetAsync(x => x.Id == Guid.Parse(currentUser.FindFirst("Id").Value));
                 var team = await _baseTeamRepository.GetByIDAsync(request.ManagerId);
                 if(team == null)
                 {
@@ -297,6 +303,15 @@ namespace PrintManagement.Application.ImplementServices
                     {
                         Status = StatusCodes.Status404NotFound,
                         Message = "Không tìm thấy phòng ban",
+                        Data = null
+                    };
+                }
+                if (!currentUser.IsInRole("Admin") && !currentUser.IsInRole("Manager") && team.ManagerId != user.Id)
+                {
+                    return new ResponseObject<DataResponseTeam>
+                    {
+                        Status = StatusCodes.Status403Forbidden,
+                        Message = "Bạn không có quyền thực hiện chức năng này",
                         Data = null
                     };
                 }

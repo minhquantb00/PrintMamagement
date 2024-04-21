@@ -46,7 +46,8 @@ namespace PrintManagement.Api.Controllers
         private readonly IDeliveryService _deliveryService;
         private readonly IShippingMethodService _shipService;
         private readonly IKPIService _KPService;
-        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService, IDeliveryService deliveryService, IShippingMethodService shipService, IKPIService kPIService)
+        private readonly IResourceTypeService _resourceTypeService;
+        public AdminController(ICustomerService customerService, IProjectService projectService, IDesignService designService, IAuthService authService, IResourceService resourceService, IImportCouponService importCouponService, ITeamService teamService, IPrintJobService printJobService, IDeliveryService deliveryService, IShippingMethodService shipService, IKPIService kPIService, IResourceTypeService resourceTypeService)
         {
             _customerService = customerService;
             _projectService = projectService;
@@ -59,6 +60,7 @@ namespace PrintManagement.Api.Controllers
             _deliveryService = deliveryService;
             _shipService = shipService;
             _KPService = kPIService;
+            _resourceTypeService = resourceTypeService;
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -90,7 +92,8 @@ namespace PrintManagement.Api.Controllers
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CreateProject(Request_CreateProject request)
+        [Consumes(contentType: "multipart/form-data")]
+        public async Task<IActionResult> CreateProject([FromForm] Request_CreateProject request)
         {
             return Ok(await _projectService.CreateProject(request));
         }
@@ -281,6 +284,22 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> CreateKPIForEmployee(Request_CreateKPI request)
         {
             return Ok(await _KPService.CreateKPIForEmployee(request));
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreateResourceType(Request_CreateResourceType request)
+        {
+            return Ok(await _resourceTypeService.CreateResourceType(request));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllResourceType()
+        {
+            return Ok(await _resourceTypeService.GetAllResourceType());
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetResourceTypeById([FromRoute] Guid id)
+        {
+            return Ok(await _resourceTypeService.GetResourceTypeById(id));
         }
     }
 }

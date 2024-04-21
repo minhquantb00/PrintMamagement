@@ -16,6 +16,9 @@ namespace PrintManagement.Domain.Entities
         public Guid LeaderId { get; set; }
         public virtual User? Leader { get; set; }
         public DateTime ExpectedEndDate { get; set; }
+        public string? ImageDescription { get; set; }
+        public Guid EmployeeCreateId { get; set; }
+        public decimal? StartingPrice { get; set; }
         public DateTime? ActualEndDate { get; set; }
         public Guid CustomerId { get; set; }
         public virtual Customer? Customer { get; set; }

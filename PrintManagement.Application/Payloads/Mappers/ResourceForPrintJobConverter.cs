@@ -25,6 +25,7 @@ namespace PrintManagement.Application.Payloads.Mappers
             {
                 Id = resourceForPrintJob.Id,
                 Resource = _converter.EntityToDTO(_repository.GetAsync(x => x.Id == resourceForPrintJob.ResourcePropertyDetailId).Result),
+                Quantity = resourceForPrintJob.Quantity,
             };
         }
     }

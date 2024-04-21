@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using PrintManagement.Application.Handle.HandleFile;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
@@ -109,9 +110,11 @@ namespace PrintManagement.Application.ImplementServices
                     Id = Guid.NewGuid(),
                     LeaderId = request.LeaderId,
                     ProjectName = request.ProjectName,
+                    ImageDescription = await HandleUploadFile.Upfile(request.ImageDescription),
                     ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Initialization,
                     RequestDescriptionFromCustomer = request.RequestDescriptionFromCustomer,
-                    StartDate = DateTime.Now
+                    StartDate = DateTime.Now,
+                    StartingPrice = request.StartingPrice
                 };
                 project = await _baseProjectRepository.CreateAsync(project);
 

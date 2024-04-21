@@ -1,4 +1,5 @@
-﻿using PrintManagement.Domain.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using PrintManagement.Domain.Entities;
 using PrintManagement.Domain.Enumerates;
 using System;
 using System.Collections.Generic;
@@ -23,5 +24,7 @@ namespace PrintManagement.Application.Payloads.RequestModels.ProjectRequests
         public DateTime ExpectedEndDate { get; set; }
         [Required]
         public Guid CustomerId { get; set; }
+        public decimal? StartingPrice { get; set; }
+        public IFormFile ImageDescription { get; set; }
     }
 }

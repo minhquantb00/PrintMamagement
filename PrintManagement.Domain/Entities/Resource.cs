@@ -9,6 +9,8 @@ namespace PrintManagement.Domain.Entities
 {
     public class Resource : BaseEntity
     {
+        public Guid ResourceTypeId { get; set; }
+        public virtual ResourceType? ResourceType { get; set; }
         public string ResourceName { get; set; }
         public int AvailableQuantity { get; set; }
         public string Image { get; set; }

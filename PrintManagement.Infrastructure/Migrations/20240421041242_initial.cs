@@ -17,6 +17,7 @@ namespace PrintManagement.Infrastructure.Migrations
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -25,19 +26,16 @@ namespace PrintManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Resources",
+                name: "ResourceTypes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AvailableQuantity = table.Column<int>(type: "int", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResourceStatus = table.Column<int>(type: "int", nullable: true),
+                    NameOfResourceType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Resources", x => x.Id);
+                    table.PrimaryKey("PK_ResourceTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,52 +84,24 @@ namespace PrintManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ResourceProperties",
+                name: "Resources",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResourcePropertyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    ResourceTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AvailableQuantity = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResourceStatus = table.Column<int>(type: "int", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ResourceProperties", x => x.Id);
+                    table.PrimaryKey("PK_Resources", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ResourceProperties_Resources_ResourceId",
-                        column: x => x.ResourceId,
-                        principalTable: "Resources",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Deliveries",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ShippingMethodId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DeliveryAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EstimateDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ActualDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeliveryStatus = table.Column<int>(type: "int", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Deliveries", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Deliveries_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Deliveries_ShippingMethods_ShippingMethodId",
-                        column: x => x.ShippingMethodId,
-                        principalTable: "ShippingMethods",
+                        name: "FK_Resources_ResourceTypes_ResourceTypeId",
+                        column: x => x.ResourceTypeId,
+                        principalTable: "ResourceTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -165,24 +135,22 @@ namespace PrintManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ResourcePropertyDetails",
+                name: "ResourceProperties",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResourcePropertyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResourcePropertyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ResourcePropertyDetails", x => x.Id);
+                    table.PrimaryKey("PK_ResourceProperties", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ResourcePropertyDetails_ResourceProperties_ResourcePropertyId",
-                        column: x => x.ResourcePropertyId,
-                        principalTable: "ResourceProperties",
+                        name: "FK_ResourceProperties_Resources_ResourceId",
+                        column: x => x.ResourceId,
+                        principalTable: "Resources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -214,7 +182,6 @@ namespace PrintManagement.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     IndicatorName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Target = table.Column<int>(type: "int", nullable: false),
                     ActuallyAchieved = table.Column<int>(type: "int", nullable: false),
@@ -226,10 +193,11 @@ namespace PrintManagement.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_KeyPerformanceIndicators", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_KeyPerformanceIndicators_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_KeyPerformanceIndicators_Users_EmployeeId",
+                        column: x => x.EmployeeId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -291,6 +259,9 @@ namespace PrintManagement.Infrastructure.Migrations
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LeaderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ExpectedEndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ImageDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmployeeCreateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     ActualEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Progress = table.Column<double>(type: "float", nullable: true),
@@ -335,32 +306,24 @@ namespace PrintManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImportCoupons",
+                name: "ResourcePropertyDetails",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TotalMoney = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ResourcePropertyDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResourcePropertyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    TradingCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImportCoupons", x => x.Id);
+                    table.PrimaryKey("PK_ResourcePropertyDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ImportCoupons_ResourcePropertyDetails_ResourcePropertyDetailId",
-                        column: x => x.ResourcePropertyDetailId,
-                        principalTable: "ResourcePropertyDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ImportCoupons_Users_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Users",
+                        name: "FK_ResourcePropertyDetails_ResourceProperties_ResourcePropertyId",
+                        column: x => x.ResourcePropertyId,
+                        principalTable: "ResourceProperties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -435,27 +398,45 @@ namespace PrintManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DeliveryProjects",
+                name: "Deliveries",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ShippingMethodId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DeliverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DeliveryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DeliveryAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EstimateDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActualDeliveryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeliveryStatus = table.Column<int>(type: "int", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DeliveryProjects", x => x.Id);
+                    table.PrimaryKey("PK_Deliveries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DeliveryProjects_Deliveries_DeliveryId",
-                        column: x => x.DeliveryId,
-                        principalTable: "Deliveries",
+                        name: "FK_Deliveries_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DeliveryProjects_Projects_ProjectId",
+                        name: "FK_Deliveries_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Deliveries_ShippingMethods_ShippingMethodId",
+                        column: x => x.ShippingMethodId,
+                        principalTable: "ShippingMethods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Deliveries_Users_DeliverId",
+                        column: x => x.DeliverId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -491,6 +472,57 @@ namespace PrintManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImportCoupons",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TotalMoney = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ResourcePropertyDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    TradingCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImportCoupons", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ImportCoupons_ResourcePropertyDetails_ResourcePropertyDetailId",
+                        column: x => x.ResourcePropertyDetailId,
+                        principalTable: "ResourcePropertyDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ImportCoupons_Users_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConfirmReceiptOfGoodsFromCustomers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DeliveryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ConfirmReceiptOfGoods = table.Column<int>(type: "int", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConfirmReceiptOfGoodsFromCustomers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ConfirmReceiptOfGoodsFromCustomers_Deliveries_DeliveryId",
+                        column: x => x.DeliveryId,
+                        principalTable: "Deliveries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PrintJobs",
                 columns: table => new
                 {
@@ -516,6 +548,7 @@ namespace PrintManagement.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ResourcePropertyDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     PrintJobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -557,6 +590,11 @@ namespace PrintManagement.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConfirmReceiptOfGoodsFromCustomers_DeliveryId",
+                table: "ConfirmReceiptOfGoodsFromCustomers",
+                column: "DeliveryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CustomerFeedbacks_ProjectId",
                 table: "CustomerFeedbacks",
                 column: "ProjectId");
@@ -572,19 +610,19 @@ namespace PrintManagement.Infrastructure.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Deliveries_DeliverId",
+                table: "Deliveries",
+                column: "DeliverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Deliveries_ProjectId",
+                table: "Deliveries",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Deliveries_ShippingMethodId",
                 table: "Deliveries",
                 column: "ShippingMethodId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DeliveryProjects_DeliveryId",
-                table: "DeliveryProjects",
-                column: "DeliveryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DeliveryProjects_ProjectId",
-                table: "DeliveryProjects",
-                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Designs_DesignerId",
@@ -607,9 +645,9 @@ namespace PrintManagement.Infrastructure.Migrations
                 column: "ResourcePropertyDetailId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_KeyPerformanceIndicators_UserId",
+                name: "IX_KeyPerformanceIndicators_EmployeeId",
                 table: "KeyPerformanceIndicators",
-                column: "UserId");
+                column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
@@ -667,6 +705,11 @@ namespace PrintManagement.Infrastructure.Migrations
                 column: "ResourcePropertyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Resources_ResourceTypeId",
+                table: "Resources",
+                column: "ResourceTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_TeamId",
                 table: "Users",
                 column: "TeamId");
@@ -681,10 +724,10 @@ namespace PrintManagement.Infrastructure.Migrations
                 name: "ConfirmEmails");
 
             migrationBuilder.DropTable(
-                name: "CustomerFeedbacks");
+                name: "ConfirmReceiptOfGoodsFromCustomers");
 
             migrationBuilder.DropTable(
-                name: "DeliveryProjects");
+                name: "CustomerFeedbacks");
 
             migrationBuilder.DropTable(
                 name: "ImportCoupons");
@@ -736,6 +779,9 @@ namespace PrintManagement.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "ResourceTypes");
 
             migrationBuilder.DropTable(
                 name: "Teams");

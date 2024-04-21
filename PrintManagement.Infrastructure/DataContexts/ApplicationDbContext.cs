@@ -37,6 +37,7 @@ namespace PrintManagement.Infrastructure.DataContexts
         public virtual DbSet<ShippingMethod> ShippingMethods { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<ConfirmReceiptOfGoodsFromCustomer> ConfirmReceiptOfGoodsFromCustomers { get; set; }
+        public virtual DbSet<ResourceType> ResourceTypes { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
         //protected override void OnModelCreating(ModelBuilder builder)
         //{

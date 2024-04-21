@@ -46,7 +46,7 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 var user = await _baseUserRepository.GetAsync(x => x.Id == Guid.Parse(currentUser.FindFirst("Id").Value));
                 var team = await _teamRepository.GetAsync(x => x.Id == user.TeamId);
-                if (!currentUser.IsInRole("Manager") || !team.Name.Equals("Delivery"))
+                if (!currentUser.IsInRole("Manager") || !team.Name.Equals("Delivery") || team.ManagerId != user.Id)
                 {
                     return new ResponseObject<DataResponseShippingMethod>
                     {

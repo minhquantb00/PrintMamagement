@@ -24,7 +24,8 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<ResourceProperty> _baseResourcePropertyRepository;
         private readonly ResourcePropertyConverter _resourcePropertyConverter;
         private readonly IBaseReposiroty<ResourcePropertyDetail> _baseResourcePropertyDetailRepository;
-        public ResourceService(IHttpContextAccessor contextAccessor, IBaseReposiroty<Resource> baseResourceRepository, ResourceConverter converter, IBaseReposiroty<ResourceProperty> baseResourcePropertyRepository, ResourcePropertyConverter resourcePropertyConverter, IBaseReposiroty<ResourcePropertyDetail> baseResourcePropertyDetailRepository)
+        private readonly IBaseReposiroty<ResourceType> _resourceTypeRepository;
+        public ResourceService(IHttpContextAccessor contextAccessor, IBaseReposiroty<Resource> baseResourceRepository, ResourceConverter converter, IBaseReposiroty<ResourceProperty> baseResourcePropertyRepository, ResourcePropertyConverter resourcePropertyConverter, IBaseReposiroty<ResourcePropertyDetail> baseResourcePropertyDetailRepository, IBaseReposiroty<ResourceType> resourceTypeRepository)
         {
             _contextAccessor = contextAccessor;
             _baseResourceRepository = baseResourceRepository;
@@ -32,6 +33,7 @@ namespace PrintManagement.Application.ImplementServices
             _baseResourcePropertyRepository = baseResourcePropertyRepository;
             _resourcePropertyConverter = resourcePropertyConverter;
             _baseResourcePropertyDetailRepository = baseResourcePropertyDetailRepository;
+            _resourceTypeRepository = resourceTypeRepository;
         }
         public async Task<ResponseObject<DataResponseResource>> CreateResourceInformation(Request_CreateResource request)
         {
@@ -56,6 +58,16 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
+                var resourceType = await _resourceTypeRepository.GetByIDAsync(request.ResourceTypeId);
+                if(resourceType == null)
+                {
+                    return new ResponseObject<DataResponseResource>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "Loại tài nguyên không tồn tại",
+                        Data = null
+                    };
+                }
                 var resource = new Resource
                 {
                     AvailableQuantity = 0,
@@ -64,6 +76,7 @@ namespace PrintManagement.Application.ImplementServices
                     Image = await HandleUploadFile.WriteFile(request.Image),
                     ResourceName = request.ResourceName,
                     ResourceProperties = null,
+                    ResourceTypeId = request.ResourceTypeId,
                     ResourceStatus = Domain.Enumerates.ResourceStatusEnum.OutOfStock
                 };
                 resource = await _baseResourceRepository.CreateAsync(resource);

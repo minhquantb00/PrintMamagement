@@ -437,8 +437,14 @@ namespace PrintManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("EmployeeCreateId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("ExpectedEndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageDescription")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -462,6 +468,9 @@ namespace PrintManagement.Infrastructure.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("StartingPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -518,7 +527,12 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.Property<int?>("ResourceStatus")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ResourceTypeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ResourceTypeId");
 
                     b.ToTable("Resources");
                 });
@@ -534,6 +548,9 @@ namespace PrintManagement.Infrastructure.Migrations
 
                     b.Property<Guid>("PrintJobId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ResourcePropertyDetailId")
                         .HasColumnType("uniqueidentifier");
@@ -604,6 +621,24 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.HasIndex("ResourcePropertyId");
 
                     b.ToTable("ResourcePropertyDetails");
+                });
+
+            modelBuilder.Entity("PrintManagement.Domain.Entities.ResourceType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NameOfResourceType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ResourceTypes");
                 });
 
             modelBuilder.Entity("PrintManagement.Domain.Entities.Role", b =>
@@ -956,6 +991,17 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PrintManagement.Domain.Entities.Resource", b =>
+                {
+                    b.HasOne("PrintManagement.Domain.Entities.ResourceType", "ResourceType")
+                        .WithMany("Resources")
+                        .HasForeignKey("ResourceTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ResourceType");
+                });
+
             modelBuilder.Entity("PrintManagement.Domain.Entities.ResourceForPrintJob", b =>
                 {
                     b.HasOne("PrintManagement.Domain.Entities.PrintJob", "PrintJob")
@@ -1047,6 +1093,11 @@ namespace PrintManagement.Infrastructure.Migrations
                     b.Navigation("ImportCoupons");
 
                     b.Navigation("ResourceForPrintJobs");
+                });
+
+            modelBuilder.Entity("PrintManagement.Domain.Entities.ResourceType", b =>
+                {
+                    b.Navigation("Resources");
                 });
 
             modelBuilder.Entity("PrintManagement.Domain.Entities.ShippingMethod", b =>

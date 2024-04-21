@@ -45,6 +45,9 @@ namespace PrintManagement.Application.Payloads.Mappers
                 ProjectStatus = project.ProjectStatus.ToString(),
                 RequestDescriptionFromCustomer = project.RequestDescriptionFromCustomer,
                 StartDate = project.StartDate,
+                StartingPrice = project.StartingPrice,
+                ImageDescription = project.ImageDescription,
+                EmployeeCreateName = _baseUserRepository.GetAsync(x => x.Id == project.EmployeeCreateId).Result.FullName,
                 Designs = _baseDesignRepository.GetAllAsync(x => x.IsActive == true).Result.Select(x => _designConverter.EntityToDTOForDesign(x))
             };
         }

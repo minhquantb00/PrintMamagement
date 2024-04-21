@@ -11,5 +11,6 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataPrintJob
     public class DataResponseResourceForPrintJob : DataResponseBase
     {
         public DataResponseResourcePropertyDetail Resource { get; set; }
+        public int Quantity { get; set; }
     }
 }

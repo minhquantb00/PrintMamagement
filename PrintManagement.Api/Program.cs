@@ -85,6 +85,7 @@ builder.Services.AddScoped<IBaseReposiroty<Delivery>, BaseRepository<Delivery>>(
 builder.Services.AddScoped<IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer>, BaseRepository<ConfirmReceiptOfGoodsFromCustomer>>();
 builder.Services.AddScoped<IBaseReposiroty<KeyPerformanceIndicators>, BaseRepository<KeyPerformanceIndicators>>();
 builder.Services.AddScoped<IBaseReposiroty<ResourceType>, BaseRepository<ResourceType>>();
+builder.Services.AddScoped<IBaseReposiroty<Bill>,  BaseRepository<Bill>>();
 #endregion
 
 #region Khác

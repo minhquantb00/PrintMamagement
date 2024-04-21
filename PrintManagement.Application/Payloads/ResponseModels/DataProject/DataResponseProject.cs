@@ -23,7 +23,7 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataProject
         public DataResponseCustomer Customer { get; set; }
         public string EmployeeCreateName { get; set; }
         public string ImageDescription { get; set; }
-        public decimal? StartingPrice { get; set; }
+        public decimal StartingPrice { get; set; }
         public double? Progress { get; set; }
         public string ProjectStatus { get; set; }
         public IQueryable<DataResponseDesign> Designs { get; set; }

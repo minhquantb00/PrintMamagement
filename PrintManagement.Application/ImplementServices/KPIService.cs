@@ -60,7 +60,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if(!((currentUser.IsInRole("Manager") && team.Name.Equals("Sales")))){
+                if(!((currentUser.IsInRole("Manager") && team.Name.Equals("Sales")) && team.ManagerId != user.Id)){
                     return new ResponseObject<DataResponseKPI>
                     {
                         Status = StatusCodes.Status403Forbidden,

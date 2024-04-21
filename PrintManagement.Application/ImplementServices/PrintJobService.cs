@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Org.BouncyCastle.Asn1.Ocsp;
 using PrintManagement.Application.Handle.HandleEmail;
+using PrintManagement.Application.Handle.HandleTemplate;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.PrintJobRequests;
@@ -42,8 +43,9 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Resource> _resourceRepo;
         private readonly IBaseReposiroty<ResourceProperty> _resourcePropertyRepo;
         private readonly IBaseReposiroty<ResourceType> _resourceTypeRepo;
+        private readonly IBaseReposiroty<Bill> _billRepository;
 
-        public PrintJobService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<PrintJob> basePrintJobRepository, IBaseReposiroty<ResourceForPrintJob> baseResourceForPrintJobRepository, IBaseReposiroty<ResourcePropertyDetail> baseResourceRepository, IHttpContextAccessor contextAccessor, PrintJobConverter printerConverter, IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<Notification> notificationRepository, IBaseReposiroty<Permissions> permissionsRepository, IBaseReposiroty<Role> roleRepository, IAuthService authService, IUserRepository<User> userRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, IBaseReposiroty<Customer> customerRepository, IEmailService emailService, DesignConverter designConverter, ResourceForPrintJobConverter resourceForPrintJobConverter, IBaseReposiroty<KeyPerformanceIndicators> keyPerformanceIndicatorsRepository, IBaseReposiroty<Resource> resourceRepo, IBaseReposiroty<ResourceProperty> resourcePropertyRepo, IBaseReposiroty<ResourceType> resourceTypeRepo)
+        public PrintJobService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Project> baseProjectRepository, IBaseReposiroty<PrintJob> basePrintJobRepository, IBaseReposiroty<ResourceForPrintJob> baseResourceForPrintJobRepository, IBaseReposiroty<ResourcePropertyDetail> baseResourceRepository, IHttpContextAccessor contextAccessor, PrintJobConverter printerConverter, IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<Notification> notificationRepository, IBaseReposiroty<Permissions> permissionsRepository, IBaseReposiroty<Role> roleRepository, IAuthService authService, IUserRepository<User> userRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, IBaseReposiroty<Customer> customerRepository, IEmailService emailService, DesignConverter designConverter, ResourceForPrintJobConverter resourceForPrintJobConverter, IBaseReposiroty<KeyPerformanceIndicators> keyPerformanceIndicatorsRepository, IBaseReposiroty<Resource> resourceRepo, IBaseReposiroty<ResourceProperty> resourcePropertyRepo, IBaseReposiroty<ResourceType> resourceTypeRepo, IBaseReposiroty<Bill> billRepository)
         {
             _baseUserRepository = baseUserRepository;
             _baseProjectRepository = baseProjectRepository;
@@ -68,6 +70,7 @@ namespace PrintManagement.Application.ImplementServices
             _resourcePropertyRepo = resourcePropertyRepo;
             _resourceRepo = resourceRepo;
             _resourceTypeRepo = resourceTypeRepo;
+            _billRepository = billRepository;
         }
 
         public async Task<ResponseObject<DataResponsePrintJob>> ConfirmDonePrintJob(Guid printJobId)
@@ -174,10 +177,25 @@ namespace PrintManagement.Application.ImplementServices
                     notification = await _notificationRepository.CreateAsync(notification);
                 }
                 var customer = await _customerRepository.GetByIDAsync(project.CustomerId);
-                var message = new EmailMessage(new string[] { customer.Email }, "Xác nhận đơn hàng của bạn: ", "Chúng tôi đã hoàn thành yêu cầu của bạn! Bắt đầu quá trình giao hàng, bạn vui lòng chú ý điện thoại! Cảm ơn rất nhiều");
+                
+                var totalMoney = project.StartingPrice;
+
+                Bill bill = new Bill
+                {
+                    IsActive = true,
+                    BillName = $"Hóa đơn chi tiết cho dự án {project.ProjectName}! Bạn vui lòng kiểm tra",
+                    BillStatus = Domain.Enumerates.BillStatusEnum.UnPaid,
+                    CustomerId = customer.Id,
+                    EmployeeId = project.EmployeeCreateId,
+                    ProjectId = project.Id,
+                    CreateTime = DateTime.Now,
+                    Id = Guid.NewGuid(),
+                    TotalMoney = project.StartingPrice,
+                    TradingCode = "InkMastery_" + DateTime.Now.Ticks,
+                };
+                bill = await _billRepository.CreateAsync(bill);
+                var message = new EmailMessage(new string[] { customer.Email }, "Xác nhận đơn hàng của bạn: ", HandleTemplateEmail.GenerateNotificationBillEmail(bill));
                 var responseMessage = _emailService.SendEmail(message);
-
-
                 return new ResponseObject<DataResponsePrintJob>
                 {
                     Status = StatusCodes.Status200OK,

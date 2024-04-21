@@ -24,7 +24,7 @@ namespace PrintManagement.Application.Payloads.RequestModels.ProjectRequests
         public DateTime ExpectedEndDate { get; set; }
         [Required]
         public Guid CustomerId { get; set; }
-        public decimal? StartingPrice { get; set; }
+        public decimal StartingPrice { get; set; }
         public IFormFile ImageDescription { get; set; }
     }
 }

@@ -75,7 +75,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                var customerItem = await _baseCustomerRepository.GetAsync(x => x.PhoneNumber.Equals(request.PhoneNumber));
+                var customerItem = await _baseCustomerRepository.GetAsync(x => x.PhoneNumber.Equals(request.PhoneNumber) && x.IsActive == true);
                 if(customerItem != null)
                 {
                     return new ResponseObject<DataResponseCustomer>
@@ -131,6 +131,10 @@ namespace PrintManagement.Application.ImplementServices
                 if(customer == null)
                 {
                     return "Thông tin khách hàng không tồn tại";
+                }
+                if(customer.IsActive == false)
+                {
+                    return "Tài khoản này đã bị xóa trước đó";
                 }
                 customer.IsActive = false;
                 await _baseCustomerRepository.UpdateAsync(customer);

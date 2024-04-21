@@ -166,7 +166,7 @@ watch(() => prop.currentStep, updateCartData)
                     class="me-3"
                     @click="nextStep"
                   >
-                    Checkout
+                    Hoàn thành <v-icon icon=" mdi-check-all" class="ml-1"></v-icon>
                   </VBtn>
                   <VBtn
                     variant="tonal"

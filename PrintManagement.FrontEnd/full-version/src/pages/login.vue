@@ -118,7 +118,7 @@ const rememberMe = ref(false);
                 <VBtn block type="submit" :loading="loading" @click="login">
                   Login
                 </VBtn>
-                <VBtn block class="mt-3" @click="logout"> Xóa location </VBtn>
+                <!-- <VBtn block class="mt-3" @click="logout"> Xóa location </VBtn> -->
               </VCol>
 
               <!-- create account -->

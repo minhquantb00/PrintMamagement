@@ -1,79 +1,85 @@
 <script setup>
-import AddressContent from '@/views/wizard-examples/checkout/Address.vue'
-import CartContent from '@/views/wizard-examples/checkout/Cart.vue'
-import ConfirmationContent from '@/views/wizard-examples/checkout/Confirmation.vue'
-import PaymentContent from '@/views/wizard-examples/checkout/Payment.vue'
-import googleHome from '@images/pages/google-home.png'
-import iphone11 from '@images/pages/iphone-11.png'
+import AddressContent from "@/views/wizard-examples/checkout/Address.vue";
+import CartContent from "@/views/wizard-examples/checkout/Cart.vue";
+import ConfirmationContent from "@/views/wizard-examples/checkout/Confirmation.vue";
+import PaymentContent from "@/views/wizard-examples/checkout/Payment.vue";
+import googleHome from "@images/pages/google-home.png";
+import iphone11 from "@images/pages/iphone-11.png";
 
 const checkoutSteps = [
   {
-    title: 'Cart',
-    icon: 'custom-cart',
+    title: "Dự án",
+    icon: "custom-trending",
   },
   {
-    title: 'Address',
-    icon: 'custom-address',
+    title: "Thiết kế",
+    icon: "custom-address",
   },
   {
-    title: 'Payment',
-    icon: 'custom-payment',
+    title: "In ấn",
+    icon: "custom-payment",
   },
   {
-    title: 'Confirmation',
-    icon: 'custom-trending',
+    title: "Giao hàng",
+    icon: "custom-cart",
   },
-]
+];
 
 const checkoutData = ref({
   cartItems: [
     {
       id: 1,
-      name: 'Google - Google Home - White',
-      seller: 'Google',
+      name: "Google - Google Home - White",
+      seller: "Google",
       inStock: true,
       rating: 4,
       price: 299,
       discountPrice: 359,
       image: googleHome,
       quantity: 1,
-      estimatedDelivery: '18th Nov 2021',
+      estimatedDelivery: "18th Nov 2021",
     },
     {
       id: 2,
-      name: 'Apple iPhone 11 (64GB, Black)',
-      seller: 'Apple',
+      name: "Apple iPhone 11 (64GB, Black)",
+      seller: "Apple",
       inStock: true,
       rating: 4,
       price: 899,
       discountPrice: 999,
       image: iphone11,
       quantity: 1,
-      estimatedDelivery: '20th Nov 2021',
+      estimatedDelivery: "20th Nov 2021",
     },
   ],
-  promoCode: '',
+  promoCode: "",
   orderAmount: 1198,
-  deliveryAddress: 'home',
-  deliverySpeed: 'free',
+  deliveryAddress: "home",
+  deliverySpeed: "free",
   deliveryCharges: 0,
-  addresses: [
+  thietKe: [
     {
-      title: 'John Doe (Default)',
-      desc: '4135 Parkway Street, Los Angeles, CA, 90017',
-      subtitle: '1234567890',
-      value: 'home',
+      src: "https://cms.vietnamreport.net/source/BaoCao/sach_trang_kinh_te_vietnam_2024/files/mobile/1.jpg?240117171048",
+      user: "Nguyễn Bá Quang Huy",
+      time: "29-03-2024",
+      khachHang: "Nguyễn Khánh Huyền",
+      status: "Chờ duyệt",
+      moTa: " In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động.",
+      value: 1,
     },
     {
-      title: 'ACME Inc.',
-      desc: '87 Hoffman Avenue, New York, NY, 10016',
-      subtitle: '1234567890',
-      value: 'office',
+      src: "https://thuthuatnhanh.com/wp-content/uploads/2019/06/anh-anime-girl-xinh-dep-cute-439x580.jpg",
+      user: "Trần Văn Dương",
+      time: "21-04-2024",
+      khachHang: "Thắm Nguyễn",
+      moTa: "In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động",
+      status: "Chờ duyệt",
+      value: 2,
     },
   ],
-})
+});
 
-const currentStep = ref(0)
+const currentStep = ref(0);
 </script>
 
 <template>
@@ -92,10 +98,7 @@ const currentStep = ref(0)
 
     <VCardText>
       <!-- 👉 stepper content -->
-      <VWindow
-        v-model="currentStep"
-        class="disable-tab-transition"
-      >
+      <VWindow v-model="currentStep" class="disable-tab-transition">
         <VWindowItem>
           <CartContent
             v-model:current-step="currentStep"

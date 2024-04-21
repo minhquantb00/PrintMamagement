@@ -22,6 +22,7 @@ import {
   Statistic,
   Table,
   Tabs,
+  Upload,
 } from "ant-design-vue";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
@@ -40,6 +41,7 @@ app.use(Button);
 app.use(Layout);
 app.use(Divider);
 app.use(Flex);
+app.use(Upload);
 app.use(Grid);
 app.use(Segmented);
 app.use(Statistic);

@@ -5,14 +5,13 @@ axios.defaults.baseURL = "https://localhost:7070/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";
-export const teamApi = defineStore("team", {
+export const projectApi = defineStore("project", {
   actions: {
-    getAllTeams() {
+    getAllsProject() {
       return new Promise((resolve, reject) => {
         axios
-          .get("/Admin/GetAllTeams", {
+          .get("/Admin/GetAllProject", {
             headers: {
-              
               Authorization: `Bearer ${authorization}`,
             },
           })
@@ -20,17 +19,16 @@ export const teamApi = defineStore("team", {
           .catch((error) => reject(error));
       });
     },
-    register(params) {
+    addProject(params) {
       return new Promise((resolve, reject) => {
-        console.log(params);
-        // params.DateOfBirth = format(new Date(params.DateOfBirth), "yyyy-MM-dd");
         axios
           .post(
-            "/Auth/Register",
+            "/Admin/CreateProject",
             { ...params },
             {
               headers: {
                 "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${authorization}`,
               },
             }
           )
@@ -52,23 +50,33 @@ export const teamApi = defineStore("team", {
         }
       );
     },
-    forgotPassword(param) {
-      console.log(param);
+    deleteProject(id) {
+      console.log(id);
       return new Promise((resolve, reject) => {
         axios
-          .post("/Auth/ForgotPassword", null, {
-            params: {
-              email: param.email,
+          .delete(`/Admin/DeleteProject/${id}`, {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
             },
           })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
     },
-    confirmCreateNewPassword(params) {
+    fillterData(param) {
       return new Promise((resolve, reject) => {
         axios
-          .put("/Auth/ConfirmCreateNewPassword", { ...params })
+          .get("/Admin/GetAllProject", {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+            params: {
+              ProjectName: param.projectName,
+              StartDate: param.startDate,
+              EndDate: param.endDate,
+              LeaderId: param.leaderId,
+            },
+          })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

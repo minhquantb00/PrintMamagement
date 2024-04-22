@@ -168,6 +168,15 @@ namespace PrintManagement.Application.ImplementServices
 
         public async Task<IQueryable<DataResponseProject>> GetAllProject(Request_InputProject? request)
         {
+            var currentUser = _httpContextAccessor.HttpContext.User;
+            if (!currentUser.Identity.IsAuthenticated)
+            {
+                throw new Exception("Người dùng chưa được xác thực");
+            }
+            if(!currentUser.IsInRole("Admin") && !currentUser.IsInRole("Leader"))
+            {
+                throw new Exception("Bạn không có quyền thực hiện chức năng này");
+            }
             var query = await _baseProjectRepository.GetAllAsync(x => x.IsActive == true);
             if (!string.IsNullOrEmpty(request.ProjectName))
             {

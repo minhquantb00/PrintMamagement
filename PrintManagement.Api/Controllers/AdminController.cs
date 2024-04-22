@@ -104,13 +104,12 @@ namespace PrintManagement.Api.Controllers
             return Ok(await _projectService.DeleteProject(projectId));
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetAllProject([FromQuery] Request_InputProject? request)
         {
             return Ok(await _projectService.GetAllProject(request));
         }
         [HttpGet("{projectId}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetProjectById([FromRoute] Guid projectId)
         {
             return Ok(await _projectService.GetProjectById(projectId));

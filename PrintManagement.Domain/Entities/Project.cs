@@ -18,6 +18,7 @@ namespace PrintManagement.Domain.Entities
         public DateTime ExpectedEndDate { get; set; }
         public string? ImageDescription { get; set; }
         public Guid EmployeeCreateId { get; set; }
+        public decimal CommissionPercentage { get; set; } = 0;
         public decimal StartingPrice { get; set; }
         public DateTime? ActualEndDate { get; set; }
         public Guid CustomerId { get; set; }

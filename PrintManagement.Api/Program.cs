@@ -107,6 +107,7 @@ builder.Services.AddScoped<IPrintJobService, PrintJobService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IKPIService, KPIService>();
 builder.Services.AddScoped<IResourceTypeService, ResourceTypeService>();
+builder.Services.AddScoped<IStatisticService, StatisticService>();
 #endregion
 
 

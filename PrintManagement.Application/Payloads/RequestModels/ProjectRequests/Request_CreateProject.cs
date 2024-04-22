@@ -25,6 +25,7 @@ namespace PrintManagement.Application.Payloads.RequestModels.ProjectRequests
         [Required]
         public Guid CustomerId { get; set; }
         public decimal StartingPrice { get; set; }
+        public decimal CommissionPercentage { get; set; }
         public IFormFile ImageDescription { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -17,8 +18,11 @@ using PrintManagement.Domain.InterfaceRepositories.InterfaceUser;
 using PrintManagement.Domain.Validations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -39,7 +43,7 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Role> _baseRoleRepository;
         private readonly IBaseReposiroty<Team> _baseTeamRepository;
         private readonly IEmailService _emailService;
-        public AuthService(IBaseReposiroty<User> baseUserRepository, UserConverter mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository, 
+        public AuthService(IBaseReposiroty<User> baseUserRepository, UserConverter mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository,
             IEmailService emailService, IBaseReposiroty<Permissions> basePermissionRepository, IBaseReposiroty<Role> baseRoleRepository, IBaseReposiroty<Team> baseTeamRepository)
         {
             _baseUserRepository = baseUserRepository;
@@ -57,7 +61,7 @@ namespace PrintManagement.Application.ImplementServices
         {
             var permissions = await _basePermissionRepository.GetAllAsync(x => x.UserId == user.Id);
             var roles = await _baseRoleRepository.GetAllAsync();
-            
+
             var authClaims = new List<Claim>
     {
         new Claim("Id", user.Id.ToString()),
@@ -70,9 +74,9 @@ namespace PrintManagement.Application.ImplementServices
 
             foreach (var permission in permissions)
             {
-                 foreach(var role in roles)
+                foreach (var role in roles)
                 {
-                    if(role.Id == permission.RoleId)
+                    if (role.Id == permission.RoleId)
                     {
                         authClaims.Add(new Claim("Permission", role.RoleName));
                     }
@@ -85,7 +89,7 @@ namespace PrintManagement.Application.ImplementServices
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var jwtToken = GetToken(authClaims); 
+            var jwtToken = GetToken(authClaims);
             var refreshToken = GenerateRefreshToken();
             _ = int.TryParse(_configuration["JWT:RefreshTokenValidity"], out int refreshTokenValidity);
 
@@ -241,7 +245,7 @@ namespace PrintManagement.Application.ImplementServices
                     TeamId = request.TeamId
                 };
                 user = await _baseUserRepository.CreateAsync(user);
-                await _userRepository.AddUserToRoleAsync(user, new List<string> {"Employee" });
+                await _userRepository.AddUserToRoleAsync(user, new List<string> { "Employee" });
 
                 var team = await _baseTeamRepository.GetAsync(x => x.Id == user.TeamId);
                 team.NumberOfMember = await _baseTeamRepository.CountAsync(x => x.Id == user.TeamId);
@@ -274,7 +278,7 @@ namespace PrintManagement.Application.ImplementServices
                 };
             }
         }
-
+        
 
         public async Task<string> ChangePassword(Guid userId, Request_ChangePassword request)
         {
@@ -310,7 +314,7 @@ namespace PrintManagement.Application.ImplementServices
             try
             {
                 var user = await _userRepository.GetUserByEmail(email);
-                if(user == null)
+                if (user == null)
                 {
                     return "Người dùng không tồn tại";
                 }
@@ -328,7 +332,7 @@ namespace PrintManagement.Application.ImplementServices
                 var responseMessage = _emailService.SendEmail(message);
                 return "Mã xác nhận đã được gửi về email của bạn! Vui lòng check Email";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return "Error: " + ex.Message;
             }
@@ -339,11 +343,11 @@ namespace PrintManagement.Application.ImplementServices
             try
             {
                 var confirmEmail = await _confirmEmailRepository.GetAsync(x => x.ConfirmCode.Equals(request.ConfirmCode));
-                if(confirmEmail == null)
+                if (confirmEmail == null)
                 {
                     return "Mã xác nhận không hợp lệ";
                 }
-                if(confirmEmail.ExpiryTime < DateTime.Now)
+                if (confirmEmail.ExpiryTime < DateTime.Now)
                 {
                     return "Mã xác nhận đã hết hạn";
                 }
@@ -358,7 +362,7 @@ namespace PrintManagement.Application.ImplementServices
                 await _confirmEmailRepository.UpdateAsync(confirmEmail);
                 return "Tạo mật khẩu mới thành công";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return "Error: " + ex.Message;
             }
@@ -369,7 +373,7 @@ namespace PrintManagement.Application.ImplementServices
             try
             {
                 var user = await _baseUserRepository.GetByIDAsync(userId);
-                if(user == null)
+                if (user == null)
                 {
                     return new ResponseObject<DataResponseUser>
                     {
@@ -386,7 +390,7 @@ namespace PrintManagement.Application.ImplementServices
                     Data = _mapper.EntityToDTOForUser(user)
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new ResponseObject<DataResponseUser>
                 {

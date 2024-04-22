@@ -58,7 +58,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if (!currentUser.IsInRole("Admin") || !(currentUser.IsInRole("Employee") || !team.Name.Equals("Sales")))
+                if (!currentUser.IsInRole("Employee") || !team.Name.Equals("Sales"))
                 {
                     return new ResponseObject<DataResponseProject>
                     {
@@ -112,8 +112,10 @@ namespace PrintManagement.Application.ImplementServices
                     ProjectName = request.ProjectName,
                     ImageDescription = await HandleUploadFile.Upfile(request.ImageDescription),
                     ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Initialization,
+                    CommissionPercentage = request.CommissionPercentage,
                     RequestDescriptionFromCustomer = request.RequestDescriptionFromCustomer,
                     StartDate = DateTime.Now,
+                    EmployeeCreateId = leader.Id,
                     StartingPrice = request.StartingPrice
                 };
                 project = await _baseProjectRepository.CreateAsync(project);

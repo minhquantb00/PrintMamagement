@@ -29,8 +29,10 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Project> _projectRepository;
         private readonly IBaseReposiroty<Customer> _customerRepository;
         private readonly IBaseReposiroty<Notification> _notificationRepository;
+        private readonly IBaseReposiroty<Bill> _billRepository;
+
         private readonly IEmailService _emailService;
-        public DeliveryService(IBaseReposiroty<Delivery> baseDeliveryRepository, IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer> confirmReceiptOfGoodsFromCustomerRepository, DeliveryConverter deliveryConverter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<Customer> customerRepository, IBaseReposiroty<Notification> notificationRepository, IEmailService emailService, IBaseReposiroty<Project> projectRepository, IBaseReposiroty<ShippingMethod> shippingMethodRepository)
+        public DeliveryService(IBaseReposiroty<Delivery> baseDeliveryRepository, IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer> confirmReceiptOfGoodsFromCustomerRepository, DeliveryConverter deliveryConverter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> teamRepository, IBaseReposiroty<Customer> customerRepository, IBaseReposiroty<Notification> notificationRepository, IEmailService emailService, IBaseReposiroty<Project> projectRepository, IBaseReposiroty<ShippingMethod> shippingMethodRepository, IBaseReposiroty<Bill> billRepository)
         {
             _baseDeliveryRepository = baseDeliveryRepository;
             _confirmReceiptOfGoodsFromCustomerRepository = confirmReceiptOfGoodsFromCustomerRepository;
@@ -44,6 +46,7 @@ namespace PrintManagement.Application.ImplementServices
             _projectRepository = projectRepository;
             _customerRepository = customerRepository;
             _shippingMethodRepository = shippingMethodRepository;
+            _billRepository = billRepository;
         }
 
         public async Task<ResponseObject<DataResponseDelivery>> CreateDelivery(Request_CreateDelivery request)
@@ -62,7 +65,7 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 var user = await _baseUserRepository.GetAsync(x => x.Id == Guid.Parse(currentUser.FindFirst("Id").Value));
                 var team = await _teamRepository.GetAsync(x => x.Id == user.TeamId);
-                if (!currentUser.IsInRole("Manager") || !team.Name.Equals("Delivery"))
+                if (!currentUser.IsInRole("Manager") && !team.Name.Equals("Delivery"))
                 {
                     return new ResponseObject<DataResponseDelivery>
                     {
@@ -257,24 +260,20 @@ namespace PrintManagement.Application.ImplementServices
 
                 notification = await _notificationRepository.CreateAsync(notification);
 
-                if (request.ConfirmStatus.ToString().Equals("Received"))
+                var bill = await _billRepository.GetAsync(x => x.ProjectId == project.Id && x.BillStatus.ToString().Equals("UnPaid"));
+                if(bill != null)
                 {
-                    delivery.DeliveryStatus = Domain.Enumerates.DeliveryStatusEnum.Delivered;
-                    await _baseDeliveryRepository.UpdateAsync(delivery);
-                    project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Delivered;
-                    await _projectRepository.UpdateAsync(project);
-                    return new ResponseObject<DataResponseDelivery>
-                    {
-                        Status = StatusCodes.Status200OK,
-                        Message = "Đơn hàng đã được giao thành công! khách hàng cũng đã nhận hàng",
-                        Data = _deliveryConverter.EntityToDTO(delivery)
-                    };
+                    bill.BillStatus = Domain.Enumerates.BillStatusEnum.Paid;
+                    await _billRepository.UpdateAsync(bill);
                 }
-                
+                delivery.DeliveryStatus = Domain.Enumerates.DeliveryStatusEnum.Delivered;
+                await _baseDeliveryRepository.UpdateAsync(delivery);
+                project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Delivered;
+                await _projectRepository.UpdateAsync(project);
                 return new ResponseObject<DataResponseDelivery>
                 {
                     Status = StatusCodes.Status200OK,
-                    Message = "Đơn hàng bị hủy",
+                    Message = "Đơn hàng đã được giao thành công! khách hàng cũng đã nhận hàng",
                     Data = _deliveryConverter.EntityToDTO(delivery)
                 };
 

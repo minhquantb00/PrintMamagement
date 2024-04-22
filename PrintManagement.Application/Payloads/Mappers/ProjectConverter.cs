@@ -46,6 +46,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 RequestDescriptionFromCustomer = project.RequestDescriptionFromCustomer,
                 StartDate = project.StartDate,
                 StartingPrice = project.StartingPrice,
+                CommissionPercentage = project.CommissionPercentage,
                 ImageDescription = project.ImageDescription,
                 EmployeeCreateName = _baseUserRepository.GetAsync(x => x.Id == project.EmployeeCreateId).Result.FullName,
                 Designs = _baseDesignRepository.GetAllAsync(x => x.IsActive == true).Result.Select(x => _designConverter.EntityToDTOForDesign(x))

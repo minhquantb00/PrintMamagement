@@ -13,6 +13,8 @@ using PrintManagement.Domain.InterfaceRepositories.InterfaceUser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -134,6 +136,15 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 await _baseProjectRepository.UpdateAsync(project);
                 var kpi = await _keyPerformanceIndicatorsRepository.GetAsync(x => x.EmployeeId == project.EmployeeCreateId);
+                if(kpi == null)
+                {
+                    return new ResponseObject<DataResponsePrintJob>
+                    {
+                        Status = StatusCodes.Status404NotFound,
+                        Message = "Nhân viên này chưa có Kpi",
+                        Data = null
+                    };
+                }
                 kpi.ActuallyAchieved += 1;
                 await _keyPerformanceIndicatorsRepository.UpdateAsync(kpi);
                 if(kpi.ActuallyAchieved >= kpi.Target)
@@ -194,8 +205,12 @@ namespace PrintManagement.Application.ImplementServices
                     TradingCode = "InkMastery_" + DateTime.Now.Ticks,
                 };
                 bill = await _billRepository.CreateAsync(bill);
-                var message = new EmailMessage(new string[] { customer.Email }, "Xác nhận đơn hàng của bạn: ", HandleTemplateEmail.GenerateNotificationBillEmail(bill));
-                var responseMessage = _emailService.SendEmail(message);
+                var message = SendEmail(new EmailTo
+                {
+                    Mail = customer.Email,
+                    Subject = "Thông tin đơn hàng của bạn: ",
+                    Content = HandleTemplateEmail.GenerateNotificationBillEmail(bill)
+                });
                 return new ResponseObject<DataResponsePrintJob>
                 {
                     Status = StatusCodes.Status200OK,
@@ -211,6 +226,31 @@ namespace PrintManagement.Application.ImplementServices
                     Message = ex.Message,
                     Data = null
                 };
+            }
+        }
+        public string SendEmail(EmailTo emailTo)
+        {
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential("minhquantb00@gmail.com", "jvztzxbtyugsiaea"),
+                EnableSsl = true
+            };
+            try
+            {
+                var message = new MailMessage();
+                message.From = new MailAddress("minhquantb00@gmail.com");
+                message.To.Add(emailTo.Mail);
+                message.Subject = emailTo.Subject;
+                message.Body = emailTo.Content;
+                message.IsBodyHtml = true;
+                smtpClient.Send(message);
+
+                return "Xác nhận gửi email thành công, lấy mã để xác thực";
+            }
+            catch (Exception ex)
+            {
+                return "Lỗi khi gửi email: " + ex.Message;
             }
         }
 

@@ -8,6 +8,7 @@ using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
+using PrintManagement.Application.Payloads.ResponseModels.DataStatistics;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 
@@ -19,10 +20,13 @@ namespace PrintManagement.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IDeliveryService _deliveryService;
-        public UserController(IUserService userService, IDeliveryService deliveryService)
+        private readonly IStatisticService _statisticService;
+
+        public UserController(IUserService userService, IDeliveryService deliveryService, IStatisticService statisticService)
         {
             _userService = userService;
             _deliveryService = deliveryService;
+            _statisticService = statisticService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] Request_InputUser request)
@@ -62,6 +66,11 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> GetAllUserContainsLeaderRole()
         {
             return Ok(await _userService.GetAllUserContainsLeaderRole());
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetStatisticSalary(Guid userId)
+        {
+            return Ok(await _statisticService.GetStatisticSalary(userId));
         }
     }
 }

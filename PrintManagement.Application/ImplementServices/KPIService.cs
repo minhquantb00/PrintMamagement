@@ -51,7 +51,7 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 var user = await _baseUserRepository.GetAsync(x => x.Id == Guid.Parse(currentUser.FindFirst("Id").Value));
                 var team = await _baseTeamRepository.GetAsync(x => x.Id == user.TeamId);
-                if(team == null)
+                if (team == null)
                 {
                     return new ResponseObject<DataResponseKPI>
                     {
@@ -60,7 +60,8 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                if(!((currentUser.IsInRole("Manager") && team.Name.Equals("Sales")) && team.ManagerId != user.Id)){
+                if (!((currentUser.IsInRole("Manager") && team.Name.Equals("Sales")) && team.ManagerId != user.Id))
+                {
                     return new ResponseObject<DataResponseKPI>
                     {
                         Status = StatusCodes.Status403Forbidden,
@@ -70,7 +71,7 @@ namespace PrintManagement.Application.ImplementServices
                 }
 
                 var employee = await _baseUserRepository.GetAsync(x => x.Id == request.EmployeeId);
-                if(employee == null)
+                if (employee == null)
                 {
                     return new ResponseObject<DataResponseKPI>
                     {
@@ -80,7 +81,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 var teamOfEmployee = await _baseTeamRepository.GetAsync(x => x.Id == employee.TeamId);
-                if(!_userRepository.GetRolesOfUserAsync(employee).Result.Contains("Employee") || !teamOfEmployee.Name.Equals("Sales"))
+                if (!_userRepository.GetRolesOfUserAsync(employee).Result.Contains("Employee") || !teamOfEmployee.Name.Equals("Sales"))
                 {
                     return new ResponseObject<DataResponseKPI>
                     {
@@ -118,7 +119,8 @@ namespace PrintManagement.Application.ImplementServices
                     Message = "Tạo KPI cho nhân viên thành công",
                     Data = _converter.EntityToDTO(key)
                 };
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new ResponseObject<DataResponseKPI>
                 {
@@ -127,6 +129,49 @@ namespace PrintManagement.Application.ImplementServices
                     Data = null
                 };
             }
+        }
+
+        public async Task<ResponseObject<DataResponseKPI>> NotificationDoneKpi(Guid kpiId)
+        {
+            var kpi = await _keyPerformanceIndicatorRepository.GetByIDAsync(kpiId);
+            if (kpi == null)
+            {
+                return new ResponseObject<DataResponseKPI>
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Message = "Khách hàng này chưa có KPI",
+                    Data = null
+                };
+            }
+            var employee = await _baseUserRepository.GetByIDAsync(kpi.EmployeeId);
+            if (kpi.AchieveKPI == true || (kpi.ActuallyAchieved >= kpi.Target))
+            {
+                return new ResponseObject<DataResponseKPI>
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Message = $"Nhân viên {employee.FullName} chưa hoàn thành KPI",
+                    Data = null
+                };
+            }
+
+            Notification notification = new Notification
+            {
+                IsActive = true,
+                Content = "Chúc mừng bạn đã hoàn thành KPI trong tháng này!",
+                Id = Guid.NewGuid(),
+                IsSeen = false,
+                Link = "",
+                UserId = employee.Id
+            };
+            
+            notification = await _notificationRepository.CreateAsync(notification);
+
+            return new ResponseObject<DataResponseKPI>
+            {
+                Status = StatusCodes.Status200OK,
+                Message = "Xác nhận hoàn thành KPI",
+                Data = _converter.EntityToDTO(kpi)
+            };
         }
 
         public Task<ResponseObject<DataResponseKPI>> UpdateKPIForEmployee(Request_UpdateKPI request)

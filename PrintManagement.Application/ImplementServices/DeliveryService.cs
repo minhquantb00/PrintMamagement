@@ -117,7 +117,8 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 var teamDeliver = await _teamRepository.GetAsync(x => x.Id == deliver.TeamId);
-                if(!_userRepository.GetRolesOfUserAsync(deliver).Result.Contains("Deliver") || !team.Name.Equals("Delivery"))
+                var checkRole = _userRepository.GetRolesOfUserAsync(deliver).Result.Contains("Deliver");
+                if (!checkRole || !teamDeliver.Name.Equals("Delivery"))
                 {
                     return new ResponseObject<DataResponseDelivery>
                     {
@@ -260,7 +261,7 @@ namespace PrintManagement.Application.ImplementServices
 
                 notification = await _notificationRepository.CreateAsync(notification);
 
-                var bill = await _billRepository.GetAsync(x => x.ProjectId == project.Id && x.BillStatus.ToString().Equals("UnPaid"));
+                var bill = await _billRepository.GetAsync(x => x.ProjectId == project.Id && x.BillStatus == Domain.Enumerates.BillStatusEnum.UnPaid);
                 if(bill != null)
                 {
                     bill.BillStatus = Domain.Enumerates.BillStatusEnum.Paid;

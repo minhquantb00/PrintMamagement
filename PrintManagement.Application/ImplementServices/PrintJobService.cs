@@ -136,32 +136,29 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 await _baseProjectRepository.UpdateAsync(project);
                 var kpi = await _keyPerformanceIndicatorsRepository.GetAsync(x => x.EmployeeId == project.EmployeeCreateId);
-                if(kpi == null)
+                if(kpi != null)
                 {
-                    return new ResponseObject<DataResponsePrintJob>
-                    {
-                        Status = StatusCodes.Status404NotFound,
-                        Message = "Nhân viên này chưa có Kpi",
-                        Data = null
-                    };
-                }
-                kpi.ActuallyAchieved += 1;
-                await _keyPerformanceIndicatorsRepository.UpdateAsync(kpi);
-                if(kpi.ActuallyAchieved >= kpi.Target)
-                {
-                    kpi.AchieveKPI = true;
+                    kpi.ActuallyAchieved += 1;
                     await _keyPerformanceIndicatorsRepository.UpdateAsync(kpi);
-                    Notification notification = new Notification
+                    if (kpi.ActuallyAchieved >= kpi.Target)
                     {
-                        IsActive = true,
-                        Content = $"Chúc mừng bạn đã hoàn thành KPI! chúng tôi sẽ có hình thức khen thưởng đối với bạn",
-                        Id = Guid.NewGuid(),
-                        IsSeen = false,
-                        Link = "",
-                        UserId = project.EmployeeCreateId
-                    };
-                    notification = await _notificationRepository.CreateAsync(notification);
+
+                        kpi.AchieveKPI = true;
+                        await _keyPerformanceIndicatorsRepository.UpdateAsync(kpi);
+                        Notification notification = new Notification
+                        {
+                            IsActive = true,
+                            Content = $"Chúc mừng bạn đã hoàn thành KPI! chúng tôi sẽ có hình thức khen thưởng đối với bạn",
+                            Id = Guid.NewGuid(),
+                            IsSeen = false,
+                            Link = "",
+                            UserId = project.EmployeeCreateId
+                        };
+                        notification = await _notificationRepository.CreateAsync(notification);
+                    }
                 }
+                
+                
 
                 var listUsers = await _baseUserRepository.GetAllAsync(x => x.IsActive == true);
                 List<User> users = new List<User>();

@@ -4,6 +4,7 @@ using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.StatisticRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataStatistics;
 using PrintManagement.Domain.Entities;
+using PrintManagement.Domain.Enumerates;
 using PrintManagement.Domain.InterfaceRepositories.InterfaceBase;
 using System;
 using System.Collections.Generic;
@@ -35,57 +36,6 @@ namespace PrintManagement.Application.ImplementServices
             _contextAccessor = contextAccessor;
         }
 
-        //public async Task<IQueryable<DataResponseStatisticSalary>> GetStatisticSalary(Guid userId)
-        //{
-        //    var user = await _userRepository.GetByIDAsync(userId);
-        //    try
-        //    {
-        //        var listProject = await _projectRepository.GetAllAsync(x => x.EmployeeCreateId == userId && x.Progress == 100);
-        //        if (listProject == null)
-        //        {
-        //            throw new ArgumentNullException(nameof(listProject));
-        //        }
-        //        List<DataResponseStatisticSalary> result = new List<DataResponseStatisticSalary>();
-        //        foreach (var item in listProject)
-        //        {
-        //            var listBill = await _billRepository.GetAllAsync(x => x.ProjectId == item.Id && x.BillStatus.ToString().Equals("Paid"));
-        //            if(listBill == null)
-        //            {
-        //                throw new ArgumentNullException(nameof(listBill));
-        //            }
-        //            decimal salary = 0;
-        //            var month = 0;
-        //            for(int i = 0; i < listBill.ToList().Count; i++)
-        //            {
-        //                for(int j = 0; j < listBill.ToList().Count; j++)
-        //                {
-        //                    if (listBill.ToList()[i].CreateTime.Month == listBill.ToList()[j].CreateTime.Month)
-        //                    {
-        //                        month = listBill.ToList()[i].CreateTime.Month;
-        //                        salary += listBill.ToList()[i].TotalMoney - (listBill.ToList()[i].TotalMoney * item.CommissionPercentage);
-        //                    }
-        //                    else
-        //                    {
-        //                        month = listBill.ToList()[i].CreateTime.Month;
-        //                        salary = listBill.ToList()[i].TotalMoney - (listBill.ToList()[i].TotalMoney * item.CommissionPercentage);
-        //                    }
-        //                }
-        //            }
-        //            DataResponseStatisticSalary data = new DataResponseStatisticSalary
-        //            {
-        //                Month = month,
-        //                Salary = salary,
-        //                User = _userConverter.EntityToDTOForUser(user),
-        //            };
-        //            result.Add(data);
-        //        }
-        //        return result.AsQueryable();
-        //    }catch
-        //    {
-        //        throw;
-        //    }
-        //}
-
         public async Task<IQueryable<DataResponseStatisticSalary>> GetStatisticSalary(Guid userId)
         {
             var user = await _userRepository.GetByIDAsync(userId);
@@ -104,24 +54,25 @@ namespace PrintManagement.Application.ImplementServices
 
             foreach (var project in listProject)
             {
-                var listBill = await _billRepository.GetAllAsync(x => x.ProjectId == project.Id);
+                var listBill = await _billRepository.GetAllAsync(x => x.ProjectId == project.Id && x.BillStatus == BillStatusEnum.Paid);
                 if (listBill == null || !listBill.Any())
                 {
                     continue;
                 }
 
-                var groupedByMonth = listBill
-                    .GroupBy(b => b.CreateTime.Month)
-                    .Select(g => new {
-                        Month = g.Key,
-                        Salary = g.Sum(b => b.TotalMoney * (1 - project.CommissionPercentage))
+                var groupedByMonthYear = listBill
+                    .GroupBy(b => new { Month = b.CreateTime.Month, Year = b.CreateTime.Year })
+                    .Select(g => new
+                    {
+                        MonthYear = g.Key,
+                        Salary = g.Sum(b => b.TotalMoney * (project.CommissionPercentage))
                     });
 
-                foreach (var group in groupedByMonth)
+                foreach (var group in groupedByMonthYear)
                 {
                     result.Add(new DataResponseStatisticSalary
                     {
-                        Month = group.Month,
+                        Month = group.MonthYear.Month,
                         Salary = group.Salary,
                         User = _userConverter.EntityToDTOForUser(user)
                     });
@@ -130,6 +81,7 @@ namespace PrintManagement.Application.ImplementServices
 
             return result.AsQueryable();
         }
+
 
 
         public Task<IQueryable<DataResponseStatisticSales>> GetStatisticSales(Request_StatisticSales request)

@@ -280,7 +280,8 @@ namespace PrintManagement.Api.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CreateKPIForEmployee(Request_CreateKPI request)
+        [Consumes(contentType: "multipart/form-data")]
+        public async Task<IActionResult> CreateKPIForEmployee([FromForm] Request_CreateKPI request)
         {
             return Ok(await _KPService.CreateKPIForEmployee(request));
         }

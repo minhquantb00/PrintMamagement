@@ -8,6 +8,7 @@ using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
+using PrintManagement.Application.Payloads.ResponseModels.DataKPI;
 using PrintManagement.Application.Payloads.ResponseModels.DataStatistics;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
@@ -21,12 +22,14 @@ namespace PrintManagement.Api.Controllers
         private readonly IUserService _userService;
         private readonly IDeliveryService _deliveryService;
         private readonly IStatisticService _statisticService;
+        private readonly IKPIService _KPIService;
 
-        public UserController(IUserService userService, IDeliveryService deliveryService, IStatisticService statisticService)
+        public UserController(IUserService userService, IDeliveryService deliveryService, IStatisticService statisticService, IKPIService kPIService)
         {
             _userService = userService;
             _deliveryService = deliveryService;
             _statisticService = statisticService;
+            _KPIService = kPIService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] Request_InputUser request)
@@ -71,6 +74,11 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> GetStatisticSalary(Guid userId)
         {
             return Ok(await _statisticService.GetStatisticSalary(userId));
+        }
+        [HttpGet("{kpiId}")]
+        public async Task<IActionResult> NotificationDoneKpi([FromRoute] Guid kpiId)
+        {
+            return Ok(await _KPIService.NotificationDoneKpi(kpiId));
         }
     }
 }

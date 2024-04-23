@@ -12,32 +12,8 @@ import ApexChartStocksPrices from '@/views/charts/apex-chart/ApexChartStocksPric
 </script>
 
 <template>
+  
   <VRow id="apex-chart-wrapper">
-    <!-- 👉  Area chart -->
-    <VCol cols="12">
-      <VCard>
-        <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
-          <VCardTitle>Area Chart</VCardTitle>
-          <VCardSubtitle>Commercial networks</VCardSubtitle>
-
-          <template #append>
-            <div class="date-picker-wrapper">
-              <AppDateTimePicker
-                model-value="2022-06-09"
-                prepend-inner-icon="tabler-calendar"
-                density="compact"
-                :config="{ position: 'auto right' }"
-              />
-            </div>
-          </template>
-        </VCardItem>
-
-        <VCardText>
-          <ApexChartAreaChart />
-        </VCardText>
-      </VCard>
-    </VCol>
-
     <!-- 👉 Data Science -->
     <VCol cols="12">
       <VCard>
@@ -62,31 +38,7 @@ import ApexChartStocksPrices from '@/views/charts/apex-chart/ApexChartStocksPric
       </VCard>
     </VCol>
 
-    <!-- 👉 New Technologies Data -->
-    <VCol cols="12">
-      <VCard>
-        <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
-          <VCardTitle>New Technologies Data</VCardTitle>
-
-          <template #append>
-            <VBtnToggle
-              density="compact"
-              color="primary"
-              variant="outlined"
-              divided
-            >
-              <VBtn>Daily</VBtn>
-              <VBtn>Monthly</VBtn>
-              <VBtn>Yearly</VBtn>
-            </VBtnToggle>
-          </template>
-        </VCardItem>
-
-        <VCardText>
-          <ApexChartNewTechnologiesData />
-        </VCardText>
-      </VCard>
-    </VCol>
+ 
 
     <!-- 👉 Balance Line Chart  -->
     <VCol cols="12">
@@ -117,113 +69,6 @@ import ApexChartStocksPrices from '@/views/charts/apex-chart/ApexChartStocksPric
 
         <VCardText>
           <ApexChartBalance />
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Balance Horizontal Bar -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <VCard>
-        <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
-          <VCardTitle>Balance</VCardTitle>
-          <VCardSubtitle>$74,382.72</VCardSubtitle>
-
-          <template #append>
-            <div class="date-picker-wrapper">
-              <AppDateTimePicker
-                model-value="2022-06-09"
-                prepend-inner-icon="tabler-calendar"
-                density="compact"
-                :config="{ position: 'auto right' }"
-              />
-            </div>
-          </template>
-        </VCardItem>
-
-        <VCardText>
-          <ApexChartHorizontalBar />
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Stocks Prices -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <VCard>
-        <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
-          <VCardTitle>Stocks Prices</VCardTitle>
-          <VCardSubtitle>$50,863.98</VCardSubtitle>
-
-          <template #append>
-            <div class="date-picker-wrapper">
-              <AppDateTimePicker
-                model-value="2022-06-09"
-                prepend-inner-icon="tabler-calendar"
-                density="compact"
-                :config="{ position: 'auto right' }"
-              />
-            </div>
-          </template>
-        </VCardItem>
-
-        <VCardText>
-          <ApexChartStocksPrices />
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Daily Sales States -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <VCard title="Daily Sales States">
-        <VCardText>
-          <ApexChartDailySalesStates />
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Statistics -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <VCard title="Statistics">
-        <VCardText>
-          <ApexChartStatistics />
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Mobile Comparison -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <VCard title="Mobile Comparison">
-        <VCardText>
-          <ApexChartMobileComparison />
-        </VCardText>
-      </VCard>
-    </VCol>
-
-    <!-- 👉 Expense Ratio Chart -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <VCard
-        title="Expense Ratio"
-        subtitle="Spending on various categories"
-      >
-        <VCardText>
-          <ApexChartExpenseRatio />
         </VCardText>
       </VCard>
     </VCol>

@@ -47,6 +47,18 @@ export const authApi = defineStore("auth", {
         }
       );
     },
+    forgotPassword(param) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post("/Auth/ForgotPassword", null, {
+            params: {
+              email: param.email,
+            },
+          })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
     getAllRoles() {
       return new Promise((resolve, reject) => {
         axios

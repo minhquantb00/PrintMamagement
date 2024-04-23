@@ -14,11 +14,11 @@ fetchHeaderData();
 </script>
 
 <template>
-  <VCard v-if="profileHeaderData">
+  <VCard>
     <VImg
-      :src="userData.Avatar"
+      src="https://vcdn-vnexpress.vnecdn.net/2021/03/28/2022-Mercedes-EQS-EV-Sedan-Int-2530-7511-1616932781.jpg"
       min-height="125"
-      max-height="250"
+      max-height="400"
       cover
     />
 
@@ -35,7 +35,7 @@ fetchHeaderData();
       </div>
 
       <div class="user-profile-info w-100 mt-16 pt-6 pt-sm-0 mt-sm-0">
-        <h6 class="text-h6 text-center text-sm-start font-weight-medium mb-3">
+        <h6 class="text-h4 text-center text-sm-start font-weight-medium mb-3">
           {{ userData.FullName }}
         </h6>
 
@@ -45,29 +45,8 @@ fetchHeaderData();
           <div
             class="d-flex flex-wrap justify-center justify-sm-start flex-grow-1 gap-2"
           >
-            <span class="d-flex">
-              <VIcon size="20" icon="tabler-color-swatch" class="me-1" />
-              <span class="text-body-1">
-                {{ profileHeaderData?.designation }}
-              </span>
-            </span>
-
-            <span class="d-flex align-center">
-              <VIcon size="20" icon="tabler-map-pin" class="me-2" />
-              <span class="text-body-1">
-                {{ profileHeaderData?.location }}
-              </span>
-            </span>
-
-            <span class="d-flex align-center">
-              <VIcon size="20" icon="tabler-calendar" class="me-2" />
-              <span class="text-body-1">
-                {{ profileHeaderData?.joiningDate }}
-              </span>
-            </span>
+            {{ userData.Email }}
           </div>
-
-          <VBtn prepend-icon="tabler-check"> Connected </VBtn>
         </div>
       </div>
     </VCardText>

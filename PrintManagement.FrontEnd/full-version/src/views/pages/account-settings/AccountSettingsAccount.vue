@@ -39,7 +39,7 @@
                 variant="tonal"
                 @click="resetAvatar"
               >
-                <span class="d-none d-sm-block">Reset</span>
+                <span class="d-none d-sm-block">Ảnh mặc định</span>
                 <VIcon icon="tabler-refresh" class="d-sm-none" />
               </VBtn>
             </div>
@@ -106,15 +106,6 @@
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
                 <VBtn @click="updateUsers">Cập nhật</VBtn>
-
-                <VBtn
-                  color="secondary"
-                  variant="tonal"
-                  type="reset"
-                  @click.prevent="resetForm"
-                >
-                  Reset
-                </VBtn>
               </VCol>
             </VRow>
           </VForm>

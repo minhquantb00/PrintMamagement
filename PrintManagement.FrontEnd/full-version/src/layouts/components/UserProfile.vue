@@ -14,7 +14,7 @@ const logout = () => {
 
   // Remove "accessToken" from localStorage
   localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken"); 
+  localStorage.removeItem("refreshToken");
   router.push("/login").then(() => {
     // Remove "userAbilities" from localStorage
     localStorage.removeItem("userAbilities");
@@ -29,52 +29,19 @@ const userProfileList = [
   {
     type: "navItem",
     icon: "tabler-user",
-    title: "Profile",
+    title: "Trang cá nhân",
     to: {
-      name: "apps-user-view-id",
-      params: { id: 21 },
+      path: "/pages/user-profile/profile",
     },
   },
   {
     type: "navItem",
     icon: "tabler-settings",
-    title: "Settings",
+    title: "Cài đặt",
     to: {
       name: "pages-account-settings-tab",
       params: { tab: "account" },
     },
-  },
-  {
-    type: "navItem",
-    icon: "tabler-credit-card",
-    title: "Billing",
-    to: {
-      name: "pages-account-settings-tab",
-      params: { tab: "billing-plans" },
-    },
-    badgeProps: {
-      color: "error",
-      content: "3",
-    },
-  },
-  { type: "divider" },
-  {
-    type: "navItem",
-    icon: "tabler-lifebuoy",
-    title: "Help",
-    to: { name: "pages-help-center" },
-  },
-  {
-    type: "navItem",
-    icon: "tabler-currency-dollar",
-    title: "Pricing",
-    to: { name: "pages-pricing" },
-  },
-  {
-    type: "navItem",
-    icon: "tabler-help",
-    title: "FAQ",
-    to: { name: "pages-faq" },
   },
   { type: "divider" },
   {

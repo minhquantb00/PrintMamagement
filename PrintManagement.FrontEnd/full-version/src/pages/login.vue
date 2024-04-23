@@ -65,13 +65,14 @@ const rememberMe = ref(false);
     >
       <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
-          <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
+          <img src="../assets/images/logoPrint.png" alt="" width="150"/>
 
           <h5 class="text-h5 mb-1">
-            <span class="text-capitalize"> Welcome to Print Manage </span>! 👋🏻
+            <span class="text-capitalize"> Chào mừng đến với InkMastery </span>!
+            👋🏻
           </h5>
           <p class="mb-0">
-            Please sign-in to your account and start the adventure
+            Vui lòng đăng nhập vào tài khoản của bạn và bắt đầu cuộc phiêu lưu
           </p>
         </VCardText>
         <!--  -->
@@ -82,7 +83,7 @@ const rememberMe = ref(false);
               <VCol cols="12">
                 <AppTextField
                   v-model="inputLogin.username"
-                  label="Username"
+                  label="Tài khoản"
                   autofocus
                   :rules="[requiredValidator, usernameValidator]"
                   :error-messages="errors.email"
@@ -93,7 +94,7 @@ const rememberMe = ref(false);
               <VCol cols="12">
                 <AppTextField
                   v-model="inputLogin.password"
-                  label="Password"
+                  label="Mật khẩu"
                   :rules="[requiredValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :error-messages="errors.password"
@@ -106,34 +107,34 @@ const rememberMe = ref(false);
                 <div
                   class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4"
                 >
-                  <VCheckbox v-model="rememberMe" label="Remember me" />
+                  <VCheckbox v-model="rememberMe" label="Nhớ mật khẩu" />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
                     :to="{ name: 'forgot-password' }"
                   >
-                    Forgot Password?
+                    Quên mật khẩu?
                   </RouterLink>
                 </div>
 
                 <VBtn block type="submit" :loading="loading" @click="login">
-                  Login
+                  Đăng nhập
                 </VBtn>
                 <!-- <VBtn block class="mt-3" @click="logout"> Xóa location </VBtn> -->
               </VCol>
 
               <!-- create account -->
               <VCol cols="12" class="text-center">
-                <span>New on our platform?</span>
+                <span>Bạn chưa có tài khoản?</span>
                 <RouterLink
                   class="text-primary ms-2"
                   :to="{ name: 'register' }"
                 >
-                  Create an account
+                  Đăng ký tài khoản
                 </RouterLink>
               </VCol>
               <VCol cols="12" class="d-flex align-center">
                 <VDivider />
-                <span class="mx-4">or</span>
+                <span class="mx-4">Hoặc</span>
                 <VDivider />
               </VCol>
 

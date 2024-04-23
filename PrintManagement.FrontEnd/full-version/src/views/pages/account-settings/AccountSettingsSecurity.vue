@@ -23,7 +23,7 @@ const isOneTimePasswordDialogVisible = ref(false);
   <VForm ref="refVForm" @submit.prevent="onSubmit">
     <VRow>
       <VCol cols="12">
-        <VCard title="Change Password">
+        <VCard title="Đổi mật khẩu">
           <VForm>
             <VCardText class="pt-0">
               <!-- 👉 Current Password -->
@@ -37,7 +37,7 @@ const isOneTimePasswordDialogVisible = ref(false);
                     :append-inner-icon="
                       isCurrentPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
                     "
-                    label="Current Password"
+                    label="Mật khẩu cũ"
                     @click:append-inner="
                       isCurrentPasswordVisible = !isCurrentPasswordVisible
                     "
@@ -56,7 +56,7 @@ const isOneTimePasswordDialogVisible = ref(false);
                     :append-inner-icon="
                       isNewPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
                     "
-                    label="New Password"
+                    label="Mật khẩu mới"
                     @click:append-inner="
                       isNewPasswordVisible = !isNewPasswordVisible
                     "
@@ -72,7 +72,7 @@ const isOneTimePasswordDialogVisible = ref(false);
                     :append-inner-icon="
                       isConfirmPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
                     "
-                    label="Confirm New Password"
+                    label="Nhập lại mật khẩu"
                     @click:append-inner="
                       isConfirmPasswordVisible = !isConfirmPasswordVisible
                     "
@@ -80,33 +80,11 @@ const isOneTimePasswordDialogVisible = ref(false);
                 </VCol>
               </VRow>
             </VCardText>
-
-            <!-- 👉 Password Requirements -->
-            <VCardText>
-              <h6 class="text-base font-weight-medium mb-3">
-                Password Requirements:
-              </h6>
-
-              <VList class="card-list">
-                <VListItem
-                  v-for="item in passwordRequirements"
-                  :key="item"
-                  :title="item"
-                  class="text-medium-emphasis"
-                >
-                  <template #prepend>
-                    <VIcon size="8" icon="tabler-circle" class="me-3" />
-                  </template>
-                </VListItem>
-              </VList>
-            </VCardText>
-
-            <!-- 👉 Action Buttons -->
             <VCardText class="d-flex flex-wrap gap-4">
               <VBtn type="submit" @click="changePassword">Cập nhật</VBtn>
 
               <VBtn type="reset" color="secondary" variant="tonal">
-                Reset
+                Làm mới
               </VBtn>
             </VCardText>
           </VForm>

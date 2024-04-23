@@ -52,19 +52,7 @@ export const teamApi = defineStore("team", {
         }
       );
     },
-    forgotPassword(param) {
-      console.log(param);
-      return new Promise((resolve, reject) => {
-        axios
-          .post("/Auth/ForgotPassword", null, {
-            params: {
-              email: param.email,
-            },
-          })
-          .then((res) => resolve(res))
-          .catch((error) => reject(error));
-      });
-    },
+   
     confirmCreateNewPassword(params) {
       return new Promise((resolve, reject) => {
         axios

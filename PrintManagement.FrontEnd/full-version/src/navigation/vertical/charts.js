@@ -1,11 +1,7 @@
 export default [
-  // { heading: 'Charts' },
-  // {
-  //   title: 'Charts',
-  //   icon: { icon: 'tabler-chart-bar' },
-  //   children: [
-  //     { title: 'Apex Chart', to: 'charts-apex-chart' },
-  //   ],
-  // },
-  
-]
+  {
+    title: "Quản lý phòng ban",
+    icon: { icon: 'tabler-chart-bar' },
+    to: "charts-apex-chart",
+  },
+];

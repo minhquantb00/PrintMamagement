@@ -12,30 +12,16 @@ const activeTab = ref(route.params.tab)
 // tabs
 const tabs = [
   {
-    title: 'Account',
+    title: 'Tài khoản',
     icon: 'tabler-users',
     tab: 'account',
   },
   {
-    title: 'Security',
+    title: 'Đổi mật khẩu',
     icon: 'tabler-lock',
     tab: 'security',
   },
-  {
-    title: 'Billing & Plans',
-    icon: 'tabler-file-text',
-    tab: 'billing-plans',
-  },
-  {
-    title: 'Notifications',
-    icon: 'tabler-bell',
-    tab: 'notification',
-  },
-  {
-    title: 'Connections',
-    icon: 'tabler-link',
-    tab: 'connection',
-  },
+
 ]
 </script>
 
@@ -73,21 +59,6 @@ const tabs = [
       <!-- Security -->
       <VWindowItem value="security">
         <AccountSettingsSecurity />
-      </VWindowItem>
-
-      <!-- Billing -->
-      <VWindowItem value="billing-plans">
-        <AccountSettingsBillingAndPlans />
-      </VWindowItem>
-
-      <!-- Notification -->
-      <VWindowItem value="notification">
-        <AccountSettingsNotification />
-      </VWindowItem>
-
-      <!-- Connections -->
-      <VWindowItem value="connection">
-        <AccountSettingsConnections />
       </VWindowItem>
     </VWindow>
   </div>

@@ -40,12 +40,15 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
     <VCol cols="12" lg="4" class="d-flex align-center justify-center">
       <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
-          <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
-          <h5 class="text-h5 mb-1">Forgot Password? 🔒</h5>
-          <p class="mb-0">
-            Enter your email and we'll send you instructions to reset your
-            password
-          </p>
+          <!-- <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
+           -->
+          <img
+            src="../assets/images/logoPrint.png"
+            alt=""
+            width="150"
+            class="mb-3"
+          />
+          <h5 class="text-h5">Quên mật khẩu? 🔒</h5>
         </VCardText>
 
         <VCardText>
@@ -70,7 +73,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
                   type="submit"
                   @click="fogotPassword"
                 >
-                  Send Reset Link
+                  Xác nhận
                 </VBtn>
               </VCol>
 
@@ -81,7 +84,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
                   :to="{ name: 'login' }"
                 >
                   <VIcon icon="tabler-chevron-left" class="flip-in-rtl" />
-                  <span>Back to login</span>
+                  <span>Quay lại đăng nhập</span>
                 </RouterLink>
               </VCol>
             </VRow>
@@ -122,7 +125,7 @@ export default {
     async fogotPassword() {
       console.log(this.inputForgotPassword);
       const result = await this.authApi.forgotPassword(
-        this.inputForgotPassword,
+        this.inputForgotPassword
       );
       console.log(result);
       if (result.status === 200) {

@@ -35,11 +35,18 @@ const isPasswordVisibleOne = ref(false);
     <VCol cols="12" lg="4" class="d-flex align-center justify-center">
       <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
-          <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
-          <h5 class="text-h5 mb-1">Forgot Password? 🔒</h5>
-          <p class="mb-0">
-            Enter your email and we'll send you instructions to reset your
-            password
+          <img
+            src="../assets/images/logoPrint.png"
+            alt=""
+            width="150"
+            class="mb-3"
+          />
+          <h5 class="text-h5 mb-3">Cập nhật mật khẩu mới🔒</h5>
+          <p class="mb-0">Vui lòng kiểm tra Email để lấy mã xác minh</p>
+          <p v-if="countdownFinished">Hết thời gian!</p>
+          <p class="mt-4" v-else>
+            Thời gian còn lại:
+            <span style="color: #c7ff00">{{ seconds }}</span> giây
           </p>
         </VCardText>
 
@@ -51,7 +58,7 @@ const isPasswordVisibleOne = ref(false);
                 <AppTextField
                   v-model="inputConfirmUpdate.confirmCode"
                   autofocus
-                  label="Verification code"
+                  label="Mã xác minh"
                   type="text"
                 />
               </VCol>
@@ -76,7 +83,7 @@ const isPasswordVisibleOne = ref(false);
                 <AppTextField
                   autofocus
                   v-model="inputConfirmUpdate.password"
-                  label="A new password"
+                  label="Mật khẩu mới"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :append-inner-icon="
                     isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
@@ -88,7 +95,7 @@ const isPasswordVisibleOne = ref(false);
                 <AppTextField
                   autofocus
                   v-model="inputConfirmUpdate.confirmPassword"
-                  label="Enter a new password"
+                  label="Nhập lại mật khẩu"
                   :type="isPasswordVisibleOne ? 'text' : 'password'"
                   :append-inner-icon="
                     isPasswordVisibleOne ? 'tabler-eye-off' : 'tabler-eye'
@@ -106,7 +113,7 @@ const isPasswordVisibleOne = ref(false);
                   type="submit"
                   @click="createNewPassword"
                 >
-                  Send Reset Link
+                  Xác nhận
                 </VBtn>
               </VCol>
 
@@ -117,7 +124,7 @@ const isPasswordVisibleOne = ref(false);
                   :to="{ path: '/forgot-password' }"
                 >
                   <VIcon icon="tabler-chevron-left" class="flip-in-rtl" />
-                  <span>Back to forgot password</span>
+                  <span>Quay lại quên mật khẩu</span>
                 </RouterLink>
               </VCol>
             </VRow>
@@ -154,8 +161,17 @@ export default {
         confirmCode: "",
         confirmPassword: "",
       },
+      countdownFinished: false,
+      minutes: 0,
+      seconds: 0,
+      endTime: new Date().getTime() + 60000, // Đếm ngược 60 giây
     };
   },
+  created() {
+    this.updateCountdown();
+    this.countdownInterval = setInterval(this.updateCountdown, 1000);
+  },
+
   methods: {
     async createNewPassword() {
       console.log(this.inputConfirmUpdate);
@@ -173,8 +189,21 @@ export default {
         (this.text = "Password update failed"), (this.snackbar = true);
       }
     },
+    updateCountdown() {
+      const currentTime = new Date().getTime();
+      const distance = this.endTime - currentTime;
+
+      this.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      this.seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      if (distance < 0) {
+        clearInterval(this.countdownInterval);
+        this.countdownFinished = true;
+        this.$router.push({ path: "/forgot-password" });
+      }
+    },
+    
   },
- 
 };
 </script>
 <style lang="scss">

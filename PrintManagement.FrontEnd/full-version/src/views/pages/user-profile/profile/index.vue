@@ -42,7 +42,7 @@ watch(router, fetchAboutData, { immediate: true })
           cols="12"
           md="6"
         >
-          <Connection :connections-data="profileTabData.connections" />
+          <Connection :connections-data="profileTabData.connections" /> 
         </VCol>
 
         <VCol

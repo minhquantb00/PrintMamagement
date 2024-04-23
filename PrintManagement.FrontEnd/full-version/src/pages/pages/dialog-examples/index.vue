@@ -47,6 +47,7 @@ const isCardDetailsVisible = ref(false);
             :format="dateFormat"
             v-model="fillterProject.startDate"
             placeholder="Start day"
+            prepend-inner-icon="tabler-calendar"
             class="date-picker-input"
           >
           </AppDateTimePicker>
@@ -58,6 +59,7 @@ const isCardDetailsVisible = ref(false);
             v-model="fillterProject.endDate"
             placeholder="End day"
             class="date-picker-input"
+            prepend-inner-icon="tabler-calendar"
           >
           </AppDateTimePicker>
         </v-col>
@@ -113,6 +115,7 @@ const isCardDetailsVisible = ref(false);
                       :format="dateFormat"
                       v-model="inputAddProject.expectedEndDate"
                       placeholder="Ngày dự kiến"
+                      prepend-inner-icon="tabler-calendar"
                       class="date-picker-input"
                     >
                     </AppDateTimePicker>
@@ -194,7 +197,9 @@ const isCardDetailsVisible = ref(false);
           <VCardTitle>{{ project.projectName }}</VCardTitle>
         </VCardItem>
         <VCardText> Trưởng nhóm: {{ project.leader.fullName }} </VCardText>
-        <v-card-text> Ngày tạo: {{ project.actualEndDate }} </v-card-text>
+        <v-card-text>
+          Ngày tạo: {{ formatDate(project.actualEndDate) }}
+        </v-card-text>
         <v-card-text>
           <label
             >Tiến độ:
@@ -413,6 +418,22 @@ export default {
     async fillter() {
       const res = await this.projectApi.fillterData(this.fillterProject);
       this.dataProject = res.data;
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const seconds = date.getSeconds();
+      const formattedDay = day < 10 ? "0" + day : day;
+      const formattedMonth = month < 10 ? "0" + month : month;
+      const formattedHours = hours < 10 ? "0" + hours : hours;
+      const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+      const formattedSeconds = seconds < 10 ? "0" + seconds : seconds;
+
+      return `${formattedDay}/${formattedMonth}/${year}`;
     },
   },
   computed: {

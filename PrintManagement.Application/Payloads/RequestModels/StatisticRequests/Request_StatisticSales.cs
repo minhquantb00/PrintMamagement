@@ -8,8 +8,7 @@ namespace PrintManagement.Application.Payloads.RequestModels.StatisticRequests
 {
     public class Request_StatisticSales
     {
-        public int? Month { get; set; }
-        public int? Quater { get; set; }
-        public int? Year { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set;}
     }
 }

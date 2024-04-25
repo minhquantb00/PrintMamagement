@@ -84,9 +84,33 @@ namespace PrintManagement.Application.ImplementServices
 
 
 
-        public Task<IQueryable<DataResponseStatisticSales>> GetStatisticSales(Request_StatisticSales request)
+        public async Task<IQueryable<DataResponseStatisticSales>> GetStatisticSales(Request_StatisticSales request)
         {
-            throw new NotImplementedException();
+            var query = await _billRepository.GetAllAsync(record => record.IsActive == true && record.BillStatus == BillStatusEnum.Paid);
+
+            if(query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+            List<DataResponseStatisticSales> dataStatistics = new List<DataResponseStatisticSales>();
+            
+            if(request.StartTime.HasValue)
+            {
+                query = query.Where(record => record.CreateTime >= request.StartTime);
+            }
+            if (request.EndTime.HasValue)
+            {
+                query = query.Where(record => record.CreateTime <= request.EndTime);
+            }
+            foreach(var item in query)
+            {
+                DataResponseStatisticSales data = new DataResponseStatisticSales
+                {
+                    Sales = query.Sum(x => x.TotalMoney)
+                };
+                dataStatistics.Add(data);
+            }
+            return dataStatistics.AsQueryable();
         }
 
         public Task<IQueryable<DataResponseStatisticSalesOfUser>> GetStatisticSalesOfUserAsync(Guid userId, Request_StatisticSalesOfUser request)

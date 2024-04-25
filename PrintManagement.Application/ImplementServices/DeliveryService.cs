@@ -249,17 +249,17 @@ namespace PrintManagement.Application.ImplementServices
                 var responseMessage = _emailService.SendEmail(message);
 
                 await _confirmReceiptOfGoodsFromCustomerRepository.UpdateAsync(confirm);
-                Notification notification = new Notification
-                {
-                    IsActive = true,
-                    Content = $"Khách hàng đã phản hồi về đơn hàng! \nVui lòng kiểm tra đơn hàng:  \nPhản hồi đơn hàng: {request.ConfirmStatus}",
-                    Id = Guid.NewGuid(),
-                    IsSeen = false,
-                    Link = "",
-                    UserId = project.LeaderId
-                };
+                //Notification notification = new Notification
+                //{
+                //    IsActive = true,
+                //    Content = $"Khách hàng đã phản hồi về đơn hàng! \nVui lòng kiểm tra đơn hàng:  \nPhản hồi đơn hàng: {request.ConfirmStatus}",
+                //    Id = Guid.NewGuid(),
+                //    IsSeen = false,
+                //    Link = "",
+                //    UserId = project.LeaderId
+                //};
 
-                notification = await _notificationRepository.CreateAsync(notification);
+                //notification = await _notificationRepository.CreateAsync(notification);
 
                 var bill = await _billRepository.GetAsync(x => x.ProjectId == project.Id && x.BillStatus == Domain.Enumerates.BillStatusEnum.UnPaid);
                 if(bill != null)

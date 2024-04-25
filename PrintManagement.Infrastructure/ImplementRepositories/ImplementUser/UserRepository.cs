@@ -65,7 +65,7 @@ namespace PrintManagement.Infrastructure.ImplementRepositories.ImplementUser
             }
             _context.SaveChanges();
         }
-        public  async Task<IEnumerable<string>> GetRolesOfUserAsync(User user)
+        public async Task<IEnumerable<string>> GetRolesOfUserAsync(User user)
         {
             List<string> roles = new List<string>();
             var listRoles = _context.Permissions.Where(x => x.UserId == user.Id).AsQueryable();
@@ -77,6 +77,39 @@ namespace PrintManagement.Infrastructure.ImplementRepositories.ImplementUser
             return roles.AsEnumerable();
         }
 
+        public async Task DeleteRolesOfUserAsync(User user, List<string> listRoles)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            if (listRoles == null)
+            {
+                throw new ArgumentNullException(nameof(listRoles));
+            }
+            foreach (var role in listRoles.Distinct())
+            {
+                var rolesOfUser = await GetRolesOfUserAsync(user);
+                var listPermission = new List<Permissions>();
+                if (await IsStringInListAsync(role, rolesOfUser.ToList()))
+                {
+                    var roleItem = await _context.Roles.SingleOrDefaultAsync(x => x.RoleCode.Equals(role));
+                    var permission = await _context.Permissions.SingleOrDefaultAsync(x => x.UserId == user.Id && x.RoleId == roleItem.Id);
+                    if (permission != null)
+                    {
+                        listPermission.Add(permission);
+                    }
+                }
+                else
+                {
+
+                    throw new ArgumentNullException("Không có quyền này");
+
+                }
+                _context.Permissions.RemoveRange(listPermission);
+            }
+            _context.SaveChanges();
+        }
 
         #endregion
 

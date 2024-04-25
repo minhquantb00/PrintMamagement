@@ -16,6 +16,7 @@ namespace PrintManagement.Domain.InterfaceRepositories.InterfaceUser
         #region Get Role, Add Roles
         Task AddUserToRoleAsync(User user, IEnumerable<string> listRoles);
         Task<IEnumerable<string>> GetRolesOfUserAsync(User user);
+        Task DeleteRolesOfUserAsync(User user, List<string> listRoles);
         #endregion
     }
 }

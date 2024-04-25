@@ -157,8 +157,6 @@ namespace PrintManagement.Application.ImplementServices
                         notification = await _notificationRepository.CreateAsync(notification);
                     }
                 }
-                
-                
 
                 var listUsers = await _baseUserRepository.GetAllAsync(x => x.IsActive == true);
                 List<User> users = new List<User>();
@@ -208,6 +206,12 @@ namespace PrintManagement.Application.ImplementServices
                     Subject = "Thông tin đơn hàng của bạn: ",
                     Content = HandleTemplateEmail.GenerateNotificationBillEmail(bill)
                 });
+                var leader = await _baseUserRepository.GetByIDAsync(project.LeaderId);
+                if(leader != null)
+                {
+                    await _userRepository.DeleteRolesOfUserAsync(leader, new List<string> { "Leader" });
+                }
+                
                 return new ResponseObject<DataResponsePrintJob>
                 {
                     Status = StatusCodes.Status200OK,

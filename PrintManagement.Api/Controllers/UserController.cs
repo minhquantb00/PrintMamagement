@@ -23,13 +23,15 @@ namespace PrintManagement.Api.Controllers
         private readonly IDeliveryService _deliveryService;
         private readonly IStatisticService _statisticService;
         private readonly IKPIService _KPIService;
+        private readonly INotificationService _notificationService;
 
-        public UserController(IUserService userService, IDeliveryService deliveryService, IStatisticService statisticService, IKPIService kPIService)
+        public UserController(IUserService userService, IDeliveryService deliveryService, IStatisticService statisticService, IKPIService kPIService, INotificationService notificationService)
         {
             _userService = userService;
             _deliveryService = deliveryService;
             _statisticService = statisticService;
             _KPIService = kPIService;
+            _notificationService = notificationService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] Request_InputUser request)
@@ -79,6 +81,11 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> NotificationDoneKpi([FromRoute] Guid kpiId)
         {
             return Ok(await _KPIService.NotificationDoneKpi(kpiId));
+        }
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetNotificationsByUser([FromRoute] Guid userId)
+        {
+            return Ok(await _notificationService.GetNotificationsByUser(userId));
         }
     }
 }

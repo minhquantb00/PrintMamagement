@@ -16,151 +16,169 @@ const isCardDetailsVisible = ref(false);
 </script>
 
 <template>
-  <div class="mb-4">
-    <v-row>
-      <v-col cols="7">
-        <v-text-field
-          v-model="filterUser.name"
-          label="Tìm kiếm nhân viên"
-          prepend-inner-icon="mdi-magnify"
-          variant="outlined"
-          hide-details
-          single-line
-        ></v-text-field>
-      </v-col>
-      <v-col cols="4">
-        <v-select
-          clearable
-          label="Lọc theo phòng ban"
-          v-model="filterUser.teamId"
-          item-value="id"
-          item-title="name"
-          :items="dataTeam"
-          variant="outlined"
-        >
-        </v-select>
-      </v-col>
-      <v-col cols="1">
-        <v-btn @click="filterUsers">Tìm kiếm</v-btn>
-      </v-col>
-    </v-row>
+  <div v-if="isLoading" class="text-center mt-15">
+    <a-space>
+      <a-spin size="large" />
+    </a-space>
   </div>
-  <VRow>
-    <VCol cols="12" sm="3" md="3" v-for="user in dataUser" :key="user">
-      <VCard>
-        <VImg :src="pages2" />
 
-        <VCardText class="position-relative">
-          <!-- User Avatar -->
-          <VAvatar size="75" class="avatar-center" :image="user.avatar" />
+  <div v-else>
+    <div class="mb-4">
+      <v-row>
+        <v-col cols="7">
+          <v-text-field
+            v-model="filterUser.name"
+            label="Tìm kiếm nhân viên"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            hide-details
+            single-line
+          ></v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-select
+            clearable
+            label="Lọc theo phòng ban"
+            v-model="filterUser.teamId"
+            item-value="id"
+            item-title="name"
+            :items="dataTeam"
+            variant="outlined"
+          >
+          </v-select>
+        </v-col>
+        <v-col cols="1">
+          <v-btn @click="filterUsers">Tìm kiếm</v-btn>
+        </v-col>
+      </v-row>
+    </div>
+    <VRow>
+      <VCol cols="12" sm="3" md="3" v-for="user in dataUser" :key="user">
+        <VCard>
+          <VImg :src="pages2" />
 
-          <!-- Title, Subtitle & Action Button -->
-          <div class="d-flex justify-space-between flex-wrap pt-8">
-            <div class="me-2 mb-2">
-              <VCardTitle class="pa-0"> {{ user.fullName }} </VCardTitle>
-              <VCardTitle class="text-h6 pa-0">
-                Email: {{ user.email }}
-              </VCardTitle>
-              <VCardTitle class="text-h6 pa-0">
-                Nhóm: {{ user.teamName }}
-              </VCardTitle>
+          <VCardText class="position-relative">
+            <!-- User Avatar -->
+            <VAvatar size="75" class="avatar-center" :image="user.avatar" />
+
+            <!-- Title, Subtitle & Action Button -->
+            <div class="d-flex justify-space-between flex-wrap pt-8">
+              <div class="me-2 mb-2">
+                <VCardTitle class="pa-0"> {{ user.fullName }} </VCardTitle>
+                <VCardTitle class="text-h6 pa-0">
+                  Email: {{ user.email }}
+                </VCardTitle>
+                <VCardTitle class="text-h6 pa-0">
+                  Nhóm: {{ user.teamName }}
+                </VCardTitle>
+              </div>
             </div>
-          </div>
-          <v-dialog max-width="400">
-            <template v-slot:activator="{ props: activatorProps }">
-              <v-btn
-                v-bind="activatorProps"
-                style="font-size: 20px"
-                density="comfortable"
-                @click="findByIdUser(user.id)"
-                icon="mdi-pencil-outline"
-                class="mr-4"
-              ></v-btn>
-            </template>
-
-            <template v-slot:default="{ isActive }">
-              <v-card class="pa-4">
-                <div class="text-center mb-4">
-                  <h2>Cập nhật nhân viên</h2>
-                </div>
-                <VSelect
-                  class="mb-6"
-                  clearable
-                  v-model="selectedRoles"
-                  label="Quyền hạn"
-                  :items="dataRoles"
-                  item-title="roleName"
-                  item-value="id"
-                  :chips="true"
-                  multiple
-                  v-if="updateUserRoles.length > 0"
+            <v-dialog max-width="400">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  v-bind="activatorProps"
+                  style="font-size: 20px"
+                  density="comfortable"
+                  @click="findByIdUser(user.id)"
+                  icon
+                  class="mr-4"
                 >
-                </VSelect>
-                <v-select
-                  class="mb-6"
-                  clearable
-                  label="Phòng ban"
-                  :items="dataTeam"
-                  v-model="updateUser.teamName"
-                  item-title="name"
-                  item-value="id"
-                  variant="outlined"
-                ></v-select>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
+                  <v-icon icon="mdi-pencil-outline"></v-icon>
+                  <v-tooltip activator="parent" location="top">
+                    Cập nhật nhân viên
+                  </v-tooltip>
+                </v-btn>
+              </template>
 
-                  <v-btn
-                    text="Cập nhật"
-                    variant="flat"
-                    @click="isActive.value = false"
-                  ></v-btn>
-                  <v-btn
-                    text="Thoát"
+              <template v-slot:default="{ isActive }">
+                <v-card class="pa-4">
+                  <div class="text-center mb-4">
+                    <h2>Cập nhật nhân viên</h2>
+                  </div>
+                  <VSelect
+                    class="mb-6"
+                    clearable
+                    v-model="selectedRoles"
+                    label="Quyền hạn"
+                    :items="dataRoles"
+                    item-title="roleName"
+                    item-value="id"
+                    :chips="true"
+                    multiple
+                    v-if="updateUserRoles.length > 0"
+                  >
+                  </VSelect>
+                  <v-select
+                    class="mb-6"
+                    clearable
+                    label="Phòng ban"
+                    :items="dataTeam"
+                    v-model="updateUser.teamName"
+                    item-title="name"
+                    item-value="id"
                     variant="outlined"
-                    @click="isActive.value = false"
-                  ></v-btn>
-                </v-card-actions>
-              </v-card>
-            </template>
-          </v-dialog>
-          <v-dialog max-width="300">
-            <template v-slot:activator="{ props: activatorProps }">
-              <v-btn
-                density="comfortable"
-                style="font-size: 20px"
-                v-bind="activatorProps"
-                color="error"
-                icon="mdi-delete-outline"
-              ></v-btn>
-            </template>
+                  ></v-select>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
 
-            <template v-slot:default="{ isActive }">
-              <v-card class="pa-4 text-center">
-                <h2>Bạn có muốn xóa</h2>
-                <v-card-actions class="mt-4">
-                  <div>
                     <v-btn
-                      text="Xóa"
-                      :loading="loading"
-                      @click="deleteCustomer(item.id)"
-                      color="error"
+                      text="Cập nhật"
                       variant="flat"
-                      class="ml-13"
+                      @click="isActive.value = false"
                     ></v-btn>
                     <v-btn
                       text="Thoát"
                       variant="outlined"
                       @click="isActive.value = false"
                     ></v-btn>
-                  </div>
-                </v-card-actions>
-              </v-card>
-            </template>
-          </v-dialog>
-        </VCardText>
-      </VCard>
-    </VCol>
-  </VRow>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+            <v-dialog max-width="300">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  density="comfortable"
+                  style="font-size: 20px"
+                  v-bind="activatorProps"
+                  color="error"
+                  icon
+                >
+                  <v-icon icon="mdi-delete-outline"></v-icon>
+                  <v-tooltip activator="parent" location="top">
+                    Xóa nhân viên
+                  </v-tooltip></v-btn
+                >
+              </template>
+
+              <template v-slot:default="{ isActive }">
+                <v-card class="pa-4 text-center">
+                  <h2>Bạn có muốn xóa</h2>
+                  <v-card-actions class="mt-4">
+                    <div>
+                      <v-btn
+                        text="Xóa"
+                        :loading="loading"
+                        @click="deleteCustomer(item.id)"
+                        color="error"
+                        variant="flat"
+                        class="ml-13"
+                      ></v-btn>
+                      <v-btn
+                        text="Thoát"
+                        variant="outlined"
+                        @click="isActive.value = false"
+                      ></v-btn>
+                    </div>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+          </VCardText>
+        </VCard>
+      </VCol>
+    </VRow>
+  </div>
 </template>
 <script>
 import { teamApi } from "../../../../../api/Team/teamApi";
@@ -185,17 +203,14 @@ export default {
         name: "",
         phoneNumber: "",
       },
+      isLoading: true,
     };
   },
   async mounted() {
-    const dataUser = await this.userApi.getAllUsers();
-    this.dataUser = dataUser.data;
     console.log(this.dataUser);
-    const dataTeam = await this.teamApi.getAllTeams();
-    this.dataTeam = dataTeam.data;
+
     console.log(this.dataTeam);
-    const dataRoles = await this.authApi.getAllRoles();
-    this.dataRoles = dataRoles.data;
+
     console.log(this.dataRoles);
   },
   methods: {
@@ -226,6 +241,38 @@ export default {
         console.error("Error while fetching user data:", error);
       }
     },
+    async getDataUser() {
+      this.isLoading = true;
+      try {
+        const dataUser = await this.userApi.getAllUsers();
+        this.dataUser = dataUser.data;
+      } catch (error) {
+        console.error("fetching data failed:", error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async getDataTeam() {
+      try {
+        const dataTeam = await this.teamApi.getAllTeams();
+        this.dataTeam = dataTeam.data;
+      } catch (error) {
+        console.error("fetching data failed:", error);
+      }
+    },
+    async getDataRoles() {
+      try {
+        const dataRoles = await this.authApi.getAllRoles();
+        this.dataRoles = dataRoles.data;
+      } catch (error) {
+        console.error("fetching data failed:", error);
+      }
+    },
+  },
+  created() {
+    this.getDataUser();
+    this.getDataRoles();
+    this.getDataTeam();
   },
   watch: {
     updateUserRoles: {

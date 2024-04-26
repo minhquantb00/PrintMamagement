@@ -16,118 +16,135 @@ const isCardDetailsVisible = ref(false);
 </script>
 
 <template>
-  <v-row>
-    <v-col>
-      <v-row>
-        <v-col cols="4">
-          <v-text-field
-            clearable
-            label="Tìm kiếm project"
-            v-model="fillterProject.projectName"
-            prepend-inner-icon="mdi-magnify"
-            variant="outlined"
-            hide-details
-            single-line
-          ></v-text-field>
-        </v-col>
-        <v-col cols="3">
-          <v-select
-            clearable
-            label="Lọc leader"
-            variant="outlined"
-            v-model="fillterProject.leaderId"
-            item-value="id"
-            item-title="fullName"
-            :items="dataUser"
-          ></v-select>
-        </v-col>
-        <v-col cols="2">
-          <AppDateTimePicker
-            clearable
-            :format="dateFormat"
-            v-model="fillterProject.startDate"
-            placeholder="Start day"
-            class="date-picker-input"
-          >
-          </AppDateTimePicker>
-        </v-col>
-        <v-col cols="2">
-          <AppDateTimePicker
-            clearable
-            :format="dateFormat"
-            v-model="fillterProject.endDate"
-            placeholder="End day"
-            class="date-picker-input"
-          >
-          </AppDateTimePicker>
-        </v-col>
-        <v-col cols="1">
-          <v-btn @click="fillter">Tìm kiếm</v-btn>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+  <div v-if="isLoading" class="text-center mt-15">
+    <a-space>
+      <a-spin size="large" />
+    </a-space>
+  </div>
+  <div v-else>
+    <v-row>
+      <v-col>
+        <v-row>
+          <v-col cols="4">
+            <v-text-field
+              clearable
+              label="Tìm kiếm project"
+              v-model="fillterProject.projectName"
+              prepend-inner-icon="mdi-magnify"
+              variant="outlined"
+              hide-details
+              single-line
+            ></v-text-field>
+          </v-col>
+          <v-col cols="3">
+            <v-select
+              clearable
+              label="Lọc leader"
+              variant="outlined"
+              v-model="fillterProject.leaderId"
+              item-value="id"
+              item-title="fullName"
+              :items="dataUser"
+            ></v-select>
+          </v-col>
+          <v-col cols="2">
+            <AppDateTimePicker
+              clearable
+              :format="dateFormat"
+              v-model="fillterProject.startDate"
+              placeholder="Ngày bắt đầu"
+              prepend-inner-icon="tabler-calendar"
+              class="date-picker-input"
+            >
+            </AppDateTimePicker>
+          </v-col>
+          <v-col cols="2">
+            <AppDateTimePicker
+              clearable
+              :format="dateFormat"
+              v-model="fillterProject.endDate"
+              prepend-inner-icon="tabler-calendar"
+              placeholder="Ngày kết thúc"
+              class="date-picker-input"
+            >
+            </AppDateTimePicker>
+          </v-col>
+          <v-col cols="1">
+            <v-btn @click="fillter">Tìm kiếm</v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
 
-  <VRow>
-    <!-- 👉 Influencing The Influencer -->
-    <VCol cols="12" sm="6" md="4" v-for="project in dataProject" :key="project">
-      <v-dialog max-width="600">
-        <template v-slot:activator="{ props: activatorProps }">
-          <VCard v-bind="activatorProps">
-            <VImg :src="pages1" cover />
+    <VRow>
+      <!-- 👉 Influencing The Influencer -->
+      <VCol
+        cols="12"
+        sm="6"
+        md="4"
+        v-for="project in dataProject"
+        :key="project"
+      >
+        <v-dialog max-width="600">
+          <template v-slot:activator="{ props: activatorProps }">
+            <VCard v-bind="activatorProps">
+              <VImg :src="pages1" cover />
 
-            <VCardItem>
-              <VCardTitle>{{ project.projectName }}</VCardTitle>
-            </VCardItem>
-            <VCardText> Trưởng nhóm: {{ project.leader.fullName }} </VCardText>
-            <v-card-text>
-              Ngày tạo: {{ formatDate(project.actualEndDate) }}
-            </v-card-text>
-          </VCard>
-        </template>
+              <VCardItem>
+                <VCardTitle>{{ project.projectName }}</VCardTitle>
+              </VCardItem>
+              <VCardText>
+                Trưởng nhóm: {{ project.leader.fullName }}
+              </VCardText>
+              <v-card-text>
+                Ngày tạo: {{ formatDate(project.actualEndDate) }}
+              </v-card-text>
+            </VCard>
+          </template>
 
-        <template v-slot:default="{ isActive }">
-          <v-card class="pa-0">
-            <VImg :src="pages1" cover />
-            <v-card-text>
-              <h2>
-                {{ project.projectName }}
-              </h2>
-            </v-card-text>
-            <VCardText
-              ><h3>- <b>Trưởng nhóm:</b> {{ project.leader.fullName }}</h3>
-            </VCardText>
-            <VCardText
-              ><h3>- <b>Khách hàng:</b> {{ project.customer.fullName }}</h3>
-            </VCardText>
-            <VCardText
-              ><b>- Ngày tạo:</b> {{ project.actualEndDate }}
-            </VCardText>
-            <v-card-text class="text-h6">
-              <b>- Yêu cầu của khách hàng:</b>
-              {{ project.requestDescriptionFromCustomer }}
-            </v-card-text>
-            <v-card-text class="text-h6">
-              <b>- Mô tả:</b>
-              {{ project.description }}
-            </v-card-text>
+          <template v-slot:default="{ isActive }">
+            <v-card class="pa-0">
+              <VImg :src="pages1" cover />
+              <v-card-text>
+                <h2>
+                  {{ project.projectName }}
+                </h2>
+              </v-card-text>
+              <VCardText
+                ><h3>- <b>Trưởng nhóm:</b> {{ project.leader.fullName }}</h3>
+              </VCardText>
+              <VCardText
+                ><h3>- <b>Khách hàng:</b> {{ project.customer.fullName }}</h3>
+              </VCardText>
+              <VCardText
+                ><b>- Ngày tạo:</b> {{ project.actualEndDate }}
+              </VCardText>
+              <v-card-text class="text-h6">
+                <b>- Yêu cầu của khách hàng:</b>
+                {{ project.requestDescriptionFromCustomer }}
+              </v-card-text>
+              <v-card-text class="text-h6">
+                <b>- Mô tả:</b>
+                {{ project.description }}
+              </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
+              <v-card-actions>
+                <v-spacer></v-spacer>
 
-              <v-btn
-                variant="flat"
-                text="Thoát"
-                @click="isActive.value = false"
-              ></v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
-    </VCol>
-  </VRow>
-  <div class="text-center mt-4">
-    <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
+                <v-btn
+                  variant="flat"
+                  text="Thoát"
+                  @click="isActive.value = false"
+                ></v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
+      </VCol>
+    </VRow>
+    <div class="text-center mt-4">
+      <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -147,11 +164,10 @@ export default {
         endDate: "",
         leaderId: "",
       },
+      isLoading: true,
     };
   },
   async mounted() {
-    const res = await this.projectApi.getAllsProject();
-    this.dataProject = res.data;
     const resUser = await this.userApi.getAllUserContainsLeaderRole();
     this.dataUser = resUser.data;
   },
@@ -160,6 +176,7 @@ export default {
       const res = await this.projectApi.fillterData(this.fillterProject);
       this.dataProject = res.data;
     },
+
     formatDate(dateString) {
       const date = new Date(dateString);
       const day = date.getDate();
@@ -176,6 +193,20 @@ export default {
 
       return `${formattedDay}/${formattedMonth}/${year}`;
     },
+    async getDataProject() {
+      this.isLoading = true;
+      try {
+        const res = await this.projectApi.getAllsProject();
+        this.dataProject = res.data;
+      } catch (e) {
+        console.error("fetching data:", e);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+  },
+  created() {
+    this.getDataProject();
   },
 };
 </script>

@@ -47,6 +47,11 @@ const router = createRouter({
       component: () => import("../pages/ConfirmCreateNewPassword.vue"),
     },
     {
+      path: "/test",
+      name: "test",
+      component: () => import("../pages/wizard-examples/test.vue"),
+    },
+    {
       path: "/tables/warehouse",
       // name: "warehouse",
       // component: () => import("../pages/tables/warehouse.vue"),

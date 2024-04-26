@@ -65,7 +65,7 @@ const rememberMe = ref(false);
     >
       <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
-          <img src="../assets/images/logoPrint.png" alt="" width="150"/>
+          <img src="../assets/images/logoPrint.png" alt="" width="150" />
 
           <h5 class="text-h5 mb-1">
             <span class="text-capitalize"> Chào mừng đến với InkMastery </span>!

@@ -2,9 +2,9 @@ import axios from "axios";
 import { defineStore } from "pinia";
 // Định nghĩa baseURL cho axios
 axios.defaults.baseURL = "https://localhost:7070/api";
-const authorization = localStorage.getItem("accessToken")
-  ? localStorage.getItem("accessToken")
-  : "";
+function getAccessToken() {
+  return localStorage.getItem("accessToken") || "";
+}
 export const teamApi = defineStore("team", {
   actions: {
     getAllTeams() {
@@ -12,51 +12,33 @@ export const teamApi = defineStore("team", {
         axios
           .get("/Admin/GetAllTeams", {
             headers: {
-              
-              Authorization: `Bearer ${authorization}`,
+              Authorization: `Bearer ${getAccessToken()}`,
             },
           })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
     },
-    register(params) {
+    getTeamById(id) {
       return new Promise((resolve, reject) => {
-        console.log(params);
-        // params.DateOfBirth = format(new Date(params.DateOfBirth), "yyyy-MM-dd");
         axios
-          .post(
-            "/Auth/Register",
-            { ...params },
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          )
+          .get("/Admin/GetTeamById", {
+            params: {
+              teamId: id,
+            },
+          })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
     },
-
-    async changePassword(params) {
-      const authToken = `Bearer ${authorization}`;
-      console.log(authToken);
-      const res = await axios.put(
-        `/Auth/ChangePassword`,
-        { ...params },
-        {
-          headers: {
-            Authorization: authToken,
-          },
-        }
-      );
-    },
-   
-    confirmCreateNewPassword(params) {
+    updateTeams() {
       return new Promise((resolve, reject) => {
         axios
-          .put("/Auth/ConfirmCreateNewPassword", { ...params })
+          .put("/Admin/GetTeamById", {
+            params: {
+              teamId: id,
+            },
+          })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

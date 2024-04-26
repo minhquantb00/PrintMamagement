@@ -19,6 +19,8 @@ import {
   Layout,
   Segmented,
   Select,
+  Skeleton,
+  Spin,
   Statistic,
   Table,
   Tabs,
@@ -40,8 +42,10 @@ app.use(DatePicker);
 app.use(Button);
 app.use(Layout);
 app.use(Divider);
+app.use(Spin);
 app.use(Flex);
 app.use(Upload);
+app.use(Skeleton);
 app.use(Grid);
 app.use(Segmented);
 app.use(Statistic);

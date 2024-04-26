@@ -27,18 +27,19 @@ var configuration = builder.Configuration;
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString(Constant.AppSettingKeys.DEFAULT_CONNECTION)), ServiceLifetime.Scoped);
 
-
+builder.Services.AddCors();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigin", builder =>
     {
         builder
-            .WithOrigins("http://localhost:4200") // Update with your Angular app's URL
+            .WithOrigins("http://localhost:8080", "http://localhost:4200", "http://localhost:5173") // Update with your Angular app's URL
             .AllowAnyHeader()
-            .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
     });
 });
-builder.Services.AddCors();
+
 
 
 #region Đăng ký converter
@@ -85,7 +86,7 @@ builder.Services.AddScoped<IBaseReposiroty<Delivery>, BaseRepository<Delivery>>(
 builder.Services.AddScoped<IBaseReposiroty<ConfirmReceiptOfGoodsFromCustomer>, BaseRepository<ConfirmReceiptOfGoodsFromCustomer>>();
 builder.Services.AddScoped<IBaseReposiroty<KeyPerformanceIndicators>, BaseRepository<KeyPerformanceIndicators>>();
 builder.Services.AddScoped<IBaseReposiroty<ResourceType>, BaseRepository<ResourceType>>();
-builder.Services.AddScoped<IBaseReposiroty<Bill>,  BaseRepository<Bill>>();
+builder.Services.AddScoped<IBaseReposiroty<Bill>, BaseRepository<Bill>>();
 #endregion
 
 #region Khác
@@ -210,7 +211,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+//app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseCors("AllowOrigin");
 app.UseAuthentication();
 
 app.UseAuthorization();

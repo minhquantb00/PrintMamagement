@@ -301,5 +301,10 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _resourceTypeService.GetResourceTypeById(id));
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUserHaveRoleManager()
+        {
+            return Ok(await _teamService.GetAllUserHaveRoleManager());
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using PrintManagement.Application.Payloads.RequestModels.TeamRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataTeam;
+using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<DataResponseTeam> GetTeamById(Guid teamId);
         Task<ResponseObject<DataResponseTeam>> ChangeManagerForTeam(Request_ChangeManager request);
         Task<string> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request);
+        Task<IQueryable<DataResponseUser>> GetAllUserHaveRoleManager();
     }
 }

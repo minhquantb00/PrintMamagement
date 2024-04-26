@@ -3,6 +3,7 @@ using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.TeamRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataTeam;
+using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
 using PrintManagement.Domain.Entities;
 using PrintManagement.Domain.InterfaceRepositories.InterfaceBase;
@@ -23,7 +24,8 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IUserRepository<User> _userRepository;
         private readonly IBaseReposiroty<Notification> _notificationRepository;
-        public TeamService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> baseTeamRepository, TeamConverter converter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<Notification> notificationRepository)
+        private readonly UserConverter _userConverter;
+        public TeamService(IBaseReposiroty<User> baseUserRepository, IBaseReposiroty<Team> baseTeamRepository, TeamConverter converter, IHttpContextAccessor contextAccessor, IUserRepository<User> userRepository, IBaseReposiroty<Notification> notificationRepository, UserConverter userConverter)
         {
             _baseUserRepository = baseUserRepository;
             _baseTeamRepository = baseTeamRepository;
@@ -31,6 +33,7 @@ namespace PrintManagement.Application.ImplementServices
             _contextAccessor = contextAccessor;
             _userRepository = userRepository;
             _notificationRepository = notificationRepository;
+            _userConverter = userConverter;
         }
 
         public async Task<string> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request)
@@ -337,6 +340,20 @@ namespace PrintManagement.Application.ImplementServices
                     Data = null
                 };
             }
+        }
+
+        public async Task<IQueryable<DataResponseUser>> GetAllUserHaveRoleManager()
+        {
+            var listUser = await _baseUserRepository.GetAllAsync(record => record.IsActive == true);
+            List<User> listResult = new List<User>();
+            foreach(var user in listUser)
+            {
+                if (_userRepository.GetRolesOfUserAsync(user).Result.Contains("Manager"))
+                {
+                    listResult.Add(user);
+                }
+            }
+            return listResult.Select(item => _userConverter.EntityToDTOForUser(item)).AsQueryable();
         }
     }
 }

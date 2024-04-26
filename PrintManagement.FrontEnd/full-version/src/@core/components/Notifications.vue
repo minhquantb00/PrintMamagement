@@ -1,90 +1,26 @@
-<script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { avatarText } from '@core/utils/formatters'
-
-const props = defineProps({
-  notifications: {
-    type: Array,
-    required: true,
-  },
-  badgeProps: {
-    type: null,
-    required: false,
-    default: undefined,
-  },
-  location: {
-    type: null,
-    required: false,
-    default: 'bottom end',
-  },
-})
-
-const emit = defineEmits([
-  'read',
-  'unread',
-  'remove',
-  'click:notification',
-])
-
-const isAllMarkRead = computed(() => props.notifications.some(item => item.isSeen === false))
-
-const markAllReadOrUnread = () => {
-  const allNotificationsIds = props.notifications.map(item => item.id)
-  if (!isAllMarkRead.value)
-    emit('unread', allNotificationsIds)
-  else
-    emit('read', allNotificationsIds)
-}
-
-const totalUnseenNotifications = computed(() => {
-  return props.notifications.filter(item => item.isSeen === false).length
-})
-</script>
-
 <template>
   <IconBtn id="notification-btn">
     <VBadge
-      v-bind="props.badgeProps"
-      :model-value="props.notifications.some(n => !n.isSeen)"
+      v-bind="badgeProps"
+      :model-value="notifications.some((n) => !n.isSeen)"
       color="error"
       :content="totalUnseenNotifications"
       class="notification-badge"
     >
-      <VIcon
-        size="26"
-        icon="tabler-bell"
-      />
+      <VIcon size="26" icon="tabler-bell" />
     </VBadge>
 
     <VMenu
       activator="parent"
       width="380px"
-      :location="props.location"
+      :location="location"
       offset="14px"
       :close-on-content-click="false"
     >
       <VCard class="d-flex flex-column">
         <!-- 👉 Header -->
         <VCardItem class="notification-section">
-          <VCardTitle class="text-lg">
-            Notifications
-          </VCardTitle>
-
-          <template #append>
-            <IconBtn
-              v-show="props.notifications.length"
-              @click="markAllReadOrUnread"
-            >
-              <VIcon :icon="!isAllMarkRead ? 'tabler-mail' : 'tabler-mail-opened' " />
-
-              <VTooltip
-                activator="parent"
-                location="start"
-              >
-                {{ !isAllMarkRead ? 'Mark all as unread' : 'Mark all as read' }}
-              </VTooltip>
-            </IconBtn>
-          </template>
+          <VCardTitle class="text-lg"> Thông báo </VCardTitle>
         </VCardItem>
 
         <VDivider />
@@ -92,86 +28,90 @@ const totalUnseenNotifications = computed(() => {
         <!-- 👉 Notifications list -->
         <PerfectScrollbar
           :options="{ wheelPropagation: false }"
-          style="max-block-size: 23.75rem;"
+          style="max-block-size: 23.75rem"
         >
           <VList class="notification-list rounded-0 py-0">
             <template
-              v-for="(notification, index) in props.notifications"
-              :key="notification.title"
+              v-for="(item, index) in displayedNotifications"
+              :key="item"
             >
               <VDivider v-if="index > 0" />
-              <VListItem
-                link
-                lines="one"
-                min-height="66px"
-                class="list-item-hover-class"
-                @click="$emit('click:notification', notification)"
-              >
-                <!-- Slot: Prepend -->
-                <!-- Handles Avatar: Image, Icon, Text -->
-                <template #prepend>
-                  <VListItemAction start>
-                    <VAvatar
-                      size="40"
-                      :color="notification.color && notification.icon ? notification.color : undefined"
-                      :image="notification.img || undefined"
-                      :icon="notification.icon || undefined"
-                      :variant="notification.img ? undefined : 'tonal' "
+              <v-dialog max-width="300">
+                <template v-slot:activator="{ props: activatorProps }">
+                  <VListItem
+                    v-bind="activatorProps"
+                    link
+                    lines="one"
+                    min-height="66px"
+                    class="list-item-hover-class"
+                    @click="$emit('click:notification', item)"
+                  >
+                    <VListItemTitle
+                      ><v-icon icon="tabler-mail" class="mr-3"></v-icon
+                      >{{ item.content }}</VListItemTitle
                     >
-                      <span v-if="notification.text">{{ avatarText(notification.text) }}</span>
-                    </VAvatar>
-                  </VListItemAction>
-                </template>
 
-                <VListItemTitle>{{ notification.title }}</VListItemTitle>
-                <VListItemSubtitle>{{ notification.subtitle }}</VListItemSubtitle>
-                <span class="text-xs text-disabled">{{ notification.time }}</span>
+                    <span class="text-xs text-disabled"> </span>
 
-                <!-- Slot: Append -->
-                <template #append>
-                  <div class="d-flex flex-column align-center gap-4">
-                    <VBadge
-                      dot
-                      :color="!notification.isSeen ? 'primary' : '#a8aaae'"
-                      :class="`${notification.isSeen ? 'visible-in-hover' : ''} ms-1`"
-                      @click.stop="$emit(notification.isSeen ? 'unread' : 'read', [notification.id])"
-                    />
-
-                    <div style="block-size: 28px; inline-size: 28px;">
-                      <IconBtn
-                        size="small"
-                        class="visible-in-hover"
-                        @click="$emit('remove', notification.id)"
-                      >
-                        <VIcon
-                          size="20"
-                          icon="tabler-x"
+                    <!-- Slot: Append -->
+                    <template #append>
+                      <div class="d-flex flex-column align-center gap-4">
+                        <VBadge
+                          dot
+                          :color="!item.isSeen ? 'primary' : '#a8aaae'"
+                          :class="`${
+                            item.isSeen ? 'visible-in-hover' : ''
+                          } ms-1`"
+                          @click.stop="
+                            $emit(item.isSeen ? 'unread' : 'read', [item.id])
+                          "
                         />
-                      </IconBtn>
-                    </div>
-                  </div>
-                </template>
-              </VListItem>
-            </template>
 
-            <VListItem
-              v-show="!props.notifications.length"
-              class="text-center text-medium-emphasis"
-              style="block-size: 56px;"
-            >
-              <VListItemTitle>No Notification Found!</VListItemTitle>
-            </VListItem>
+                        <div style="block-size: 28px; inline-size: 28px">
+                          <IconBtn
+                            size="small"
+                            class="visible-in-hover"
+                            @click="$emit('remove', item.id)"
+                          >
+                            <VIcon size="20" icon="tabler-x" />
+                          </IconBtn>
+                        </div>
+                      </div>
+                    </template>
+                  </VListItem>
+                </template>
+
+                <template v-slot:default="{ isActive }">
+                  <v-card>
+                    <v-card-text class="text-center"> Mô tả </v-card-text>
+                    <v-card-text class="text-center">
+                      <router-link to="/wizard-examples/checkout">
+                        <v-btn variant="outlined"
+                          >Xem dự án bạn được nhận</v-btn
+                        >
+                      </router-link>
+                    </v-card-text>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn
+                        text="Thoát"
+                        variant="flat"
+                        @click="isActive.value = false"
+                      ></v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+            </template>
           </VList>
         </PerfectScrollbar>
-
-        <VDivider />
-
-        <!-- 👉 Footer -->
         <VCardActions
-          v-show="props.notifications.length"
+          v-show="dataNotification.length && !showAll"
           class="notification-footer"
         >
-          <VBtn block>
+          <VBtn block @click="showAllNotifications">
             View All Notifications
           </VBtn>
         </VCardActions>
@@ -179,6 +119,74 @@ const totalUnseenNotifications = computed(() => {
     </VMenu>
   </IconBtn>
 </template>
+<script>
+import { notificationApi } from "../../api/Notification/notificationApi";
+import { PerfectScrollbar } from "vue3-perfect-scrollbar";
+import { avatarText } from "@core/utils/formatters";
+
+export default {
+  data() {
+    return {
+      notificationApi: notificationApi(),
+      dataNotification: [],
+      showAll: false,
+    };
+  },
+  methods: {
+    async getDataNotification() {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      const res = await this.notificationApi.getAllNotification(userInfo.Id);
+      this.dataNotification = res.data;
+    },
+    markAllReadOrUnread() {
+      const allNotificationsIds = this.dataNotification.map((item) => item.id);
+      const isAllMarkRead = this.dataNotification.some(
+        (item) => item.isSeen === false
+      );
+      if (!isAllMarkRead) this.$emit("unread", allNotificationsIds);
+      else this.$emit("read", allNotificationsIds);
+    },
+    showAllNotifications() {
+      this.showAll = true;
+    },
+  },
+  created() {
+    this.getDataNotification();
+  },
+
+  computed: {
+    isAllMarkRead() {
+      return this.dataNotification.some((item) => item.isSeen === false);
+    },
+    totalUnseenNotifications() {
+      return this.dataNotification.filter((item) => item.isSeen === false)
+        .length;
+    },
+    displayedNotifications() {
+      return this.showAll
+        ? this.dataNotification
+        : this.dataNotification.slice(0, 5);
+    },
+  },
+  props: {
+    notifications: {
+      type: Array,
+      required: true,
+    },
+    badgeProps: {
+      type: null,
+      required: false,
+      default: undefined,
+    },
+    location: {
+      type: null,
+      required: false,
+      default: "bottom end",
+    },
+  },
+  emits: ["read", "unread", "remove", "click:notification"],
+};
+</script>
 
 <style lang="scss">
 .notification-section {

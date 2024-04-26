@@ -28,6 +28,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using BcryptNet = BCrypt.Net.BCrypt;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace PrintManagement.Application.ImplementServices
 {
@@ -43,8 +46,9 @@ namespace PrintManagement.Application.ImplementServices
         private readonly IBaseReposiroty<Role> _baseRoleRepository;
         private readonly IBaseReposiroty<Team> _baseTeamRepository;
         private readonly IEmailService _emailService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public AuthService(IBaseReposiroty<User> baseUserRepository, UserConverter mapper, IConfiguration configuration, IUserRepository<User> userRepository, IBaseReposiroty<RefreshToken> baseRefreshTokenRepository, IBaseReposiroty<ConfirmEmail> confirmEmailRepository,
-            IEmailService emailService, IBaseReposiroty<Permissions> basePermissionRepository, IBaseReposiroty<Role> baseRoleRepository, IBaseReposiroty<Team> baseTeamRepository)
+            IEmailService emailService, IBaseReposiroty<Permissions> basePermissionRepository, IBaseReposiroty<Role> baseRoleRepository, IBaseReposiroty<Team> baseTeamRepository, IHttpContextAccessor httpContextAccessor)
         {
             _baseUserRepository = baseUserRepository;
             _mapper = mapper;
@@ -56,6 +60,7 @@ namespace PrintManagement.Application.ImplementServices
             _basePermissionRepository = basePermissionRepository;
             _baseRoleRepository = baseRoleRepository;
             _baseTeamRepository = baseTeamRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<ResponseObject<DataResponseLogin>> GetJwtTokenAsync(User user)
         {

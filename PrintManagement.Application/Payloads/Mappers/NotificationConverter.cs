@@ -17,7 +17,7 @@ namespace PrintManagement.Application.Payloads.Mappers
             {
                 Content = notification.Content,
                 Id = notification.Id,
-                IsSeen = notification.IsSeen == true ? "Đã xem" : "Chưa xem",
+                IsSeen = notification.IsSeen,
                 Link = notification.Link,
             };
         }

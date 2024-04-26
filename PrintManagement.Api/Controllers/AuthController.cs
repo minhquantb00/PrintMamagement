@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +64,16 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> GetAllRoles()
         {
             return Ok(await _authService.GetAllRoles());
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Logout()
+        {
+            var user = HttpContext.User;
+            await HttpContext.SignOutAsync();
+
+            return Ok(new { message = "Đăng xuất thành công" });
         }
     }
 }

@@ -12,6 +12,6 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataNotification
     {
         public string Content { get; set; }
         public string Link { get; set; }
-        public string IsSeen { get; set; }
+        public bool? IsSeen { get; set; }
     }
 }

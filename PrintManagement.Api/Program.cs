@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PrintManagement.Api.MiddleWare;
 using PrintManagement.Application.Constants;
 using PrintManagement.Application.Handle.HandleEmail;
 using PrintManagement.Application.ImplementServices;
@@ -111,6 +112,7 @@ builder.Services.AddScoped<IKPIService, KPIService>();
 builder.Services.AddScoped<IResourceTypeService, ResourceTypeService>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IBlacklistedTokenService, BlacklistedTokenService>();
 #endregion
 
 
@@ -167,6 +169,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]))
     };
 });
+builder.Services.AddMemoryCache();
 var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -215,7 +218,6 @@ app.UseHttpsRedirection();
 //app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.UseCors("AllowOrigin");
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();

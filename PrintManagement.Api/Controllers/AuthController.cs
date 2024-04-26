@@ -18,9 +18,11 @@ namespace PrintManagement.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private IBlacklistedTokenService _blacklistedTokenService;
+        public AuthController(IAuthService authService, IBlacklistedTokenService blacklistedTokenService)
         {
             _authService = authService;
+            _blacklistedTokenService = blacklistedTokenService;
         }
         [HttpPost]
         public async Task<IActionResult> Register([FromForm] Request_Register request)
@@ -65,15 +67,18 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _authService.GetAllRoles());
         }
-
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Logout()
+        [HttpPost("logout")]
+        public IActionResult Logout()
         {
-            var user = HttpContext.User;
-            await HttpContext.SignOutAsync();
+            string token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest("Không tìm thấy token.");
+            }
 
-            return Ok(new { message = "Đăng xuất thành công" });
+            var tokenExpiration = new TimeSpan(0, 30, 0); // Đặt thời gian hết hạn của danh sách đen là 30 phút
+            _blacklistedTokenService.BlacklistToken(token, tokenExpiration);
+            return Ok("Đăng xuất thành công.");
         }
     }
 }

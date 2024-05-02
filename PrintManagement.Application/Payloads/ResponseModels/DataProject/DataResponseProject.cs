@@ -17,10 +17,10 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataProject
         public string Description { get; set; }
         public string RequestDescriptionFromCustomer { get; set; }
         public DateTime StartDate { get; set; }
-        public DataResponseUser Leader { get; set; }
+        public string Leader { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }
-        public DataResponseCustomer Customer { get; set; }
+        public string Customer { get; set; }
         public decimal CommissionPercentage { get; set; }
         public string EmployeeCreateName { get; set; }
         public string ImageDescription { get; set; }

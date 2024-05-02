@@ -30,8 +30,8 @@ namespace PrintManagement.Application.Payloads.Mappers
             var designer = _baseUserRepository.GetByIDAsync(design.DesignerId);
             return new DataResponseDesign
             {
-                Approver = approver.Result != null ? _userConverter.EntityToDTOForUser(approver.Result) : null ,
-                Designer = _userConverter.EntityToDTOForUser(designer.Result),
+                Approver = approver.Result != null ? approver.Result.FullName : null ,
+                Designer = designer.Result.FullName,
                 DesignImage = design.DesignImage,
                 DesignStatus = design.DesignStatus.ToString(),
                 DesignTime = design.DesignTime,

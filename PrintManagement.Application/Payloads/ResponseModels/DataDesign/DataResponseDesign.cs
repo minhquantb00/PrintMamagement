@@ -11,10 +11,10 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataDesign
 {
     public class DataResponseDesign : DataResponseBase
     {
-        public DataResponseUser Designer { get; set; }
+        public string Designer { get; set; }
         public string DesignImage { get; set; }
         public DateTime DesignTime { get; set; }
         public string DesignStatus { get; set; }
-        public DataResponseUser? Approver { get; set; } // Người duyệt thiết kế
+        public string? Approver { get; set; } // Người duyệt thiết kế
     }
 }

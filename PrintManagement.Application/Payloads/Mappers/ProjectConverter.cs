@@ -35,11 +35,11 @@ namespace PrintManagement.Application.Payloads.Mappers
             return new DataResponseProject
             {
                 ActualEndDate = project.ActualEndDate,
-                Customer = _customerConverter.EntityToDTOForCustomer(customer.Result),
+                Customer = customer.Result.FullName,
                 Description = project.Description,
                 ExpectedEndDate = project.ExpectedEndDate,
                 Id = project.Id,
-                Leader = _userConverter.EntityToDTOForUser(leader.Result),
+                Leader = leader.Result.FullName,
                 Progress = project.Progress,
                 ProjectName = project.ProjectName,
                 ProjectStatus = project.ProjectStatus.ToString(),

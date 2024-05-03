@@ -6,6 +6,7 @@ using PrintManagement.Application.Constants;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
+using PrintManagement.Application.Payloads.RequestModels.StatisticRequests;
 using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
 using PrintManagement.Application.Payloads.ResponseModels.DataKPI;
@@ -86,6 +87,11 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> GetNotificationsByUser([FromRoute] Guid userId)
         {
             return Ok(await _notificationService.GetNotificationsByUser(userId));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetStatisticSales([FromQuery] Request_StatisticSales request)
+        {
+            return Ok(await _statisticService.GetStatisticSales(request));  
         }
     }
 }

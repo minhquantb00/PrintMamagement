@@ -30,16 +30,16 @@ namespace PrintManagement.Application.Payloads.Mappers
         }
         public  DataResponseProject EntityToDTOForProject(Project project)
         {
-            var customer = _baseCustomerRepository.GetByIDAsync(project.CustomerId);
-            var leader = _baseUserRepository.GetByIDAsync(project.LeaderId);
+            var customer = _baseCustomerRepository.GetByIDAsync(project.CustomerId).Result;
+            var leader = _baseUserRepository.GetByIDAsync(project.LeaderId).Result;
             return new DataResponseProject
             {
                 ActualEndDate = project.ActualEndDate,
-                Customer = customer.Result.FullName,
+                Customer = customer.FullName,
                 Description = project.Description,
                 ExpectedEndDate = project.ExpectedEndDate,
                 Id = project.Id,
-                Leader = leader.Result.FullName,
+                Leader = leader.FullName,
                 Progress = project.Progress,
                 ProjectName = project.ProjectName,
                 ProjectStatus = project.ProjectStatus.ToString(),

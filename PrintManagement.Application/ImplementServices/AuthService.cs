@@ -62,6 +62,7 @@ namespace PrintManagement.Application.ImplementServices
             _baseTeamRepository = baseTeamRepository;
             _httpContextAccessor = httpContextAccessor;
         }
+        public AuthService() { }
         public async Task<ResponseObject<DataResponseLogin>> GetJwtTokenAsync(User user)
         {
             var permissions = await _basePermissionRepository.GetAllAsync(x => x.UserId == user.Id);

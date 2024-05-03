@@ -10,6 +10,7 @@ using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataLogin;
 using PrintManagement.Application.Payloads.ResponseModels.DataRole;
 using PrintManagement.Application.Payloads.Responses;
+using PrintManagement.Application.ImplementServices;
 
 namespace PrintManagement.Api.Controllers
 {
@@ -18,12 +19,13 @@ namespace PrintManagement.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private IBlacklistedTokenService _blacklistedTokenService;
+        private readonly IBlacklistedTokenService _blacklistedTokenService;
         public AuthController(IAuthService authService, IBlacklistedTokenService blacklistedTokenService)
         {
             _authService = authService;
             _blacklistedTokenService = blacklistedTokenService;
         }
+        
         [HttpPost]
         public async Task<IActionResult> Register([FromForm] Request_Register request)
         {

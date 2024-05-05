@@ -9,19 +9,11 @@ const userData = JSON.parse(localStorage.getItem("userInfo") || "null");
 console.log(userData.Avatar);
 
 const logout = () => {
-  // Remove "userData" from localStorage
+  // location.reload();
   localStorage.removeItem("userInfo");
-
-  // Remove "accessToken" from localStorage
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
-  router.push("/login").then(() => {
-    // Remove "userAbilities" from localStorage
-    localStorage.removeItem("userAbilities");
-
-    // Reset ability to initial ability
-    ability.update(initialAbility);
-  });
+  router.push("/login");
 };
 
 const userProfileList = [

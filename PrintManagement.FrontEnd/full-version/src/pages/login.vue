@@ -216,6 +216,7 @@ export default {
               this.$router.push({ name: "pages-cards-card-basic" });
               this.text = result.message;
               this.snackbar = true;
+              // location.reload();
             } else if (userRoles.includes("Employee")) {
               this.$router.push({ name: "access-control" });
               this.text = result.message;
@@ -266,11 +267,17 @@ export default {
         if (isValid) login();
       });
     },
-    logout() {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("userInfo");
-    },
+    // logout() {
+    //   localStorage.removeItem("accessToken");
+    //   localStorage.removeItem("refreshToken");
+    //   localStorage.removeItem("userInfo");
+    //   this.reloadPage();
+    // },
+  },
+  mounted() {
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   },
 };
 </script>

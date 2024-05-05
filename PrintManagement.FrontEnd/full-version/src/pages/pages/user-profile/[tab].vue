@@ -86,9 +86,7 @@ const activeTab = ref(route.params.tab);
         <VCard>
           <v-row>
             <v-col>
-              <v-card-title class="text-h3 mt-5">
-                Thống kê doanh thu
-              </v-card-title>
+              <v-card-title class="text-h3 mt-5"> Thống kê lương </v-card-title>
             </v-col>
             <v-col class="d-flex justify-end mt-5">
               <div class="date-picker-wrapper mr-2">

@@ -94,7 +94,13 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
       </v-col>
     </v-row>
     <VRow>
-      <VCol cols="12" lg="4" md="6" v-for="item in dataTeams" :key="item">
+      <VCol
+        cols="12"
+        lg="4"
+        md="6"
+        v-for="(item, index) in paginatedData"
+        :key="index"
+      >
         <VCard>
           <v-card-title class="mt-3 mb-2">
             Tên phòng ban: {{ item.name }} ({{ item.description }})
@@ -300,7 +306,11 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
       </VCol>
     </VRow>
     <div class="text-center mt-5 mb-15">
-      <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        rounded="circle"
+      ></v-pagination>
     </div>
     <VRow id="apex-chart-wrapper">
       <!-- 👉 Data Science -->
@@ -362,6 +372,8 @@ export default {
       isLoading: true,
       teamApi: teamApi(),
       dataTeams: [],
+      perPage: 3, // Number of items per page (fixed)
+      currentPage: 1, // Current page
       update: {},
     };
   },
@@ -384,6 +396,16 @@ export default {
   },
   created() {
     this.getDataTeams();
+  },
+  computed: {
+    paginatedData() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.dataTeams.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.dataTeams.length / this.perPage);
+    },
   },
 };
 </script>

@@ -63,6 +63,19 @@ export const projectApi = defineStore("project", {
           .catch((error) => reject(error));
       });
     },
+    getByIdProject(id) {
+      console.log(id);
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`/Admin/GetProjectById/${id}`, {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
     fillterData(param) {
       return new Promise((resolve, reject) => {
         axios

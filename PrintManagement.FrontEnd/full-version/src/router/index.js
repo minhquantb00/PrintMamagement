@@ -12,8 +12,10 @@ const router = createRouter({
         const permissions =
           userData && userData.permissions ? userData.permissions : [];
 
-        if (permissions.includes("Admin"))
+        if (permissions.includes("Admin")) {
+          location.reload();
           return { name: "dashboards-analytics" };
+        }
         if (permissions.includes("Leader")) return { name: "leader-dashboard" };
         // Thêm các điều kiện kiểm tra cho các quyền hạn khác ở đây
 
@@ -50,6 +52,11 @@ const router = createRouter({
       path: "/test",
       name: "test",
       component: () => import("../pages/wizard-examples/test.vue"),
+    },
+    {
+      path: "/wizard-examples/checkout/:id",
+      name: "checkout",
+      component: () => import("../pages/wizard-examples/checkout.vue"),
     },
     {
       path: "/tables/warehouse",

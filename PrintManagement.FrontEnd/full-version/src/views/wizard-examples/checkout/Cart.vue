@@ -14,11 +14,11 @@ const emit = defineEmits(["update:currentStep", "update:checkout-data"]);
 
 const checkoutCartDataLocal = ref(props.checkoutData);
 
-const removeItem = (item) => {
-  checkoutCartDataLocal.value.cartItems =
-    checkoutCartDataLocal.value.cartItems.filter((i) => i.id !== item.id);
-  console.log(checkoutCartDataLocal.value.cartItems);
-};
+// const removeItem = (item) => {
+//   checkoutCartDataLocal.value.cartItems =
+//     checkoutCartDataLocal.value.cartItems.filter((i) => i.id !== item.id);
+//   console.log(checkoutCartDataLocal.value.cartItems);
+// };
 
 //  cart total
 const totalCost = computed(() => {
@@ -41,7 +41,7 @@ watch(() => props.currentStep, updateCartData);
 </script>
 
 <template>
-  <VRow v-if="checkoutCartDataLocal">
+  <VRow>
     <VCol cols="12" md="8">
       <VCard hover>
         <div>
@@ -133,7 +133,22 @@ watch(() => props.currentStep, updateCartData);
     </VCol>
   </VRow>
 </template>
-
+<script>
+import { projectApi } from "../../../api/Project/projectApi";
+export default {
+  data() {
+    return {
+      projectApi: projectApi(),
+      dataGetIdProject: {},
+    };
+  },
+  async mounted() {
+    // const id = this.$route.params.id;
+    // const res = await this.projectApi.getByIdProject(id);
+    // this.dataGetIdProject = res.data;
+  },
+};
+</script>
 <style lang="scss" scoped>
 .checkout-item-remove-btn {
   position: absolute;

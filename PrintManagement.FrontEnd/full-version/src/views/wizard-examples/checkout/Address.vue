@@ -87,7 +87,7 @@ watch(() => props.currentStep, updateAddressData);
       <!-- 👉 Address custom input -->
       <CustomRadios
         v-model:selected-radio="checkoutAddressDataLocal.deliveryAddress"
-        :radio-content="checkoutAddressDataLocal.thietKe"
+        :radio-content="checkoutAddressDataLocal.dataProject"
         :grid-column="{ cols: '12', sm: '6' }"
       >
       </CustomRadios>
@@ -106,16 +106,16 @@ watch(() => props.currentStep, updateAddressData);
     <VCol cols="12" md="4">
       <VCard flat variant="outlined">
         <!-- 👉 Delivery estimate date -->
-        <VCardText >
+        <VCardText>
           <h6 class="text-base font-weight-medium mb-5">Thông tin dự án</h6>
 
           <VList class="card-list bg-var-theme-background rounded pa-5">
             <VListItem
               v-for="product in checkoutAddressDataLocal.thietKe"
-              :key="product.value"
+              :key="product"
             >
               <VListItemSubtitle class="text-h6 mb-4"
-                >Khách hàng {{ product.khachHang }}</VListItemSubtitle
+                >Khách hàng {{ product.projectName }}</VListItemSubtitle
               >
               <span>Mô tả: </span>
               <span class="font-weight-medium text-sm">

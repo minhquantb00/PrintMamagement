@@ -57,26 +57,26 @@ const checkoutData = ref({
   deliveryAddress: "home",
   deliverySpeed: "free",
   deliveryCharges: 0,
-  thietKe: [
-    {
-      src: "https://cms.vietnamreport.net/source/BaoCao/sach_trang_kinh_te_vietnam_2024/files/mobile/1.jpg?240117171048",
-      user: "Nguyễn Bá Quang Huy",
-      time: "29-03-2024",
-      khachHang: "Nguyễn Khánh Huyền",
-      status: "Chờ duyệt",
-      moTa: " In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động.",
-      value: 1,
-    },
-    {
-      src: "https://thuthuatnhanh.com/wp-content/uploads/2019/06/anh-anime-girl-xinh-dep-cute-439x580.jpg",
-      user: "Trần Văn Dương",
-      time: "21-04-2024",
-      khachHang: "Thắm Nguyễn",
-      moTa: "In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động",
-      status: "Chờ duyệt",
-      value: 2,
-    },
-  ],
+  // thietKe: [
+  //   {
+  //     src: "https://cms.vietnamreport.net/source/BaoCao/sach_trang_kinh_te_vietnam_2024/files/mobile/1.jpg?240117171048",
+  //     user: "Nguyễn Bá Quang Huy",
+  //     time: "29-03-2024",
+  //     khachHang: "Nguyễn Khánh Huyền",
+  //     status: "Chờ duyệt",
+  //     moTa: " In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động.",
+  //     value: 1,
+  //   },
+  //   {
+  //     src: "https://thuthuatnhanh.com/wp-content/uploads/2019/06/anh-anime-girl-xinh-dep-cute-439x580.jpg",
+  //     user: "Trần Văn Dương",
+  //     time: "21-04-2024",
+  //     khachHang: "Thắm Nguyễn",
+  //     moTa: "In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động",
+  //     status: "Chờ duyệt",
+  //     value: 2,
+  //   },
+  // ],
 });
 
 const currentStep = ref(0);

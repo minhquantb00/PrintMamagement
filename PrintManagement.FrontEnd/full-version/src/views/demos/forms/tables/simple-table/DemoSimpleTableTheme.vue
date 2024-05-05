@@ -53,7 +53,13 @@ const isCardDetailsVisible = ref(false);
       </v-row>
     </div>
     <VRow>
-      <VCol cols="12" sm="3" md="3" v-for="user in dataUser" :key="user">
+      <VCol
+        cols="12"
+        sm="3"
+        md="3"
+        v-for="(user, index) in paginatedData"
+        :key="index"
+      >
         <VCard>
           <VImg :src="pages2" />
 
@@ -178,6 +184,9 @@ const isCardDetailsVisible = ref(false);
         </VCard>
       </VCol>
     </VRow>
+    <div class="text-center mt-9">
+      <v-pagination v-model="currentPage" :length="totalPages" rounded="circle"></v-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -193,6 +202,8 @@ export default {
       dataUser: [],
       dataTeam: [],
       selectedRoles: [],
+      perPage: 8, // Number of items per page (fixed)
+      currentPage: 1, // Current page
       dataRoles: [],
       updateUser: {},
       updateUserRoles: [],
@@ -280,6 +291,16 @@ export default {
         this.selectedRoles = this.updateUserRoles;
       },
       immediate: true,
+    },
+  },
+  computed: {
+    paginatedData() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.dataUser.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.dataUser.length / this.perPage);
     },
   },
 };

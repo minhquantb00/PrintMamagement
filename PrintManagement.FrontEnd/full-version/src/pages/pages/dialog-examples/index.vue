@@ -9,9 +9,64 @@ import pages2 from "@images/pages/2.png";
 import pages3 from "@images/pages/3.png";
 import pages5 from "@images/pages/5.jpg";
 import pages6 from "@images/pages/6.jpg";
+import AddressContent from "@/views/wizard-examples/checkout/Address.vue";
+import CartContent from "@/views/wizard-examples/checkout/Cart.vue";
+import ConfirmationContent from "@/views/wizard-examples/checkout/Confirmation.vue";
+import PaymentContent from "@/views/wizard-examples/checkout/Payment.vue";
 
 const avatars = [avatar1, avatar2, avatar3, avatar4];
-
+const checkoutSteps = [
+  {
+    title: "Dự án",
+    icon: "custom-trending",
+  },
+  {
+    title: "Thiết kế",
+    icon: "custom-address",
+  },
+  {
+    title: "In ấn",
+    icon: "custom-payment",
+  },
+  {
+    title: "Giao hàng",
+    icon: "custom-cart",
+  },
+];
+const dataProjectCheckout = ref(null);
+const getDataProjects = async (id) => {
+  try {
+    const res = await projectApi.getByIdProject(id); // Đảm bảo projectApi đã được khai báo trước
+    dataProjectCheckout.value = res.data;
+  } catch (e) {
+    console.error("error fetching data", e);
+  }
+};
+const checkoutData = ref({
+  thietKe: [
+    {
+      src: "https://cms.vietnamreport.net/source/BaoCao/sach_trang_kinh_te_vietnam_2024/files/mobile/1.jpg?240117171048",
+      user: "Nguyễn Bá Quang Huy",
+      time: "29-03-2024",
+      khachHang: "Nguyễn Khánh Huyền",
+      status: "Chờ duyệtdd",
+      moTa: " In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động.",
+      value: 1,
+    },
+    {
+      src: "https://thuthuatnhanh.com/wp-content/uploads/2019/06/anh-anime-girl-xinh-dep-cute-439x580.jpg",
+      user: "Trần Văn Dương",
+      time: "21-04-2024",
+      khachHang: "Thắm Nguyễn",
+      moTa: "In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động",
+      status: "Chờ duyệt",
+      value: 2,
+    },
+  ],
+  dataProjectCheckout: [],
+});
+console.log(dataProjectCheckout);
+const currentStep = ref(0);
 const isCardDetailsVisible = ref(false);
 </script>
 
@@ -93,7 +148,7 @@ const isCardDetailsVisible = ref(false);
           <template v-slot:default="{ isActive }">
             <v-card>
               <h2 class="text-center mt-3">Thêm dự án</h2>
-              <v-form>
+              <v-form ref="refVForm" @submit.prevent="onSubmit">
                 <div class="pa-4">
                   <v-row class="mb-5">
                     <v-col cols="12">
@@ -114,6 +169,7 @@ const isCardDetailsVisible = ref(false);
 
                       <v-text-field
                         label="Tên dự án"
+                        :rules="[requiredValidator]"
                         v-model="inputAddProject.projectName"
                         variant="outlined"
                       ></v-text-field>
@@ -124,6 +180,7 @@ const isCardDetailsVisible = ref(false);
                       </div>
                       <AppDateTimePicker
                         :format="dateFormat"
+                        :rules="[requiredValidator]"
                         v-model="inputAddProject.expectedEndDate"
                         placeholder="Ngày dự kiến"
                         prepend-inner-icon="tabler-calendar"
@@ -139,6 +196,7 @@ const isCardDetailsVisible = ref(false);
                       <v-select
                         clearable
                         v-model="inputAddProject.leaderId"
+                        :rules="[requiredValidator]"
                         label="Người nhận dự án"
                         item-value="id"
                         item-title="fullName"
@@ -146,6 +204,7 @@ const isCardDetailsVisible = ref(false);
                         variant="outlined"
                       ></v-select>
                     </v-col>
+
                     <v-col cols="6">
                       <div class="mb-3">
                         <span class="red">(*)</span> <span>Khách hàng</span>
@@ -154,11 +213,38 @@ const isCardDetailsVisible = ref(false);
                         clearable
                         v-model="inputAddProject.customerId"
                         item-value="id"
+                        :rules="[requiredValidator]"
                         item-title="fullName"
                         label="Khách hàng"
                         :items="dataCustomer"
                         variant="outlined"
                       ></v-select>
+                    </v-col>
+                    <v-col cols="6">
+                      <div class="mb-3">
+                        <span class="red">(*)</span> <span>Giá dự án</span>
+                      </div>
+
+                      <v-text-field
+                        label="Giá dự án"
+                        :rules="[requiredValidator]"
+                        v-model="inputAddProject.startingPrice"
+                        type="number"
+                        variant="outlined"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                      <div class="mb-3">
+                        <span class="red">(*)</span>
+                        <span>Phần trăm hoa hồng</span>
+                      </div>
+
+                      <v-text-field
+                        label="Phần trăm hoa hồng nhân viên"
+                        :rules="[requiredValidator]"
+                        v-model="inputAddProject.commissionPercentage"
+                        variant="outlined"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                   <div class="mb-3">
@@ -167,6 +253,7 @@ const isCardDetailsVisible = ref(false);
                   <v-textarea
                     label="Yêu cầu khách hàng"
                     v-model="inputAddProject.requestDescriptionFromCustomer"
+                    :rules="[requiredValidator]"
                     variant="outlined"
                     class="mb-5"
                   ></v-textarea>
@@ -176,6 +263,7 @@ const isCardDetailsVisible = ref(false);
                   <v-textarea
                     v-model="inputAddProject.description"
                     label="Mô tả"
+                    :rules="[requiredValidator]"
                     variant="outlined"
                   ></v-textarea>
                 </div>
@@ -185,6 +273,7 @@ const isCardDetailsVisible = ref(false);
                   <v-btn
                     variant="flat"
                     text="Thêm mới"
+                    type="submit"
                     @click="saveProject"
                   ></v-btn>
                   <v-btn
@@ -204,16 +293,16 @@ const isCardDetailsVisible = ref(false);
         cols="12"
         sm="6"
         md="3"
-        v-for="project in dataProject"
-        :key="project"
+        v-for="(project, index) in paginatedData"
+        :key="index"
       >
         <VCard>
-          <VImg :src="pages1" cover />
+          <VImg :src="project.imageDescription" cover height="25em" />
 
           <VCardItem>
             <VCardTitle>{{ project.projectName }}</VCardTitle>
           </VCardItem>
-          <VCardText> Trưởng nhóm: {{ project.leader.fullName }} </VCardText>
+          <VCardText> Trưởng nhóm: {{ project.leader }} </VCardText>
           <v-card-text>
             Ngày tạo: {{ formatDate(project.actualEndDate) }}
           </v-card-text>
@@ -221,32 +310,100 @@ const isCardDetailsVisible = ref(false);
             <label
               >Tiến độ:
               <strong style="font-size: 15px; color: #00ff0a"
-                >{{ Math.ceil(knowledge) }}%</strong
+                >{{ Math.ceil(project.progress) }}%</strong
               ></label
             >
             <v-progress-linear
               class="mt-2"
               color="light-blue"
               height="10"
-              :model-value="knowledge"
+              :model-value="project.progress"
               striped
             >
             </v-progress-linear>
           </v-card-text>
           <v-card-text>
-            <router-link to="/wizard-examples/checkout">
-              <v-btn
-                icon
-                color="info"
-                style="font-size: 18px"
-                density="comfortable"
-              >
-                <v-icon icon="mdi-eye-outline"></v-icon>
-                <v-tooltip activator="parent" location="top">
-                  Xem tiến độ dự án
-                </v-tooltip>
-              </v-btn>
-            </router-link>
+            <v-dialog
+              v-model="dialog"
+              transition="dialog-bottom-transition"
+              fullscreen
+            >
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  icon
+                  color="info"
+                  style="font-size: 18px"
+                  v-bind="activatorProps"
+                  density="comfortable"
+                  @click="getDataProjects(project.id)"
+                >
+                  <v-icon icon="mdi-eye-outline"></v-icon>
+                  <v-tooltip activator="parent" location="top">
+                    Xem tiến độ dự án
+                  </v-tooltip>
+                </v-btn>
+              </template>
+
+              <v-card>
+                <v-toolbar>
+                  <v-toolbar-title>{{ project }}</v-toolbar-title>
+
+                  <v-spacer></v-spacer>
+                  <v-btn icon="mdi-close" @click="dialog = false"></v-btn>
+                </v-toolbar>
+
+                <VCard>
+                  <VCardText>
+                    <!-- 👉 Stepper -->
+                    <AppStepper
+                      v-model:current-step="currentStep"
+                      class="checkout-stepper"
+                      :items="checkoutSteps"
+                      :direction="
+                        $vuetify.display.smAndUp ? 'horizontal' : 'vertical'
+                      "
+                    />
+                  </VCardText>
+
+                  <VDivider />
+
+                  <VCardText>
+                    <!-- 👉 stepper content -->
+                    <VWindow
+                      v-model="currentStep"
+                      class="disable-tab-transition"
+                    >
+                      <VWindowItem>
+                        <CartContent
+                          v-model:current-step="currentStep"
+                          v-model:checkout-data="checkoutData"
+                        />
+                      </VWindowItem>
+
+                      <VWindowItem>
+                        <AddressContent
+                          v-model:current-step="currentStep"
+                          v-model:checkout-data="checkoutData"
+                        />
+                      </VWindowItem>
+
+                      <VWindowItem>
+                        <PaymentContent
+                          v-model:current-step="currentStep"
+                          v-model:checkout-data="checkoutData"
+                        />
+                      </VWindowItem>
+
+                      <VWindowItem>
+                        <ConfirmationContent
+                          v-model:checkout-data="checkoutData"
+                        />
+                      </VWindowItem>
+                    </VWindow>
+                  </VCardText>
+                </VCard>
+              </v-card>
+            </v-dialog>
             <v-dialog max-width="400">
               <template v-slot:activator="{ props: activatorProps }">
                 <v-btn
@@ -296,10 +453,10 @@ const isCardDetailsVisible = ref(false);
                   class="ml-4"
                   icon
                 >
-                 <v-icon icon="mdi-delete-outline"></v-icon>
-                <v-tooltip activator="parent" location="top">
-                  Xóa dự án
-                </v-tooltip>
+                  <v-icon icon="mdi-delete-outline"></v-icon>
+                  <v-tooltip activator="parent" location="top">
+                    Xóa dự án
+                  </v-tooltip>
                 </v-btn>
               </template>
 
@@ -331,7 +488,11 @@ const isCardDetailsVisible = ref(false);
       </VCol>
     </VRow>
     <div class="text-center mt-4">
-      <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        rounded="circle"
+      ></v-pagination>
     </div>
     <v-snackbar
       v-model="snackbar"
@@ -353,10 +514,18 @@ const isCardDetailsVisible = ref(false);
     </v-snackbar>
   </div>
 </template>
+
 <script>
 import { projectApi } from "../../../api/Project/projectApi";
 import { customerApi } from "../../../api/customer/customerApi";
 import { userApi } from "../../../api/User/userApi";
+import {
+  alphaDashValidator,
+  emailValidator,
+  requiredValidator,
+  phoneNumberValidator,
+  usernameValidator,
+} from "@validators";
 export default {
   data() {
     return {
@@ -368,9 +537,16 @@ export default {
       dataProject: [],
       dataUser: [],
       snackbar: false,
+      dialog: false,
+      notifications: false,
+      sound: true,
+      widgets: false,
       loading: false,
+      perPage: 8,
+      refVForm: "",
+      currentPage: 1,
       text: "",
-      knowledge: 75,
+      knowledge: null,
       fillterProject: {
         projectName: "",
         startDate: "",
@@ -385,6 +561,8 @@ export default {
         expectedEndDate: "",
         customerId: "",
         imageDescription: "",
+        startingPrice: "",
+        commissionPercentage: "",
       },
       isLoading: true,
     };
@@ -396,28 +574,15 @@ export default {
     this.dataUser = resUser.data;
   },
   methods: {
+    // async getByIdProjects(id) {
+    //   const res = await this.projectApi.getByIdProject(id);
+    // },
+
     async saveProject() {
       const res = await this.projectApi.addProject(this.inputAddProject);
       console.log(res);
       if (res.data.status === 200) {
         this.text = res.data.message;
-        this.snackbar = true;
-        // setTimeout(() => {
-        //   this.reloadPage();
-        // }, 2000);
-      } else {
-        this.text = res.message;
-        this.snackbar = true;
-      }
-    },
-    async deleteProjects(id) {
-      const res = await this.projectApi.deleteProject(
-        id,
-        (this.loading = true)
-      );
-      console.log(res);
-      if (res.status === 200) {
-        this.text = res.data;
         this.snackbar = true;
         setTimeout(() => {
           this.reloadPage();
@@ -426,6 +591,35 @@ export default {
         this.text = res.data.message;
         this.snackbar = true;
       }
+    },
+    async deleteProjects(id) {
+      try {
+        const res = await this.projectApi.deleteProject(
+          id,
+          (this.loading = true)
+        );
+        console.log(res);
+        if (res.status === 200) {
+          this.text = res.data;
+          this.snackbar = true;
+          setTimeout(() => {
+            this.reloadPage();
+          }, 2000);
+        } else {
+          this.text = res.data.message;
+          this.snackbar = true;
+        }
+      } catch (e) {
+        console.error(e);
+        this.text = "Bạn không phải Admin";
+        this.loading = false;
+        this.snackbar = true;
+      }
+    },
+    onSubmit() {
+      refVForm.value?.validate().then(({ valid: isValid }) => {
+        if (isValid) register();
+      });
     },
     reloadPage() {
       location.reload();
@@ -489,6 +683,14 @@ export default {
   },
   computed: {
     dateFormat: "yyyy-MM-dd",
+    paginatedData() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.dataProject.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.dataProject.length / this.perPage);
+    },
   },
 };
 </script>
@@ -513,7 +715,13 @@ export default {
     inset-block-start: 9px;
   }
 }
-
+.checkout-stepper {
+  .stepper-icon-step {
+    .step-wrapper + svg {
+      margin-inline: 3.5rem !important;
+    }
+  }
+}
 .v-btn {
   transform: none;
 }

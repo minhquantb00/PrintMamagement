@@ -36,7 +36,7 @@
               :key="item"
             >
               <VDivider v-if="index > 0" />
-              <v-dialog max-width="300">
+              <v-dialog max-width="400">
                 <template v-slot:activator="{ props: activatorProps }">
                   <VListItem
                     v-bind="activatorProps"
@@ -83,7 +83,8 @@
 
                 <template v-slot:default="{ isActive }">
                   <v-card>
-                    <v-card-text class="text-center"> Mô tả </v-card-text>
+                    <v-card-text class="text-center text-h4"> Thông tin </v-card-text>
+                    <v-card-text class="text-center"> {{item.content}} </v-card-text>
                     <v-card-text class="text-center">
                       <router-link to="/wizard-examples/checkout">
                         <v-btn variant="outlined"

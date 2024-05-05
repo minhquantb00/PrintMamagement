@@ -37,7 +37,11 @@ export default [
   //   title: 'Roles & Permissions',
   //   icon: { icon: 'tabler-settings' },
   //   children: [
-  //     { title: 'Roles', to: 'apps-roles' },
+  {
+    icon: { icon: "tabler-message-circle" },
+    title: "Quản lý giao hàng",
+    to: "apps-roles",
+  },
   //     { title: 'Permissions', to: 'apps-permissions' },
   //   ],
   // },

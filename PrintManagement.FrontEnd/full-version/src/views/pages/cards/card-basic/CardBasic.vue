@@ -82,20 +82,18 @@ const isCardDetailsVisible = ref(false);
         cols="12"
         sm="6"
         md="4"
-        v-for="project in dataProject"
-        :key="project"
+        v-for="(project, index) in paginatedData"
+        :key="index"
       >
-        <v-dialog max-width="600">
+        <v-dialog max-width="700">
           <template v-slot:activator="{ props: activatorProps }">
             <VCard v-bind="activatorProps">
-              <VImg :src="pages1" cover />
+              <VImg :src="project.imageDescription" cover height="25em" />
 
               <VCardItem>
                 <VCardTitle>{{ project.projectName }}</VCardTitle>
               </VCardItem>
-              <VCardText>
-                Trưởng nhóm: {{ project.leader.fullName }}
-              </VCardText>
+              <VCardText> Trưởng nhóm: {{ project.leader }} </VCardText>
               <v-card-text>
                 Ngày tạo: {{ formatDate(project.actualEndDate) }}
               </v-card-text>
@@ -104,21 +102,19 @@ const isCardDetailsVisible = ref(false);
 
           <template v-slot:default="{ isActive }">
             <v-card class="pa-0">
-              <VImg :src="pages1" cover />
+              <VImg :src="project.imageDescription" cover height="500" />
               <v-card-text>
                 <h2>
                   {{ project.projectName }}
                 </h2>
               </v-card-text>
               <VCardText
-                ><h3>- <b>Trưởng nhóm:</b> {{ project.leader.fullName }}</h3>
+                ><h3>- <b>Trưởng nhóm:</b> {{ project.leader }}</h3>
               </VCardText>
               <VCardText
-                ><h3>- <b>Khách hàng:</b> {{ project.customer.fullName }}</h3>
+                ><h3>- <b>Khách hàng:</b> {{ project.customer }}</h3>
               </VCardText>
-              <VCardText
-                ><b>- Ngày tạo:</b> {{ project.actualEndDate }}
-              </VCardText>
+              <VCardText><b>- Ngày tạo:</b> {{ formatDate(project.startDate) }} </VCardText>
               <v-card-text class="text-h6">
                 <b>- Yêu cầu của khách hàng:</b>
                 {{ project.requestDescriptionFromCustomer }}
@@ -143,7 +139,11 @@ const isCardDetailsVisible = ref(false);
       </VCol>
     </VRow>
     <div class="text-center mt-4">
-      <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        rounded="circle"
+      ></v-pagination>
     </div>
   </div>
 </template>
@@ -157,6 +157,8 @@ export default {
       projectApi: projectApi(),
       dataProject: [],
       dataUser: [],
+      perPage: 6, // Number of items per page (fixed)
+      currentPage: 1, // Current page
       userApi: userApi(),
       fillterProject: {
         projectName: "",
@@ -207,6 +209,16 @@ export default {
   },
   created() {
     this.getDataProject();
+  },
+  computed: {
+    paginatedData() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.dataProject.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.dataProject.length / this.perPage);
+    },
   },
 };
 </script>

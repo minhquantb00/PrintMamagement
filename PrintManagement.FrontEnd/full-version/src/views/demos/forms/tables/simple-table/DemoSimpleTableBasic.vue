@@ -127,7 +127,7 @@
       </thead>
 
       <tbody>
-        <tr v-for="item in dataCustomers" :key="item">
+        <tr v-for="(item, index) in paginatedData" :key="index">
           <td>
             {{ item.fullName }}
           </td>
@@ -249,7 +249,11 @@
       </tbody>
     </VTable>
     <div class="text-center mt-4">
-      <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        rounded="circle"
+      ></v-pagination>
     </div>
     <v-snackbar
       v-model="snackbar"
@@ -288,6 +292,8 @@ export default {
       isLoading: true,
       loading: false,
       text: "",
+      perPage: 10, // Number of items per page (fixed)
+      currentPage: 1, // Current page
       snackbar: false,
       updateKhachHang: {},
       customerApi: customerApi(),
@@ -383,6 +389,16 @@ export default {
   },
   created() {
     this.getDataCustomer();
+  },
+  computed: {
+    paginatedData() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.dataCustomers.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.dataCustomers.length / this.perPage);
+    },
   },
 };
 </script>

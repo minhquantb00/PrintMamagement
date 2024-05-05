@@ -58,29 +58,39 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
                       <span class="obligatory">(*)</span>
 
                       <v-text-field
+                        v-model="inputAddTeam.name"
                         label="Tên phòng ban"
                         variant="outlined"
                       ></v-text-field>
                     </v-col>
                     <v-col>
                       <span class="obligatory">(*)</span>
-                      <v-text-field
-                        label="Tên quản lý"
+                      <v-select
+                        v-model="inputAddTeam.managerId"
+                        label="Quản lý"
+                        :items="dataUsers"
+                        item-value="id"
+                        item-title="fullName"
                         variant="outlined"
-                      ></v-text-field>
+                      ></v-select>
                     </v-col>
                   </v-row>
                   <span class="obligatory">(*)</span>
-                  <v-text-field
+                  <v-textarea
                     label="Mô tả"
-                    class="mb-4"
                     variant="outlined"
-                  ></v-text-field>
+                    v-model="inputAddTeam.description"
+                  ></v-textarea>
                 </div>
                 <v-card-actions>
                   <v-spacer></v-spacer>
 
-                  <v-btn text="Thêm mới" variant="flat" type="submit"></v-btn>
+                  <v-btn
+                    text="Thêm mới"
+                    variant="flat"
+                    @click="createTeam"
+                    type="submit"
+                  ></v-btn>
                   <v-btn
                     text="Thoát"
                     variant="outlined"
@@ -286,7 +296,7 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
                     <div>
                       <v-btn
                         text="Xóa"
-                        @click="deleteCustomer(item.id)"
+                        @click="deleteTeam(item.id)"
                         color="error"
                         variant="flat"
                         class="ml-13"
@@ -365,13 +375,21 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
 </template>
 <script>
 import { teamApi } from "../../api/Team/teamApi";
+import { userApi } from "../../api/User/userApi";
 export default {
   data() {
     return {
       page: 1,
       isLoading: true,
       teamApi: teamApi(),
+      userApi: userApi(),
+      dataUsers: [],
       dataTeams: [],
+      inputAddTeam: {
+        name: "",
+        description: "",
+        managerId: "",
+      },
       perPage: 3, // Number of items per page (fixed)
       currentPage: 1, // Current page
       update: {},
@@ -381,6 +399,28 @@ export default {
     async updateTeams(id) {
       const getById = await this.teamApi.getTeamById(id);
       this.update = getById.data;
+    },
+    async createTeam() {
+      const res = await this.teamApi.createTeams(this.inputAddTeam);
+      if (res) {
+        setTimeout(() => {
+          this.reloadPage;
+        }, 2000);
+      }
+    },
+    async deleteTeam(id) {
+      const res = await this.teamApi.deleteTeams(id);
+    },
+    async getDataUser() {
+      try {
+        const dataUser = await this.userApi.getAllUsers();
+        this.dataUsers = dataUser.data;
+      } catch (e) {
+        console.error("Error fetching data:", error);
+      }
+    },
+    reloadPage() {
+      location.reload();
     },
     async getDataTeams() {
       this.isLoading = true;
@@ -396,6 +436,7 @@ export default {
   },
   created() {
     this.getDataTeams();
+    this.getDataUser();
   },
   computed: {
     paginatedData() {

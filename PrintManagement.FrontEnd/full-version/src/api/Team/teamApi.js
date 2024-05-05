@@ -31,6 +31,42 @@ export const teamApi = defineStore("team", {
           .catch((error) => reject(error));
       });
     },
+    createTeams(params) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "/Admin/CreateTeam",
+            {
+              ...params,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${getAccessToken()}`,
+              },
+            }
+          )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    deleteTeams(id) {
+      return new Promise((resolve, reject) => {
+        axios
+          .delete(
+            "/Admin/DeleteTeam",
+            {
+              params: id,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${getAccessToken()}`,
+              },
+            }
+          )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
     updateTeams() {
       return new Promise((resolve, reject) => {
         axios

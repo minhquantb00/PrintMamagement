@@ -42,7 +42,7 @@ axiosIns.interceptors.response.use(
 
       // Remove "accessToken" from localStorage
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("userAbilities");
+      localStorage.removeItem("refreshToken");
 
       // If 401 response returned from api
       router.push("/login");

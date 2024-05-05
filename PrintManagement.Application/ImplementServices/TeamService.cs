@@ -253,9 +253,13 @@ namespace PrintManagement.Application.ImplementServices
             }
         }
 
-        public async Task<IQueryable<DataResponseTeam>> GetAllTeams()
+        public async Task<IQueryable<DataResponseTeam>> GetAllTeams(string? name)
         {
             var query = await _baseTeamRepository.GetAllAsync(x => x.IsActive == true);
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(record => record.Name.ToLower().Contains(name.ToLower()));
+            }
             return query.Select(x => _converter.EntityToDTO(x));
         }
 

@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowOrigin", builder =>
     {
         builder
-            .WithOrigins("http://localhost:8080", "http://localhost:4200", "http://localhost:5173") // Update with your Angular app's URL
+            .WithOrigins("http://localhost:8080", "http://localhost:4200", "http://localhost:5173", "http://localhost:5174") // Update with your Angular app's URL
             .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();

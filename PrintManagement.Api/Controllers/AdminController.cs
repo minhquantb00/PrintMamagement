@@ -225,9 +225,9 @@ namespace PrintManagement.Api.Controllers
             return Ok(await _teamService.DeleteTeam(teamId));
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllTeams()
+        public async Task<IActionResult> GetAllTeams(string? name)
         {
-            return Ok(await _teamService.GetAllTeams());
+            return Ok(await _teamService.GetAllTeams(name));
         }
         [HttpGet]
         public async Task<IActionResult> GetTeamById(Guid teamId)

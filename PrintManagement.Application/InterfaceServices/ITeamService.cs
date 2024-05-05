@@ -15,7 +15,7 @@ namespace PrintManagement.Application.InterfaceServices
         Task<ResponseObject<DataResponseTeam>> CreateTeam(Request_CreateTeam request);
         Task<ResponseObject<DataResponseTeam>> UpdateTeam(Request_UpdateTeam request);
         Task<string> DeleteTeam(Guid teamId);
-        Task<IQueryable<DataResponseTeam>> GetAllTeams();
+        Task<IQueryable<DataResponseTeam>> GetAllTeams(string? name);
         Task<DataResponseTeam> GetTeamById(Guid teamId);
         Task<ResponseObject<DataResponseTeam>> ChangeManagerForTeam(Request_ChangeManager request);
         Task<string> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request);

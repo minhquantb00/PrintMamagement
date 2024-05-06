@@ -113,5 +113,18 @@ namespace PrintManagement.Application.ImplementServices
             }
             return users.Select(x => _converter.EntityToDTOForUser(x)).AsQueryable();
         }
+        public async Task<IQueryable<DataResponseUser>> GetAllUserContainsManagerRole()
+        {
+            var listUser = await _baseUserRepository.GetAllAsync(x => x.IsActive == true);
+            List<User> users = new List<User>();
+            foreach (var user in listUser)
+            {
+                if (_userRepository.GetRolesOfUserAsync(user).Result.Contains("Manager"))
+                {
+                    users.Add(user);
+                }
+            }
+            return users.Select(x => _converter.EntityToDTOForUser(x)).AsQueryable();
+        }
     }
 }

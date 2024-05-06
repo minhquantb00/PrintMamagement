@@ -74,6 +74,12 @@ namespace PrintManagement.Api.Controllers
             return Ok(await _userService.GetAllUserContainsLeaderRole());
         }
         [HttpGet]
+        public async Task<IActionResult> GetAllUserContainsManagerRole()
+        {
+            return Ok(await _userService.GetAllUserContainsManagerRole());
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetStatisticSalary(Guid userId)
         {
             return Ok(await _statisticService.GetStatisticSalary(userId));

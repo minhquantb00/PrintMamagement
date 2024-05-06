@@ -16,5 +16,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<DataResponseUser> GetUserById(Guid id);
         Task<ResponseObject<DataResponseUser>> UpdateUser(Guid id, Request_UpdateUser request);
         Task<IQueryable<DataResponseUser>> GetAllUserContainsLeaderRole();
+        Task<IQueryable<DataResponseUser>> GetAllUserContainsManagerRole();
     }
 }

@@ -29,7 +29,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 CreateTime = entity.CreateTime,
                 Description = entity.Description,
                 Id = entity.Id,
-                Manager = user != null ? user.FullName : "",
+                ManagerName = user != null ? user.FullName : "",
                 Name = entity.Name,
                 NumberOfMember = entity.NumberOfMember,
                 UpdateTime = entity.UpdateTime,

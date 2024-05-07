@@ -15,7 +15,7 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataTeam
         public int? NumberOfMember { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
-        public string Manager { get; set; }
+        public string ManagerName { get; set; }
         public IQueryable<DataResponseUser> Users { get; set; }
     }
 }

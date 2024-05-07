@@ -218,7 +218,7 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _teamService.UpdateTeam(request));
         }
-        [HttpDelete]
+        [HttpDelete("{teamId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DeleteTeam([FromRoute] Guid teamId)
         {

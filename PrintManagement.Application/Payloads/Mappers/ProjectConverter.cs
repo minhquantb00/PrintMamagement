@@ -45,6 +45,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 EmailLeader = leader.Email,
                 PhoneCustomer = customer.PhoneNumber,
                 EmailCustomer = customer.Email,
+                AddressCustomer = customer.Address,
                 ProjectName = project.ProjectName,
                 ProjectStatus = project.ProjectStatus.ToString(),
                 RequestDescriptionFromCustomer = project.RequestDescriptionFromCustomer,

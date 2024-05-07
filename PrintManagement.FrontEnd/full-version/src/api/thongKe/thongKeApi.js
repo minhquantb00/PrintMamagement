@@ -8,7 +8,7 @@ function getAccessToken() {
 const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 export const thongkeApi = defineStore("thongke", {
   actions: {
-    getAllTeams() {
+    thongKeLuong() {
       return new Promise((resolve, reject) => {
         axios
           .get("/User/GetstatisticSalary", {

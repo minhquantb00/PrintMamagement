@@ -25,21 +25,17 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
           prepend-inner-icon="mdi-magnify"
           variant="outlined"
           hide-details
+          v-model="filters.name"
           single-line
         ></v-text-field>
       </v-col>
       <v-col cols="5">
-        <v-btn @click="filterUsers">Tìm kiếm</v-btn>
+        <v-btn @click="filter">Tìm kiếm</v-btn>
       </v-col>
       <v-col cols="1" class="text-right">
         <v-dialog max-width="500">
           <template v-slot:activator="{ props: activatorProps }">
-            <v-btn
-              density="comfortable"
-              icon
-              @click="filterUsers"
-              v-bind="activatorProps"
-            >
+            <v-btn density="comfortable" icon v-bind="activatorProps">
               <v-icon icon="mdi-plus"></v-icon>
               <v-tooltip activator="parent" location="top">
                 Thêm phòng ban
@@ -59,6 +55,7 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
 
                       <v-text-field
                         v-model="inputAddTeam.name"
+                        :rules="[requiredValidator]"
                         label="Tên phòng ban"
                         variant="outlined"
                       ></v-text-field>
@@ -68,7 +65,9 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
                       <v-select
                         v-model="inputAddTeam.managerId"
                         label="Quản lý"
-                        :items="dataUsers"
+                        :rules="[requiredValidator]"
+                        :items="dataUserRoles"
+                        clearable
                         item-value="id"
                         item-title="fullName"
                         variant="outlined"
@@ -79,6 +78,7 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
                   <v-textarea
                     label="Mô tả"
                     variant="outlined"
+                    :rules="[requiredValidator]"
                     v-model="inputAddTeam.description"
                   ></v-textarea>
                 </div>
@@ -125,88 +125,13 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
           <VCardActions>
             <v-dialog max-width="500">
               <template v-slot:activator="{ props: activatorProps }">
-                <v-btn
-                  density="comfortable"
-                  icon
-                  variant="flat"
-                  @click="filterUsers"
-                  class="mr-2"
-                  v-bind="activatorProps"
-                >
-                  <v-icon icon="mdi-plus"></v-icon>
-                  <v-tooltip activator="parent" location="top">
-                    Thêm nhân viên
-                  </v-tooltip>
-                </v-btn>
-              </template>
-
-              <template v-slot:default="{ isActive }">
-                <v-card>
-                  <div class="text-center mb-4 mt-4">
-                    <h2>Thêm nhân viên</h2>
-                  </div>
-                  <v-form ref="refVForm" @submit.prevent="onSubmit">
-                    <div class="pa-3">
-                      <v-file-input
-                        :rules="rules"
-                        accept="image/png, image/jpeg, image/bmp"
-                        label="Hình ảnh"
-                        placeholder="Pick an avatar"
-                        prepend-icon="mdi-camera"
-                        class="mb-4"
-                      ></v-file-input>
-                      <v-row class="mb-1">
-                        <v-col>
-                          <span class="obligatory">(*)</span>
-
-                          <v-text-field
-                            label="Họ và tên"
-                            variant="outlined"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col>
-                          <span class="obligatory">(*)</span>
-                          <v-text-field
-                            label="Số điện thoại"
-                            variant="outlined"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                      <span class="obligatory">(*)</span>
-                      <v-text-field
-                        label="Email"
-                        class="mb-4"
-                        variant="outlined"
-                      ></v-text-field>
-                    </div>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-
-                      <v-btn
-                        text="Thêm mới"
-                        variant="flat"
-                        type="submit"
-                      ></v-btn>
-                      <v-btn
-                        text="Thoát"
-                        variant="outlined"
-                        @click="isActive.value = false"
-                      ></v-btn>
-                    </v-card-actions>
-                  </v-form>
-                </v-card>
-              </template>
-            </v-dialog>
-
-            <v-dialog max-width="500">
-              <template v-slot:activator="{ props: activatorProps }">
                 <VBtn
                   variant="flat"
                   class="mr-2"
                   v-bind="activatorProps"
                   color="success"
                   density="comfortable"
-                  @click="updateTeams(item.id)"
+                  @click="getByTeamId(item.id)"
                   icon
                 >
                   <v-icon icon="mdi-pencil" style="font-size: 22px"></v-icon>
@@ -230,26 +155,32 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
 
                           <v-text-field
                             label="Tên phòng ban"
+                            :rules="[requiredValidator]"
                             v-model="update.name"
                             variant="outlined"
                           ></v-text-field>
                         </v-col>
                         <v-col>
                           <span class="obligatory">(*)</span>
-                          <v-text-field
-                            label="Tên quản lý"
-                            v-model="update.managerName"
+                          <v-select
+                            v-model="update.managerId"
+                            label="Quản lý"
+                            :rules="[requiredValidator]"
+                            :items="dataUserRoles"
+                            item-value="id"
+                            item-title="fullName"
                             variant="outlined"
-                          ></v-text-field>
+                          ></v-select>
                         </v-col>
                       </v-row>
                       <span class="obligatory">(*)</span>
-                      <v-text-field
+                      <v-textarea
                         label="Mô tả"
                         v-model="update.description"
                         class="mb-4"
                         variant="outlined"
-                      ></v-text-field>
+                        :rules="[requiredValidator]"
+                      ></v-textarea>
                     </div>
                     <v-card-actions>
                       <v-spacer></v-spacer>
@@ -258,6 +189,7 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
                         text="Cập nhật"
                         variant="flat"
                         type="submit"
+                        @click="updateTeam(update.id)"
                       ></v-btn>
                       <v-btn
                         text="Thoát"
@@ -372,49 +304,113 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
       </VCol>
     </VRow>
   </div>
+  <v-snackbar v-model="snackbar" color="blue-grey" rounded="pill" class="mb-5">
+    {{ text }}
+    <template v-slot:actions>
+      <v-btn color="green" variant="text" @click="snackbar = false">
+        Đóng
+      </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 <script>
 import { teamApi } from "../../api/Team/teamApi";
 import { userApi } from "../../api/User/userApi";
+import {
+  emailValidator,
+  requiredValidator,
+  usernameValidator,
+} from "@validators";
+
 export default {
   data() {
     return {
       page: 1,
+      text: "",
+      snackbar: false,
       isLoading: true,
       teamApi: teamApi(),
       userApi: userApi(),
       dataUsers: [],
       dataTeams: [],
+      filters: { name: "" },
+      dataUserRoles: [],
       inputAddTeam: {
         name: "",
         description: "",
         managerId: "",
       },
-      perPage: 3, // Number of items per page (fixed)
-      currentPage: 1, // Current page
+      perPage: 3,
+      currentPage: 1,
       update: {},
     };
   },
   methods: {
-    async updateTeams(id) {
+    async getByTeamId(id) {
       const getById = await this.teamApi.getTeamById(id);
       this.update = getById.data;
     },
     async createTeam() {
       const res = await this.teamApi.createTeams(this.inputAddTeam);
-      if (res) {
+      // debugger;
+      if (res.data.status === 200) {
         setTimeout(() => {
-          this.reloadPage;
+          this.reloadPage();
         }, 2000);
+        this.text = res.data.message;
+        this.snackbar = true;
+      } else {
+        this.text = res.data.message;
+        this.snackbar = true;
       }
+      console.log(res.data.status);
     },
     async deleteTeam(id) {
       const res = await this.teamApi.deleteTeams(id);
+      console.log(res);
+      if (res.status === 200) {
+        this.text = res.data;
+        this.snackbar = true;
+        setTimeout(() => {
+          this.reloadPage();
+        }, 2000);
+      } else {
+        this.text = res.data;
+        this.snackbar = true;
+      }
+    },
+    async updateTeam(id) {
+      const update = await this.teamApi.updateTeams(id, this.update);
+      if (update.data.status === 200) {
+        this.text = update.data.message;
+        this.snackbar = true;
+        setTimeout(() => {
+          this.reloadPage();
+        }, 2000);
+      } else {
+        this.text = update.data.message;
+        this.snackbar = true;
+      }
+    },
+    onSubmit() {
+      refVForm.value?.validate().then(({ valid: isValid }) => {
+        if (isValid) login();
+      });
+    },
+    async getUserRole() {
+      const res = await this.userApi.getAllUseHaveRoleManager();
+      this.dataUserRoles = res.data;
+      console.log(this.dataUserRoles);
+    },
+    async filter() {
+      const res = await this.teamApi.filterTeam(this.filters);
+      this.dataTeams = res.data;
     },
     async getDataUser() {
       try {
         const dataUser = await this.userApi.getAllUsers();
         this.dataUsers = dataUser.data;
+        console.log(this.dataUsers);
       } catch (e) {
         console.error("Error fetching data:", error);
       }
@@ -437,6 +433,8 @@ export default {
   created() {
     this.getDataTeams();
     this.getDataUser();
+    this.getUserRole();
+    this.filter();
   },
   computed: {
     paginatedData() {

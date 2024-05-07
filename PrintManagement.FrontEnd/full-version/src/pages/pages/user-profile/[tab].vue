@@ -12,6 +12,8 @@ import ChartJsLineAreaChart from "@/views/charts/chartjs/ChartJsLineAreaChart.vu
 import ChartJsLineChart from "@/views/charts/chartjs/ChartJsLineChart.vue";
 import ChartJsPolarAreaChart from "@/views/charts/chartjs/ChartJsPolarAreaChart.vue";
 import ChartJsRadarChart from "@/views/charts/chartjs/ChartJsRadarChart.vue";
+import ApexChartBalance from "@/views/charts/apex-chart/ApexChartBalance.vue";
+
 import ChartJsScatterChart from "@/views/charts/chartjs/ChartJsScatterChart.vue";
 
 const chartJsCustomColors = {
@@ -114,6 +116,28 @@ const activeTab = ref(route.params.tab);
 
           <VCardText>
             <ChartJsBarChart :colors="chartJsCustomColors" />
+          </VCardText>
+        </VCard>
+      </VCol>
+      <VCol cols="12">
+        <VCard>
+          <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
+            <VCardTitle>Balance</VCardTitle>
+            <VCardSubtitle>Commercial networks &amp; enterprises</VCardSubtitle>
+
+            <template #append>
+              <div class="d-flex align-center">
+                <h6 class="text-h6 me-3">$221,267</h6>
+                <VChip label color="success">
+                  <VIcon start icon="tabler-arrow-up" size="15" />
+                  <span>22%</span>
+                </VChip>
+              </div>
+            </template>
+          </VCardItem>
+
+          <VCardText>
+            <ApexChartBalance />
           </VCardText>
         </VCard>
       </VCol>

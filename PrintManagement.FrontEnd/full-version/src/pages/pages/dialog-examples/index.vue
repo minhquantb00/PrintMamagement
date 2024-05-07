@@ -13,8 +13,10 @@ import AddressContent from "@/views/wizard-examples/checkout/Address.vue";
 import CartContent from "@/views/wizard-examples/checkout/Cart.vue";
 import ConfirmationContent from "@/views/wizard-examples/checkout/Confirmation.vue";
 import PaymentContent from "@/views/wizard-examples/checkout/Payment.vue";
+import { projectApi } from "../../../api/Project/projectApi";
 
 const avatars = [avatar1, avatar2, avatar3, avatar4];
+const projectItem = projectApi();
 const checkoutSteps = [
   {
     title: "Dự án",
@@ -33,39 +35,13 @@ const checkoutSteps = [
     icon: "custom-cart",
   },
 ];
-const dataProjectCheckout = ref(null);
-const getDataProjects = async (id) => {
-  try {
-    const res = await projectApi.getByIdProject(id); // Đảm bảo projectApi đã được khai báo trước
-    dataProjectCheckout.value = res.data;
-  } catch (e) {
-    console.error("error fetching data", e);
-  }
+const checkoutData = ref(null);
+const getByIdProjects = async (id) => {
+  const res = await projectItem.getByIdProject(id); // Đảm bảo projectApi đã được khai báo trước
+  checkoutData.value = res.data;
+  console.log(checkoutData.value);
 };
-const checkoutData = ref({
-  thietKe: [
-    {
-      src: "https://cms.vietnamreport.net/source/BaoCao/sach_trang_kinh_te_vietnam_2024/files/mobile/1.jpg?240117171048",
-      user: "Nguyễn Bá Quang Huy",
-      time: "29-03-2024",
-      khachHang: "Nguyễn Khánh Huyền",
-      status: "Chờ duyệtdd",
-      moTa: " In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động.",
-      value: 1,
-    },
-    {
-      src: "https://thuthuatnhanh.com/wp-content/uploads/2019/06/anh-anime-girl-xinh-dep-cute-439x580.jpg",
-      user: "Trần Văn Dương",
-      time: "21-04-2024",
-      khachHang: "Thắm Nguyễn",
-      moTa: "In báo cáo thường niên cho năm tài chính 2024, bao gồm các báo cáo tài chính và phân tích hoạt động",
-      status: "Chờ duyệt",
-      value: 2,
-    },
-  ],
-  dataProjectCheckout: [],
-});
-console.log(dataProjectCheckout);
+// console.log(dataProjectCheckout);
 const currentStep = ref(0);
 const isCardDetailsVisible = ref(false);
 </script>
@@ -335,7 +311,7 @@ const isCardDetailsVisible = ref(false);
                   style="font-size: 18px"
                   v-bind="activatorProps"
                   density="comfortable"
-                  @click="getDataProjects(project.id)"
+                  @click="getByIdProjects(project.id)"
                 >
                   <v-icon icon="mdi-eye-outline"></v-icon>
                   <v-tooltip activator="parent" location="top">
@@ -346,7 +322,9 @@ const isCardDetailsVisible = ref(false);
 
               <v-card>
                 <v-toolbar>
-                  <v-toolbar-title>{{ project }}</v-toolbar-title>
+                  <v-toolbar-title>{{
+                    checkoutData.projectName
+                  }}</v-toolbar-title>
 
                   <v-spacer></v-spacer>
                   <v-btn icon="mdi-close" @click="dialog = false"></v-btn>
@@ -536,6 +514,7 @@ export default {
       dataCustomer: [],
       dataProject: [],
       dataUser: [],
+      findByProjectId: {},
       snackbar: false,
       dialog: false,
       notifications: false,
@@ -666,6 +645,10 @@ export default {
 
       return `${formattedDay}/${formattedMonth}/${year}`;
     },
+    // async getByIdProjects(id) {
+    //   const res = await this.projectApi.getByIdProject(id);
+    //   this.findByProjectId = res.data;
+    // },
     async getDataProjects() {
       this.isLoading = true;
       try {

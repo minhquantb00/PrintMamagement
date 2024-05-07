@@ -13,7 +13,7 @@ const props = defineProps({
 const emit = defineEmits(["update:currentStep", "update:checkout-data"]);
 
 const checkoutCartDataLocal = ref(props.checkoutData);
-
+console.log(checkoutCartDataLocal);
 // const removeItem = (item) => {
 //   checkoutCartDataLocal.value.cartItems =
 //     checkoutCartDataLocal.value.cartItems.filter((i) => i.id !== item.id);
@@ -48,9 +48,7 @@ watch(() => props.currentStep, updateCartData);
           <v-row>
             <v-col cols="5">
               <div class="ma-auto pa-5">
-                <VImg
-                  src="https://cms.vietnamreport.net/source/BaoCao/sach_trang_kinh_te_vietnam_2024/files/mobile/1.jpg?240117171048"
-                />
+                <VImg :src="checkoutCartDataLocal.imageDescription" />
               </div>
             </v-col>
 
@@ -58,34 +56,35 @@ watch(() => props.currentStep, updateCartData);
             <v-col
               ><div>
                 <VCardItem>
-                  <VCardTitle class="text-h3"
-                    >In Báo Cáo Thường Niên 2024</VCardTitle
-                  >
+                  <VCardTitle class="text-h3">{{
+                    checkoutCartDataLocal.projectName
+                  }}</VCardTitle>
                 </VCardItem>
                 <VCardText class="text-subtitle-1">
                   <span>Ngày tạo: </span>
-                  <span class="font-weight-medium">28-05-2024</span>
+                  <span class="font-weight-medium">{{
+                    formatDate(checkoutCartDataLocal.startDate)
+                  }}</span>
                 </VCardText>
                 <VCardText class="text-subtitle-1">
                   <span>Ngày dự kiến: </span>
-                  <span class="font-weight-medium">30-05-2024</span>
+                  <span class="font-weight-medium">{{
+                    formatDate(checkoutCartDataLocal.expectedEndDate)
+                  }}</span>
                 </VCardText>
                 <VCardText class="text-subtitle-1">
                   <span style="font-weight: bold"
                     >Yêu cầu của khách hàng:
                   </span>
-                  <span class="font-weight-medium"
-                    >In 1000 cuốn báo cáo, bìa cứng, dập nổi logo công ty, 120
-                    trang mỗi cuốn, giấy chất lượng cao, đen trắng ngoại trừ
-                    trang bìa màu.</span
-                  >
+                  <span class="font-weight-medium">{{
+                    checkoutCartDataLocal.requestDescriptionFromCustomer
+                  }}</span>
                 </VCardText>
                 <VCardText class="text-subtitle-1">
                   <span style="font-weight: bold">Mô tả: </span>
-                  <span class="font-weight-medium"
-                    >In báo cáo thường niên cho năm tài chính 2024, bao gồm các
-                    báo cáo tài chính và phân tích hoạt động.</span
-                  >
+                  <span class="font-weight-medium">{{
+                    checkoutCartDataLocal.description
+                  }}</span>
                 </VCardText>
               </div></v-col
             >
@@ -105,17 +104,18 @@ watch(() => props.currentStep, updateCartData);
           <!-- 👉 Gift wrap banner -->
           <div class="bg-var-theme-background rounded pa-5 mt-4">
             <h6 class="text-base font-weight-medium mb-5">
-              Người phụ trách: Nguyễn Bá Quang Huy
+              Người phụ trách: {{ checkoutCartDataLocal.leader }}
             </h6>
-            <p>Số điện thoại: 0385888833</p>
-            <p>Email: quanghuy@gmail.com</p>
+            <p>Số điện thoại: {{ checkoutCartDataLocal.phoneLeader }}</p>
+            <p>Email: {{ checkoutCartDataLocal.emailLeader }}</p>
           </div>
           <div class="bg-var-theme-background rounded pa-5 mt-4">
             <h6 class="text-base font-weight-medium mb-5">
-              Khách hàng: Trần Văn Dương
+              Khách hàng: {{ checkoutCartDataLocal.customer }}
             </h6>
-            <p>Số điện thoại: 0388033007</p>
-            <p>Địa chỉ: Lý Nhân, Vĩnh Tường, Vĩnh Phúc</p>
+            <p>Số điện thoại: {{ checkoutCartDataLocal.phoneCustomer }}</p>
+            <p>Email: {{ checkoutCartDataLocal.emailCustomer }}</p>
+            <p>Địa chỉ: {{ checkoutCartDataLocal.addressCustomer }}</p>
           </div>
         </VCardText>
 
@@ -123,7 +123,9 @@ watch(() => props.currentStep, updateCartData);
 
         <VCardText class="d-flex justify-space-between py-4">
           <h6 class="text-base font-weight-medium">Giá dự án</h6>
-          <h6 class="text-base font-weight-medium">200,000 vnđ</h6>
+          <h6 class="text-base font-weight-medium">
+            {{ formatCurrency(checkoutCartDataLocal.startingPrice) }}
+          </h6>
         </VCardText>
       </VCard>
 
@@ -146,6 +148,34 @@ export default {
     // const id = this.$route.params.id;
     // const res = await this.projectApi.getByIdProject(id);
     // this.dataGetIdProject = res.data;
+  },
+  methods: {
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const seconds = date.getSeconds();
+      const formattedDay = day < 10 ? "0" + day : day;
+      const formattedMonth = month < 10 ? "0" + month : month;
+      const formattedHours = hours < 10 ? "0" + hours : hours;
+      const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+      const formattedSeconds = seconds < 10 ? "0" + seconds : seconds;
+
+      return `${formattedDay}/${formattedMonth}/${year}`;
+    },
+    formatCurrency(value) {
+      // Chuyển đổi giá trị sang kiểu số nguyên
+      const intValue = parseInt(value);
+
+      // Sử dụng hàm toLocaleString để định dạng giá tiền theo tiêu chuẩn của quốc gia
+      return intValue.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
+    },
   },
 };
 </script>

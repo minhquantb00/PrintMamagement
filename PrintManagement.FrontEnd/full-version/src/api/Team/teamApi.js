@@ -31,6 +31,7 @@ export const teamApi = defineStore("team", {
           .catch((error) => reject(error));
       });
     },
+
     createTeams(params) {
       return new Promise((resolve, reject) => {
         axios
@@ -50,12 +51,46 @@ export const teamApi = defineStore("team", {
       });
     },
     deleteTeams(id) {
+      console.log(id);
+      console.log(getAccessToken());
       return new Promise((resolve, reject) => {
         axios
-          .delete(
-            "/Admin/DeleteTeam",
+          .delete(`/Admin/DeleteTeam/${id}`, {
+            headers: {
+              Authorization: `Bearer ${getAccessToken()}`,
+            },
+          })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    filterTeam(param) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get("/Admin/GetAllTeams", {
+            params: {
+              name: param.name,
+            },
+          })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    updateTeams(id, param) {
+      // console.log(params);
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            "/Admin/UpdateTeam",
+
             {
-              params: id,
+              // params: {
+              //   teamId: id,
+              //   name: param.name,
+              //   description: param.description,
+              //   manager: param.manager,
+              // }
+              ...param,
             },
             {
               headers: {
@@ -63,18 +98,6 @@ export const teamApi = defineStore("team", {
               },
             }
           )
-          .then((res) => resolve(res))
-          .catch((error) => reject(error));
-      });
-    },
-    updateTeams() {
-      return new Promise((resolve, reject) => {
-        axios
-          .put("/Admin/GetTeamById", {
-            params: {
-              teamId: id,
-            },
-          })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

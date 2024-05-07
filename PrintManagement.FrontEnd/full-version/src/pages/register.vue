@@ -113,10 +113,14 @@ const isPasswordVisible = ref(false);
         <VCardText>
           <VRow>
             <VCol cols="1">
-              <VNodeRenderer :nodes="themeConfig.app.logo" class="mb-6" />
+              <img
+                src="../assets/images/logoPrint.png"
+                alt="InkMatery"
+                width="40"
+              />
             </VCol>
             <VCol>
-              <h5 class="text-h5 mb-1 ml-2">Print Manager</h5>
+              <h5 class="text-h5 ml-2">InkMastery</h5>
             </VCol>
           </VRow>
         </VCardText>
@@ -126,63 +130,87 @@ const isPasswordVisible = ref(false);
             <VRow>
               <!-- Username -->
               <VCol cols="12">
+                <a-lablel class="sex"
+                  >Tài khoản <span class="red">(*)</span></a-lablel
+                >
                 <AppTextField
                   v-model="inputRegister.Username"
                   autofocus
                   :rules="[requiredValidator, usernameValidator]"
-                  label="Username"
+                  placeholder="Tài khoản"
                 />
               </VCol>
               <VCol cols="12">
-                <a-label class="label-date-birth">Date of birth</a-label>
+                <a-label class="label-date-birth"
+                  >Ngày sinh <span class="red">(*)</span></a-label
+                >
                 <!-- <AppDatePicKer v-model="hgsdhdhd"></AppDatePicKer> -->
                 <AppDateTimePicker
                   v-model="inputRegister.DateOfBirth"
                   :rules="[requiredValidator]"
                   :format="dateFormat"
+                  placeholder="yyyy-mm-dd"
+                  prepend-inner-icon="tabler-calendar"
+                  clearable
                   class="date-picker-input"
                 />
               </VCol>
 
               <!-- email -->
               <VCol cols="12">
+                <a-label class="sex"
+                  >Email <span class="red">(*)</span></a-label
+                >
                 <AppTextField
                   v-model="inputRegister.Email"
                   :rules="[requiredValidator, emailValidator]"
-                  label="Email"
                   type="email"
+                  placeholder="abc123@gmail.com"
+
                 />
               </VCol>
               <VCol cols="12">
+                <a-label class="sex"
+                  >Họ và tên <span class="red">(*)</span></a-label
+                >
                 <AppTextField
                   v-model="inputRegister.FullName"
                   :rules="[requiredValidator]"
-                  label="Full Name"
                   type="text"
+                  placeholder="Nguyen Van A"
+
                 />
               </VCol>
               <VCol cols="12">
+                <a-label class="sex"
+                  >Số điện thoại <span class="red">(*)</span></a-label
+                >
                 <AppTextField
                   v-model="inputRegister.PhoneNumber"
                   :rules="[requiredValidator, phoneNumberValidator]"
-                  label="Phone number"
                   type="text"
+                  placeholder="0912345678"
                 />
               </VCol>
               <!-- password -->
               <VCol cols="12">
+                <a-label class="sex">
+                  Mật khẩu <span class="red">(*)</span>
+                </a-label>
                 <AppTextField
                   class="mb-5"
+                  placeholder="******"
                   v-model="inputRegister.Password"
                   :rules="[requiredValidator]"
-                  label="Password"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :append-inner-icon="
                     isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
                   "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
-                <a-label class="sex"> Gender </a-label>
+                <a-label class="sex">
+                  Giới tính <span class="red">(*)</span>
+                </a-label>
                 <v-select
                   class="select-ant mb-5"
                   ref="select"
@@ -191,7 +219,9 @@ const isPasswordVisible = ref(false);
                   :items="items"
                 >
                 </v-select>
-                <a-label class="sex"> Team </a-label>
+                <a-label class="sex">
+                  Đội ngũ <span class="red">(*)</span>
+                </a-label>
                 <v-select
                   class="select-ant"
                   ref="select"
@@ -211,29 +241,29 @@ const isPasswordVisible = ref(false);
                   >
                     <template #label>
                       <span class="me-1">
-                        I agree to
-                        <a href="javascript:void(0)" class="text-primary"
-                          >privacy policy & terms of Print Manage</a
+                        Tôi đồng ý với
+                        <a href="javascript:void(0)" class="text-primary">
+                          chính sách và điều khoản của InkMastery</a
                         >
                       </span>
                     </template>
                   </VCheckbox>
                 </div>
 
-                <VBtn block type="submit" @click="Register"> Sign up </VBtn>
+                <VBtn block type="submit" @click="Register"> Đăng ký </VBtn>
               </VCol>
 
               <!-- create account -->
               <VCol cols="12" class="text-center text-base">
-                <span>Already have an account?</span>
+                <span>Bạn đã có tài khoản?</span>
                 <RouterLink class="text-primary ms-2" :to="{ name: 'login' }">
-                  Sign in instead
+                  Đăng nhập
                 </RouterLink>
               </VCol>
 
               <VCol cols="12" class="d-flex align-center">
                 <VDivider />
-                <span class="mx-4">or</span>
+                <span class="mx-4">Hoặc</span>
                 <VDivider />
               </VCol>
 
@@ -358,6 +388,9 @@ export default {
 }
 .ant-picker-suffix {
   color: #8d8ca8 !important;
+}
+.red {
+  color: rgb(255, 124, 124);
 }
 </style>
 <route lang="yaml">

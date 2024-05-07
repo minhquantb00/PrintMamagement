@@ -33,7 +33,18 @@ export const userApi = defineStore("user", {
           .catch((error) => reject(error));
       });
     },
-
+    getAllUseHaveRoleManager() {
+      return new Promise((resolve, reject) => {
+        axios
+          .get("/Admin/GetAllUserHaveRoleManager")
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
     filterUser(param) {
       console.log(param);
       return new Promise((resolve, reject) => {

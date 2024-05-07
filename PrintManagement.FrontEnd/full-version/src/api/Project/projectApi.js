@@ -36,20 +36,6 @@ export const projectApi = defineStore("project", {
           .catch((error) => reject(error));
       });
     },
-
-    async changePassword(params) {
-      const authToken = `Bearer ${authorization}`;
-      console.log(authToken);
-      const res = await axios.put(
-        `/Auth/ChangePassword`,
-        { ...params },
-        {
-          headers: {
-            Authorization: authToken,
-          },
-        }
-      );
-    },
     deleteProject(id) {
       console.log(id);
       return new Promise((resolve, reject) => {

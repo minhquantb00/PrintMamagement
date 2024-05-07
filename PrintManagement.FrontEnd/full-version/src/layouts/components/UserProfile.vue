@@ -5,17 +5,26 @@ import { useAppAbility } from "@/plugins/casl/useAppAbility";
 
 const router = useRouter();
 const ability = useAppAbility();
+let logoutTimer = null; 
 const userData = JSON.parse(localStorage.getItem("userInfo") || "null");
-console.log(userData.Avatar);
-
+const accessTokenPhien = localStorage.getItem("accessToken");
+console.log(accessTokenPhien);
 const logout = () => {
-  // location.reload();
+  clearTimeout(logoutTimer); 
   localStorage.removeItem("userInfo");
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
   router.push("/login");
 };
-
+const startSessionTimer = () => {
+  logoutTimer = setTimeout(() => {
+    logout();
+  }, 60 * 60 * 1000); 
+};
+if (accessTokenPhien) {
+  startSessionTimer(); 
+}
+console.log(userData.Avatar);
 const userProfileList = [
   { type: "divider" },
   {

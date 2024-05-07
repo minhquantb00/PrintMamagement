@@ -66,6 +66,7 @@ const isCardDetailsVisible = ref(false);
               prepend-inner-icon="tabler-calendar"
               placeholder="Ngày kết thúc"
               class="date-picker-input"
+              :rules="[endDateRule]"
             >
             </AppDateTimePicker>
           </v-col>
@@ -114,7 +115,9 @@ const isCardDetailsVisible = ref(false);
               <VCardText
                 ><h3>- <b>Khách hàng:</b> {{ project.customer }}</h3>
               </VCardText>
-              <VCardText><b>- Ngày tạo:</b> {{ formatDate(project.startDate) }} </VCardText>
+              <VCardText
+                ><b>- Ngày tạo:</b> {{ formatDate(project.startDate) }}
+              </VCardText>
               <v-card-text class="text-h6">
                 <b>- Yêu cầu của khách hàng:</b>
                 {{ project.requestDescriptionFromCustomer }}
@@ -167,6 +170,7 @@ export default {
         leaderId: "",
       },
       isLoading: true,
+      dateFormat: "YYYY-MM-DD",
     };
   },
   async mounted() {
@@ -218,6 +222,19 @@ export default {
     },
     totalPages() {
       return Math.ceil(this.dataProject.length / this.perPage);
+    },
+    endDateRule() {
+      return [
+        (v) => !!v || "Ngày kết thúc là bắt buộc",
+        (v) => {
+          if (!v || !this.fillterProject.startDate) return true;
+          const startDate = new Date(this.fillterProject.startDate).getTime();
+          const endDate = new Date(v).getTime();
+          return (
+            endDate > startDate || "Ngày kết thúc phải lớn hơn ngày bắt đầu"
+          );
+        },
+      ];
     },
   },
 };

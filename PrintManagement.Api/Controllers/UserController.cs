@@ -99,5 +99,10 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _statisticService.GetStatisticSales(request));  
         }
+        [HttpPut("{notificationId}")]
+        public async Task<IActionResult> ConfirmIsSeenNotification([FromRoute] Guid notificationId)
+        {
+            return Ok(await _notificationService.ConfirmIsSeenNotification(notificationId));
+        }
     }
 }

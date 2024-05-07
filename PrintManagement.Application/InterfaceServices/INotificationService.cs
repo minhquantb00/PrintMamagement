@@ -10,5 +10,6 @@ namespace PrintManagement.Application.InterfaceServices
     public interface INotificationService
     {
         Task<IQueryable<DataResponseNotification>> GetNotificationsByUser(Guid userId);
+        Task<bool> ConfirmIsSeenNotification(Guid notificationId);
     }
 }

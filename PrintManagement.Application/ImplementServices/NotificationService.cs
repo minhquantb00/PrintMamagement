@@ -23,6 +23,19 @@ namespace PrintManagement.Application.ImplementServices
             _converter = converter;
         }
 
+        public async Task<bool> ConfirmIsSeenNotification(Guid notificationId)
+        {
+
+            var notification = await _reposiroty.GetByIDAsync(notificationId);
+            if (notification == null)
+            {
+                return false;
+            }
+            notification.IsSeen = true;
+            await _reposiroty.UpdateAsync(notification);
+            return true;
+        }
+
         public async Task<IQueryable<DataResponseNotification>> GetNotificationsByUser(Guid userId)
         {
             var user = await _userRepository.GetByIDAsync(userId);

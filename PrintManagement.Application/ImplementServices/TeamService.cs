@@ -283,7 +283,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 
-                var manager = await _baseUserRepository.GetByIDAsync(request.ManagerId);
+                var manager = await _baseUserRepository.GetByIDAsync(request.Manager);
                 if (manager == null)
                 {
                     return new ResponseObject<DataResponseTeam>
@@ -325,7 +325,7 @@ namespace PrintManagement.Application.ImplementServices
                 team.UpdateTime = DateTime.Now;
                 team.Description = request.Description;
                 team.Name = request.Name;
-                team.ManagerId = request.ManagerId;
+                team.ManagerId = request.Manager;
                 await _baseTeamRepository.UpdateAsync(team);
                 return new ResponseObject<DataResponseTeam>
                 {

@@ -11,6 +11,6 @@ namespace PrintManagement.Application.Payloads.RequestModels.TeamRequests
         public Guid TeamId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Guid ManagerId { get; set; }
+        public Guid Manager { get; set; }
     }
 }

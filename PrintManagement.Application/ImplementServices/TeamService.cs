@@ -245,7 +245,7 @@ namespace PrintManagement.Application.ImplementServices
                 team.IsActive = false;
                 team.UpdateTime = DateTime.Now;
                 await _baseTeamRepository.UpdateAsync(team);
-                return "Cập nhật thông tin phòng ban thành công";
+                return "Xóa thông tin phòng ban thành công";
             }
             catch(Exception ex)
             {

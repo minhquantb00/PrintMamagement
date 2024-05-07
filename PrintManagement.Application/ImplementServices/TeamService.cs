@@ -303,7 +303,7 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 var user = await _baseUserRepository.GetAsync(x => x.Id == Guid.Parse(currentUser.FindFirst("Id").Value));
-                var team = await _baseTeamRepository.GetByIDAsync(request.ManagerId);
+                var team = await _baseTeamRepository.GetByIDAsync(request.TeamId);
                 if(team == null)
                 {
                     return new ResponseObject<DataResponseTeam>

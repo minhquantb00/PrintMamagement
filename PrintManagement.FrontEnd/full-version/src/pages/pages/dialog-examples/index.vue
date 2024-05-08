@@ -35,15 +35,16 @@ const checkoutSteps = [
     icon: "custom-cart",
   },
 ];
-const checkoutData = ref(null);
+const checkoutData = ref({});
 const getByIdProjects = async (id) => {
   const res = await projectItem.getByIdProject(id); // Đảm bảo projectApi đã được khai báo trước
   checkoutData.value = res.data;
-  console.log(checkoutData.value);
+  const item = checkoutData.value;
+
+  console.log(item.projectName);
 };
 // console.log(dataProjectCheckout);
 const currentStep = ref(0);
-const isCardDetailsVisible = ref(false);
 </script>
 
 <template>
@@ -322,9 +323,9 @@ const isCardDetailsVisible = ref(false);
 
               <v-card>
                 <v-toolbar>
-                  <v-toolbar-title>{{
-                    checkoutData.projectName
-                  }}</v-toolbar-title>
+                  <v-toolbar-title>
+                    {{ checkoutData.projectName }}
+                  </v-toolbar-title>
 
                   <v-spacer></v-spacer>
                   <v-btn icon="mdi-close" @click="dialog = false"></v-btn>

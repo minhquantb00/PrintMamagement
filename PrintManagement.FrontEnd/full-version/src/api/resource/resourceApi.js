@@ -5,38 +5,25 @@ axios.defaults.baseURL = "https://localhost:7070/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";
-export const notificationApi = defineStore("notification", {
+export const resourceApi = defineStore("resource", {
   actions: {
-    getAllNotification(id) {
+    getAllsResource() {
       return new Promise((resolve, reject) => {
         axios
-          .get(`/User/GetNotificationsByUser/${id}`, {})
+          .get("/Admin/GetAll")
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
     },
-
-    updateSeenNotification(id) {
+    addProject(params) {
       return new Promise((resolve, reject) => {
         axios
-          .put(`/User/ConfirmIsSeenNotification/${id}`, {
-            headers: {
-              Authorization: `Bearer ${authorization}`,
-            },
-          })
-          .then((res) => resolve(res))
-          .catch((error) => reject(error));
-      });
-    },
-    updateCustomer(id, params) {
-      return new Promise((resolve, reject) => {
-        console.log(params);
-        axios
-          .put(
-            "/Admin/UpdateCustomer",
+          .post(
+            "/Admin/CreateProject",
             { ...params },
             {
               headers: {
+                "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${authorization}`,
               },
             }
@@ -45,17 +32,44 @@ export const notificationApi = defineStore("notification", {
           .catch((error) => reject(error));
       });
     },
-    filterCustomer(param) {
+    deleteProject(id) {
+      console.log(id);
       return new Promise((resolve, reject) => {
         axios
-          .get(`/Admin/GetAllCustomers`, {
-            params: {
-              Name: param.name,
-              PhoneNumber: param.phoneNumber,
-              Address: param.address,
-            },
+          .delete(`/Admin/DeleteProject/${id}`, {
             headers: {
               Authorization: `Bearer ${authorization}`,
+            },
+          })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    getByIdProject(id) {
+      console.log(id);
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`/Admin/GetProjectById/${id}`, {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    fillterData(param) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get("/Admin/GetAllProject", {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+            params: {
+              ProjectName: param.projectName,
+              StartDate: param.startDate,
+              EndDate: param.endDate,
+              LeaderId: param.leaderId,
             },
           })
           .then((res) => resolve(res))

@@ -14,25 +14,20 @@ const emit = defineEmits(["update:currentStep", "update:checkout-data"]);
 
 const checkoutCartDataLocal = ref(props.checkoutData);
 console.log(checkoutCartDataLocal);
-// const removeItem = (item) => {
-//   checkoutCartDataLocal.value.cartItems =
-//     checkoutCartDataLocal.value.cartItems.filter((i) => i.id !== item.id);
-//   console.log(checkoutCartDataLocal.value.cartItems);
-// };
-
 //  cart total
-const totalCost = computed(() => {
-  return (checkoutCartDataLocal.value.orderAmount =
-    checkoutCartDataLocal.value.cartItems.reduce((acc, item) => {
-      return acc + item.price * item.quantity;
-    }, 0));
-});
+// const totalCost = computed(() => {
+//   return (checkoutCartDataLocal.value.orderAmount =
+//     checkoutCartDataLocal.value.cartItems.reduce((acc, item) => {
+//       return acc + item.price * item.quantity;
+//     }, 0));
+// });
 
 const updateCartData = () => {
-  emit("update:checkout-data", checkoutCartDataLocal.value);
+  emit("update:checkout-data", checkoutCartDataLocal);
 };
 
 const nextStep = () => {
+  // debugger;
   updateCartData();
   emit("update:currentStep", props.currentStep ? props.currentStep + 1 : 1);
 };
@@ -56,35 +51,35 @@ watch(() => props.currentStep, updateCartData);
             <v-col
               ><div>
                 <VCardItem>
-                  <VCardTitle class="text-h3">{{
-                    checkoutCartDataLocal.projectName
-                  }}</VCardTitle>
+                  <VCardTitle class="text-h3">
+                    {{ checkoutCartDataLocal.projectName }}
+                  </VCardTitle>
                 </VCardItem>
                 <VCardText class="text-subtitle-1">
                   <span>Ngày tạo: </span>
-                  <span class="font-weight-medium">{{
-                    formatDate(checkoutCartDataLocal.startDate)
-                  }}</span>
+                  <span class="font-weight-medium">
+                    {{ formatDate(checkoutCartDataLocal.startDate) }}
+                  </span>
                 </VCardText>
                 <VCardText class="text-subtitle-1">
                   <span>Ngày dự kiến: </span>
-                  <span class="font-weight-medium">{{
-                    formatDate(checkoutCartDataLocal.expectedEndDate)
-                  }}</span>
+                  <span class="font-weight-medium">
+                    {{ formatDate(checkoutCartDataLocal.expectedEndDate) }}
+                  </span>
                 </VCardText>
                 <VCardText class="text-subtitle-1">
                   <span style="font-weight: bold"
                     >Yêu cầu của khách hàng:
                   </span>
-                  <span class="font-weight-medium">{{
-                    checkoutCartDataLocal.requestDescriptionFromCustomer
-                  }}</span>
+                  <span class="font-weight-medium">
+                    {{ checkoutCartDataLocal.requestDescriptionFromCustomer }}
+                  </span>
                 </VCardText>
                 <VCardText class="text-subtitle-1">
                   <span style="font-weight: bold">Mô tả: </span>
-                  <span class="font-weight-medium">{{
-                    checkoutCartDataLocal.description
-                  }}</span>
+                  <span class="font-weight-medium">
+                    {{ checkoutCartDataLocal.description }}
+                  </span>
                 </VCardText>
               </div></v-col
             >

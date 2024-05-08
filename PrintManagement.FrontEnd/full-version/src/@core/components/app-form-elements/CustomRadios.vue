@@ -26,17 +26,13 @@ watch(selectedOption, () => {
 <template>
   <VRadioGroup v-if="props.radioContent" v-model="selectedOption">
     <VRow>
-      <VCol
-        v-for="item in props.radioContent"
-        :key="item.title"
-        v-bind="gridColumn"
-      >
+      <VCol v-for="item in props.radioContent" :key="item" v-bind="gridColumn">
         <VLabel
           class="custom-input custom-radio rounded cursor-pointer"
-          :class="selectedOption === item.value ? 'active' : ''"
+          :class="selectedOption === item.id ? 'active' : ''"
         >
           <div>
-            <VRadio :value="item.value" />
+            <VRadio :value="item.id" />
           </div>
           <slot :item="item">
             <div class="flex-grow-1">
@@ -47,15 +43,15 @@ watch(selectedOption, () => {
               <div class="mt-4">
                 <h4 class="mb-2">
                   Người tạo:
-                  {{ item.user }}
+                  <!-- {{ item.user }} -->
                 </h4>
                 <h4 class="mb-2">
                   Ngày tạo:
-                  {{ item.time }}
+                  <!-- {{ item.time }} -->
                 </h4>
                 <h4 class="mb-2">
                   Trạng thái:
-                  {{ item.status }}
+                  <!-- {{ item.status }} -->
                 </h4>
               </div>
             </div>

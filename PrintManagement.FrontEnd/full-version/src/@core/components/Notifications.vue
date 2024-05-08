@@ -44,7 +44,7 @@
                     lines="one"
                     min-height="66px"
                     class="list-item-hover-class"
-                    @click="$emit('click:notification', item)"
+                    @click="updateSeen(item.id)"
                   >
                     <VListItemTitle
                       ><v-icon icon="tabler-mail" class="mr-3"></v-icon
@@ -83,8 +83,12 @@
 
                 <template v-slot:default="{ isActive }">
                   <v-card>
-                    <v-card-text class="text-center text-h4"> Thông tin </v-card-text>
-                    <v-card-text class="text-center"> {{item.content}} </v-card-text>
+                    <v-card-text class="text-center text-h4">
+                      Thông tin
+                    </v-card-text>
+                    <v-card-text class="text-center">
+                      {{ item.content }}
+                    </v-card-text>
                     <v-card-text class="text-center">
                       <router-link to="/wizard-examples/checkout">
                         <v-btn variant="outlined"
@@ -131,6 +135,7 @@ export default {
       notificationApi: notificationApi(),
       dataNotification: [],
       showAll: false,
+      notSeen: null,
     };
   },
   methods: {
@@ -138,6 +143,11 @@ export default {
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       const res = await this.notificationApi.getAllNotification(userInfo.Id);
       this.dataNotification = res.data;
+    },
+    async updateSeen(id) {
+      const res = await this.notificationApi.updateSeenNotification(id);
+      this.notSeen = res.data;
+      this.totalUnseenNotifications();
     },
     markAllReadOrUnread() {
       const allNotificationsIds = this.dataNotification.map((item) => item.id);

@@ -12,6 +12,10 @@ const props = defineProps({
     type: null,
     required: false,
   },
+  checkoutData: {
+    type: Array,
+    required: true,
+  },
 });
 
 const emit = defineEmits(["update:selectedRadio"]);
@@ -24,9 +28,9 @@ watch(selectedOption, () => {
 </script>
 
 <template>
-  <VRadioGroup v-if="props.radioContent" v-model="selectedOption">
+  <VRadioGroup>
     <VRow>
-      <VCol v-for="item in props.radioContent" :key="item" v-bind="gridColumn">
+      <VCol v-for="item in props.radioContent" :key="item">
         <VLabel
           class="custom-input custom-radio rounded cursor-pointer"
           :class="selectedOption === item.id ? 'active' : ''"
@@ -34,28 +38,34 @@ watch(selectedOption, () => {
           <div>
             <VRadio :value="item.id" />
           </div>
-          <slot :item="item">
-            <div class="flex-grow-1">
-              <div class="d-flex align-center mb-1">
-                <VImg :src="item.src" style="width: 200px; height: 500px">
-                </VImg>
-              </div>
-              <div class="mt-4">
-                <h4 class="mb-2">
-                  Người tạo:
-                  <!-- {{ item.user }} -->
-                </h4>
-                <h4 class="mb-2">
-                  Ngày tạo:
-                  <!-- {{ item.time }} -->
-                </h4>
-                <h4 class="mb-2">
-                  Trạng thái:
-                  <!-- {{ item.status }} -->
-                </h4>
-              </div>
+          <div class="flex-grow-1">
+            <div class="d-flex align-center mb-1">
+              <VImg
+                :src="item.src"
+                style="width: 200px; height: 250px"
+                alt="designs"
+              />
+              <!--
+                <p>
+                {{ item.src }}
+                </p> 
+              -->
             </div>
-          </slot>
+            <div class="mt-4">
+              <h4 class="mb-2">
+                Người tạo:
+                <!-- {{ item.user }} -->
+              </h4>
+              <h4 class="mb-2">
+                Ngày tạo:
+                <!-- {{ item.time }} -->
+              </h4>
+              <h4 class="mb-2">
+                Trạng thái:
+                <!-- {{ item.status }} -->
+              </h4>
+            </div>
+          </div>
         </VLabel>
       </VCol>
     </VRow>

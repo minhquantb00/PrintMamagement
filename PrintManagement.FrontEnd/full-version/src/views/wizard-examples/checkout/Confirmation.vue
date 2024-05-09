@@ -8,238 +8,140 @@ const props = defineProps({
     type: null,
     required: true,
   },
-})
+});
 
-const emit = defineEmits([
-  'update:currentStep',
-  'update:checkout-data',
-])
+const emit = defineEmits(["update:currentStep", "update:checkout-data"]);
 
-const selectedDeliveryAddress = computed(() => {
-  return props.checkoutData.addresses.filter(address => {
-    return address.value === props.checkoutData.deliveryAddress
-  })
-})
+const prop = __props;
+const checkoutShipingDataLocal = ref(prop.checkoutData);
 
-const resolveDeliveryMethod = computed(() => {
-  if (props.checkoutData.deliverySpeed === 'overnight')
-    return {
-      method: 'Overnight Delivery',
-      desc: 'In 1 business day.',
-    }
-  else if (props.checkoutData.deliverySpeed === 'express')
-    return {
-      method: 'Express Delivery',
-      desc: 'Normally in 3-4 business days',
-    }
-  else
-    return {
-      method: 'Standard Delivery',
-      desc: 'Normally in 1 Week',
-    }
-})
+console.log(checkoutShipingDataLocal);
+
+// const selectedPaymentMethod = ref("card");
+
+// const cardFormData = ref({
+//   cardNumber: null,
+//   cardName: "",
+//   cardExpiry: "",
+//   cardCvv: null,
+//   isCardSave: true,
+// });
+
+// const giftCardFormData = ref({
+//   giftCardNumber: null,
+//   giftCardPin: null,
+// });
+
+// const selectedDeliveryAddress = computed(() => {
+//   return checkoutPaymentDataLocal.value.addresses.filter((address) => {
+//     return address.value === checkoutPaymentDataLocal.value.deliveryAddress;
+//   });
+// });
+
+const updateCartData = () => {
+  emit("update:checkout-data", checkoutShipingDataLocal.value);
+};
+
+const nextStep = () => {
+  updateCartData();
+  emit("update:currentStep", prop.currentStep ? prop.currentStep + 1 : 1);
+};
+
+watch(() => prop.currentStep, updateCartData);
 </script>
 
 <template>
-  <section class="text-base">
-    <div class="text-center">
-      <h5 class="text-h5 mb-3">
-        Thank You! 😇
-      </h5>
-      <p>
-        Your order <span class="text-primary">#1536548131</span> has been placed!
-      </p>
-      <p class="mb-0">
-        We sent an email to <span class="text-primary">john.doe@example.com</span> with your order confirmation and receipt.
-      </p>
-      <p>If the email hasn't arrived within two minutes, please check your spam folder to see if the email was routed there.</p>
-      <div class="d-flex align-center gap-2 justify-center">
-        <VIcon
-          size="20"
-          icon="tabler-clock"
-        />
-        <span>Time placed: 25/05/2020 13:35pm</span>
-      </div>
-    </div>
-
-    <VRow class="border rounded ma-0 mt-6">
-      <VCol
-        cols="12"
-        md="4"
-        class="pa-5"
-        :class="$vuetify.display.mdAndUp ? 'border-e' : 'border-b'"
-      >
-        <div class="d-flex align-center gap-2 text-high-emphasis mb-4">
-          <VIcon icon="tabler-map-pin" />
-          <span class="text-base font-weight-medium">
-            Shipping
-          </span>
-        </div>
-
-        <template
-          v-for="item in selectedDeliveryAddress"
-          :key="item.value"
-        >
-          <p class="mb-1">
-            {{ item.title }}
-          </p>
-          <p class="mb-4">
-            {{ item.desc }}
-          </p>
-
-          <span class="font-weight-medium">+{{ item.subtitle }}</span>
+  <VRow>
+    <VCol cols="12" md="8">
+      <!-- 👉 Offers alert -->
+      <VAlert color="success" variant="tonal" class="mb-4">
+        <template #prepend>
+          <VIcon icon="tabler-bookmarks" size="34" />
         </template>
-      </VCol>
+        <VAlertTitle class="text-success mb-3">
+          Đơn hàng đã tạo thành công
+        </VAlertTitle>
 
-      <VCol
-        cols="12"
-        md="4"
-        class="pa-5"
-        :class="$vuetify.display.mdAndUp ? 'border-e' : 'border-b'"
-      >
-        <div class="d-flex align-center gap-2 text-high-emphasis mb-4">
-          <VIcon icon="tabler-credit-card" />
-          <span class="text-base font-weight-medium">
-            Billing Address
-          </span>
-        </div>
-
-        <template
-          v-for="item in selectedDeliveryAddress"
-          :key="item.value"
+        <p class="mb-1">Đơn hàng đang được nhân viên giao hàng tiếp nhận</p>
+      </VAlert>
+      <VCard>
+        <VTabs
+          v-model="tab"
+          align-tabs="center"
+          bg-color="deep-purple-accent-4"
+          stacked
         >
-          <p class="mb-1">
-            {{ item.title }}
-          </p>
-          <p class="mb-4">
-            {{ item.desc }}
-          </p>
+          <VTab value="tab-1">
+            <VIcon icon="mdi-phone" />
 
-          <span class="font-weight-medium">+{{ item.subtitle }}</span>
-        </template>
-      </VCol>
+            Giao hàng
+          </VTab>
 
-      <VCol
-        cols="12"
-        md="4"
-        class="pa-5"
-      >
-        <div class="d-flex align-center gap-2 text-high-emphasis mb-4">
-          <VIcon icon="tabler-ship" />
-          <span class="text-base font-weight-medium">
-            Shipping Method
-          </span>
-        </div>
+          <VTab value="tab-2">
+            <VIcon icon="mdi-heart" />
 
-        <p class="font-weight-medium">
-          Preferred Method:
-        </p>
-        <p class="mb-0">
-          {{ resolveDeliveryMethod.method }}
-        </p>
-        <span>( {{ resolveDeliveryMethod.desc }} )</span>
-      </VCol>
-    </VRow>
+            Trạng thái giao hàng
+          </VTab>
+        </VTabs>
 
-    <VRow>
-      <VCol
-        cols="12"
-        md="9"
-      >
-        <!-- 👉 cart items -->
-        <div class="border rounded">
-          <template
-            v-for="(item, index) in props.checkoutData.cartItems"
-            :key="item.name"
-          >
-            <div
-              class="d-flex align-start gap-3 pa-5 position-relative flex-column flex-sm-row"
-              :class="index ? 'border-t' : ''"
+        <VTabsWindow v-model="tab">
+          <VTabsWindowItem v-for="i in 3" :key="i" :value="'tab-' + i">
+            <VCard>
+              <VCardText>{{ text }}</VCardText>
+            </VCard>
+          </VTabsWindowItem>
+        </VTabsWindow>
+      </VCard>
+    </VCol>
+
+    <VCol cols="12" md="4">
+      <VCard flat variant="outlined">
+        <VCardText>
+          <h6 class="text-base font-weight-medium mb-4">Thông tin đơn hàng</h6>
+
+          <div class="mb-2">
+            <span>Mã đơn hàng: </span>
+            <span>MMD0903HSDHJDF</span>
+          </div>
+          <div class="mb-2">
+            <span>Tên đơn hàng: </span>
+            <span>In ấn bản thảo</span>
+          </div>
+        </VCardText>
+
+        <VDivider />
+
+        <VCardText>
+          <div>
+            <div>
+              <span class="text-high-emphasis">Khách hàng: </span>
+
+              <span class="me-2">Đoàn Việt Tiến</span>
+            </div>
+            <div>
+              <span class="text-high-emphasis">Số điện thoại: 0312345678</span>
+            </div>
+            <div />
+            <span class="me-2">Địa chỉ: Hà Nội</span>
+          </div>
+          <div class="d-flex justify-space-between text-base mb-2">
+            <span class="text-high-emphasis font-weight-medium"
+              >Thành tiền: 500.000 đ</span
             >
-              <div>
-                <VImg
-                  width="80"
-                  :src="item.image"
-                />
-              </div>
-
-              <div
-                class="d-flex w-100 pt-3"
-                :class="$vuetify.display.width <= 700 ? 'flex-column' : 'flex-row'"
-              >
-                <div>
-                  <h6 class="text-base font-weight-regular mb-4">
-                    {{ item.name }}
-                  </h6>
-                  <div class="d-flex align-center text-no-wrap gap-2 text-base">
-                    <span class="text-disabled">Sold by:</span>
-                    <span class="text-primary">{{ item.seller }}</span>
-                    <VChip
-                      :color="item.inStock ? 'success' : 'error'"
-                      label
-                    >
-                      <span>
-                        {{ item.inStock ? 'In Stock' : 'Out of Stock' }}
-                      </span>
-                    </VChip>
-                  </div>
-                </div>
-
-                <VSpacer />
-
-                <div
-                  class="d-flex flex-column justify-space-between mt-3"
-                  :class="$vuetify.display.width <= 700 ? 'text-start' : 'text-end'"
-                >
-                  <p class="text-base mb-0">
-                    <span class="text-primary">${{ item.price }}</span>
-                    <span>/</span>
-                    <span class="text-decoration-line-through text-disabled">${{ item.discountPrice }}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </template>
-        </div>
-      </VCol>
-
-      <VCol
-        cols="12"
-        md="3"
-      >
-        <div class="border rounded">
-          <div class="border-b pa-5">
-            <h6 class="text-base font-weight-medium mb-3">
-              Price Details
-            </h6>
-
-            <div class="d-flex align-center justify-space-between text-sm mb-3">
-              <span class="text-high-emphasis">Order Total</span>
-              <span>${{ props.checkoutData.orderAmount }}.00</span>
-            </div>
-
-            <div class="d-flex align-center justify-space-between text-sm">
-              <span class="text-high-emphasis">Delivery Charges</span>
-              <div v-if="props.checkoutData.deliverySpeed === 'free'">
-                <span class="text-decoration-line-through text-disabled me-2">$5.00</span>
-                <VChip
-                  color="success"
-                  label
-                >
-                  Free
-                </VChip>
-              </div>
-              <div v-else>
-                <span>${{ props.checkoutData.deliveryCharges }}</span>
-              </div>
-            </div>
           </div>
-          <div class="d-flex align-center justify-space-between text-high-emphasis font-weight-medium px-5 py-3">
-            <span>Total</span>
-            <span>${{ props.checkoutData.orderAmount + props.checkoutData.deliveryCharges }}.00</span>
-          </div>
-        </div>
-      </VCol>
-    </VRow>
-  </section>
+        </VCardText>
+      </VCard>
+    </VCol>
+  </VRow>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      tab: null,
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    };
+  },
+};
+</script>

@@ -12,22 +12,19 @@ const props = defineProps({
     type: null,
     required: false,
   },
-})
+});
 
-const emit = defineEmits(['update:selectedRadio'])
+const emit = defineEmits(["update:selectedRadio"]);
 
-const selectedOption = ref(structuredClone(toRaw(props.selectedRadio)))
+const selectedOption = ref(structuredClone(toRaw(props.selectedRadio)));
 
 watch(selectedOption, () => {
-  emit('update:selectedRadio', selectedOption.value)
-})
+  emit("update:selectedRadio", selectedOption.value);
+});
 </script>
 
 <template>
-  <VRadioGroup
-    v-if="props.radioContent"
-    v-model="selectedOption"
-  >
+  <VRadioGroup v-if="props.radioContent" v-model="selectedOption">
     <VRow>
       <VCol
         v-for="item in props.radioContent"
@@ -38,11 +35,7 @@ watch(selectedOption, () => {
           class="custom-input custom-radio rounded cursor-pointer w-100"
           :class="selectedOption === item.value ? 'active' : ''"
         >
-          <img
-            :src="item.bgImage"
-            alt="bg-img"
-            class="custom-radio-image"
-          >
+          <img :src="item.bgImage" alt="bg-img" class="custom-radio-image" />
           <VRadio :value="item.value" />
         </VLabel>
       </VCol>

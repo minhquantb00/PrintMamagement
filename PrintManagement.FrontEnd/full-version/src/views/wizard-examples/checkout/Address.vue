@@ -8,13 +8,14 @@ const props = defineProps({
     type: null,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(["update:currentStep", "update:checkout-data"]);
+const emit = defineEmits(["update:currentStep", "update:checkout-data"])
 
-const checkoutAddressDataLocal = ref(props.checkoutData);
+const checkoutAddressDataLocal = ref(props.checkoutData)
 
-console.log(checkoutAddressDataLocal);
+console.log(checkoutAddressDataLocal)
+
 const deliveryOptions = [
   {
     icon: { icon: "tabler-user" },
@@ -34,12 +35,12 @@ const deliveryOptions = [
     desc: "Get your product in 1 day.",
     value: "overnight",
   },
-];
+]
 
 const resolveAddressBadgeColor = {
   home: "primary",
   office: "success",
-};
+}
 
 const resolveDeliveryBadgeData = {
   free: {
@@ -54,73 +55,93 @@ const resolveDeliveryBadgeData = {
     color: "secondary",
     price: 15,
   },
-};
+}
 
 const updateAddressData = () => {
-  emit("update:checkout-data", checkoutAddressDataLocal.value);
-};
+  emit("update:checkout-data", checkoutAddressDataLocal.value)
+}
 
 const nextStep = () => {
-  updateAddressData();
-  emit("update:currentStep", props.currentStep ? props.currentStep + 1 : 1);
-};
+  updateAddressData()
+  emit("update:currentStep", props.currentStep ? props.currentStep + 1 : 1)
+}
 
-watch(() => props.currentStep, updateAddressData);
+watch(() => props.currentStep, updateAddressData)
 </script>
 
 <template>
   <VRow>
-    <VCol cols="12" md="8">
+    <VCol
+      cols="12"
+      md="8"
+    >
       <!-- 👉 Address custom input -->
-      <v-sheet class="mx-auto" elevation="8" max-width="800">
-        <v-slide-group
+      <div
+        class="mx-auto"
+        width="1000"
+      >
+        <VSlideGroup
           v-model="model"
           class="pa-4"
           selected-class="bg-success"
           show-arrows
         >
-          <v-slide-group-item v-slot="{ toggle, selectedClass }">
-            <v-card
-              :class="['ma-4', selectedClass]"
-              color="grey-lighten-1"
-              height="200"
-              width="100"
-              @click="toggle"
+          <VSlideGroupItem v-slot="{ toggle }">
+            <VCard
               v-for="item in checkoutAddressDataLocal.designs"
               :key="item"
+              class="ma-4"
+              color="grey-lighten-1"
+              height="400"
+              width="270"
+              @click="toggle"
             >
               <CustomRadios
                 v-model:selected-radio="
                   checkoutAddressDataLocal.deliveryAddress
                 "
                 :radio-content="item"
-              >
-              </CustomRadios>
-            </v-card>
-          </v-slide-group-item>
-        </v-slide-group>
-      </v-sheet>
+              />
+            </VCard>
+          </VSlideGroupItem>
+        </VSlideGroup>
+      </div>
 
       <!-- 👉 Add New Address -->
 
-      <VBtn variant="tonal" class="mt-5 mb-8">
+      <VBtn
+        variant="tonal"
+        class="mt-5 mb-8"
+      >
         <label for="fileProject">
-          <v-icon
+          <VIcon
             icon="mdi-folder-upload-outline"
             style="font-size: 25px"
             class="mr-2"
-          ></v-icon>
+          />
           Tải file
         </label>
       </VBtn>
-      <input type="file" id="fileProject" style="display: none" />
+      <input
+        id="fileProject"
+        type="file"
+        style="display: none"
+      >
     </VCol>
 
-    <VCol cols="12" md="4">
-      <VCard flat variant="outlined">
+    <VCol
+      cols="12"
+      md="4"
+    >
+      <VCard
+        flat
+        variant="outlined"
+      >
         <!-- 👉 Delivery estimate date -->
         <VCardText>
-          <h6 class="text-base font-weight-medium mb-5">Thông tin dự án</h6>
+          <h6 class="text-base font-weight-medium mb-5">
+            Thông tin dự án
+          </h6>
 
           <VList class="card-list bg-var-theme-background rounded pa-5">
             <VListItem>
@@ -128,43 +149,56 @@ watch(() => props.currentStep, updateAddressData);
                 Dự án:
                 {{ checkoutAddressDataLocal.projectName }}
               </VListItemSubtitle>
-              <VListItemSubtitle class="text-h6 mb-4"
-                >Khách hàng
-                {{ checkoutAddressDataLocal.customer }}</VListItemSubtitle
-              >
-              <VListItemSubtitle class="text-h6 mb-4"
-                >Quản lý:
-                {{ checkoutAddressDataLocal.leader }}</VListItemSubtitle
-              >
-              <v-list-item-subtitle class="text-h6 mb-4">
+              <VListItemSubtitle class="text-h6 mb-4">
+                Khách hàng
+                {{ checkoutAddressDataLocal.customer }}
+              </VListItemSubtitle>
+              <VListItemSubtitle class="text-h6 mb-4">
+                Quản lý:
+                {{ checkoutAddressDataLocal.leader }}
+              </VListItemSubtitle>
+              <VListItemSubtitle class="text-h6 mb-4">
                 Mô tả:
                 {{ checkoutAddressDataLocal.description }}
-              </v-list-item-subtitle>
-              <v-list-item-subtitle class="text-h6 mb-4">
+              </VListItemSubtitle>
+              <VListItemSubtitle class="text-h6 mb-4">
                 Yêu cầu của khách hàng:
 
                 {{ checkoutAddressDataLocal.requestDescriptionFromCustomer }}
-              </v-list-item-subtitle>
+              </VListItemSubtitle>
             </VListItem>
           </VList>
         </VCardText>
       </VCard>
 
-      <VBtn block class="mt-4" @click="nextStep">
-        In ấn <v-icon icon=" mdi-arrow-right" class="ml-3"></v-icon>
+      <VBtn
+        block
+        class="mt-4"
+        @click="nextStep"
+      >
+        In ấn <VIcon
+          icon=" mdi-arrow-right"
+          class="ml-3"
+        />
       </VBtn>
-      <VBtn block variant="outlined" class="mt-4" @click="nextStep">
+      <VBtn
+        block
+        variant="outlined"
+        class="mt-4"
+        @click="nextStep"
+      >
         Không phê duyệt
       </VBtn>
     </VCol>
   </VRow>
 </template>
+
 <script>
 export default {
   data() {
     return {
       model: null,
-    };
+    }
   },
-};
+}
 </script>

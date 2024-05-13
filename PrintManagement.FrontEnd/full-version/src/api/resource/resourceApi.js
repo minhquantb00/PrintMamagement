@@ -15,11 +15,11 @@ export const resourceApi = defineStore("resource", {
           .catch((error) => reject(error));
       });
     },
-    addProject(params) {
+    createResouce(params) {
       return new Promise((resolve, reject) => {
         axios
           .post(
-            "/Admin/CreateProject",
+            "/Admin/CreateResourceInformation",
             { ...params },
             {
               headers: {
@@ -32,11 +32,28 @@ export const resourceApi = defineStore("resource", {
           .catch((error) => reject(error));
       });
     },
-    deleteProject(id) {
+    updateResouce(id, param) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            "/Admin/UpdateResourceInformation",
+            { ...param },
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    deleteResource(id) {
       console.log(id);
       return new Promise((resolve, reject) => {
         axios
-          .delete(`/Admin/DeleteProject/${id}`, {
+          .delete(`/Admin/DeleteResource/${id}`, {
             headers: {
               Authorization: `Bearer ${authorization}`,
             },
@@ -45,11 +62,11 @@ export const resourceApi = defineStore("resource", {
           .catch((error) => reject(error));
       });
     },
-    getByIdProject(id) {
+    getByIdResource(id) {
       console.log(id);
       return new Promise((resolve, reject) => {
         axios
-          .get(`/Admin/GetProjectById/${id}`, {
+          .get(`/Admin/GetById/${id}`, {
             headers: {
               Authorization: `Bearer ${authorization}`,
             },
@@ -61,15 +78,12 @@ export const resourceApi = defineStore("resource", {
     fillterData(param) {
       return new Promise((resolve, reject) => {
         axios
-          .get("/Admin/GetAllProject", {
+          .get("/Admin/GetAll", {
             headers: {
               Authorization: `Bearer ${authorization}`,
             },
             params: {
-              ProjectName: param.projectName,
-              StartDate: param.startDate,
-              EndDate: param.endDate,
-              LeaderId: param.leaderId,
+              resourceName: param.name,
             },
           })
           .then((res) => resolve(res))

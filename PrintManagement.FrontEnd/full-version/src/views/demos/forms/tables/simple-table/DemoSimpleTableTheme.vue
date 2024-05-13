@@ -52,140 +52,136 @@ const isCardDetailsVisible = ref(false);
         </v-col>
       </v-row>
     </div>
-    <VRow>
-      <VCol
-        cols="12"
-        sm="3"
-        md="3"
-        v-for="(user, index) in paginatedData"
-        :key="index"
-      >
-        <VCard>
-          <VImg :src="pages2" />
-
-          <VCardText class="position-relative">
-            <!-- User Avatar -->
-            <VAvatar size="75" class="avatar-center" :image="user.avatar" />
-
-            <!-- Title, Subtitle & Action Button -->
-            <div class="d-flex justify-space-between flex-wrap pt-8">
-              <div class="me-2 mb-2">
-                <VCardTitle class="pa-0"> {{ user.fullName }} </VCardTitle>
-                <VCardTitle class="text-h6 pa-0">
-                  Email: {{ user.email }}
-                </VCardTitle>
-                <VCardTitle class="text-h6 pa-0">
-                  Nhóm: {{ user.teamName }}
-                </VCardTitle>
-              </div>
-            </div>
-            <v-dialog max-width="400">
-              <template v-slot:activator="{ props: activatorProps }">
-                <v-btn
-                  v-bind="activatorProps"
-                  style="font-size: 20px"
-                  density="comfortable"
-                  @click="findByIdUser(user.id)"
-                  icon
-                  class="mr-4"
-                >
-                  <v-icon icon="mdi-pencil-outline"></v-icon>
-                  <v-tooltip activator="parent" location="top">
-                    Cập nhật nhân viên
-                  </v-tooltip>
-                </v-btn>
-              </template>
-
-              <template v-slot:default="{ isActive }">
-                <v-card class="pa-4">
-                  <div class="text-center mb-4">
-                    <h2>Cập nhật nhân viên</h2>
-                  </div>
-                  <VSelect
-                    class="mb-6"
-                    clearable
-                    v-model="selectedRoles"
-                    label="Quyền hạn"
-                    :items="dataRoles"
-                    item-title="roleName"
-                    item-value="id"
-                    :chips="true"
-                    multiple
-                    v-if="updateUserRoles.length > 0"
+    <div>
+      <v-table>
+        <thead>
+          <tr>
+            <th class="text-left">Họ và tên</th>
+            <th class="text-left">Email</th>
+            <th class="text-left">Số điện thoại</th>
+            <th class="text-left">Nhóm</th>
+            <th class="text-left">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(user, index) in paginatedData" :key="index">
+            <td>{{ user.fullName }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phoneNumber }}</td>
+            <td>{{ user.teamName }}</td>
+            <td>
+              <v-dialog max-width="400">
+                <template v-slot:activator="{ props: activatorProps }">
+                  <v-btn
+                    v-bind="activatorProps"
+                    style="font-size: 20px"
+                    density="comfortable"
+                    @click="findByIdUser(user.id)"
+                    icon
+                    class="mr-4"
                   >
-                  </VSelect>
-                  <v-select
-                    class="mb-6"
-                    clearable
-                    label="Phòng ban"
-                    :items="dataTeam"
-                    v-model="updateUser.teamName"
-                    item-title="name"
-                    item-value="id"
-                    variant="outlined"
-                  ></v-select>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
+                    <v-icon icon="mdi-pencil-outline"></v-icon>
+                    <v-tooltip activator="parent" location="top">
+                      Cập nhật nhân viên
+                    </v-tooltip>
+                  </v-btn>
+                </template>
 
-                    <v-btn
-                      text="Cập nhật"
-                      variant="flat"
-                      @click="isActive.value = false"
-                    ></v-btn>
-                    <v-btn
-                      text="Thoát"
+                <template v-slot:default="{ isActive }">
+                  <v-card class="pa-4">
+                    <div class="text-center mb-4">
+                      <h2>Cập nhật nhân viên</h2>
+                    </div>
+                    <VSelect
+                      class="mb-6"
+                      clearable
+                      v-model="selectedRoles"
+                      label="Quyền hạn"
+                      :items="dataRoles"
+                      item-title="roleName"
+                      item-value="id"
+                      :chips="true"
+                      multiple
+                      v-if="updateUserRoles.length > 0"
+                    >
+                    </VSelect>
+                    <v-select
+                      class="mb-6"
+                      clearable
+                      label="Phòng ban"
+                      :items="dataTeam"
+                      v-model="updateUser.teamName"
+                      item-title="name"
+                      item-value="id"
                       variant="outlined"
-                      @click="isActive.value = false"
-                    ></v-btn>
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-dialog>
-            <v-dialog max-width="300">
-              <template v-slot:activator="{ props: activatorProps }">
-                <v-btn
-                  density="comfortable"
-                  style="font-size: 20px"
-                  v-bind="activatorProps"
-                  color="error"
-                  icon
-                >
-                  <v-icon icon="mdi-delete-outline"></v-icon>
-                  <v-tooltip activator="parent" location="top">
-                    Xóa nhân viên
-                  </v-tooltip></v-btn
-                >
-              </template>
+                    ></v-select>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
 
-              <template v-slot:default="{ isActive }">
-                <v-card class="pa-4 text-center">
-                  <h2>Bạn có muốn xóa</h2>
-                  <v-card-actions class="mt-4">
-                    <div>
                       <v-btn
-                        text="Xóa"
-                        :loading="loading"
-                        @click="deleteCustomer(item.id)"
-                        color="error"
+                        text="Cập nhật"
                         variant="flat"
-                        class="ml-13"
+                        @click="isActive.value = false"
                       ></v-btn>
                       <v-btn
                         text="Thoát"
                         variant="outlined"
                         @click="isActive.value = false"
                       ></v-btn>
-                    </div>
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-dialog>
-          </VCardText>
-        </VCard>
-      </VCol>
-    </VRow>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+              <v-dialog max-width="300">
+                <template v-slot:activator="{ props: activatorProps }">
+                  <v-btn
+                    density="comfortable"
+                    style="font-size: 20px"
+                    v-bind="activatorProps"
+                    color="error"
+                    icon
+                  >
+                    <v-icon icon="mdi-delete-outline"></v-icon>
+                    <v-tooltip activator="parent" location="top">
+                      Xóa nhân viên
+                    </v-tooltip></v-btn
+                  >
+                </template>
+
+                <template v-slot:default="{ isActive }">
+                  <v-card class="pa-4 text-center">
+                    <h2>Bạn có muốn xóa</h2>
+                    <v-card-actions class="mt-4">
+                      <div>
+                        <v-btn
+                          text="Xóa"
+                          :loading="loading"
+                          @click="deleteCustomer(item.id)"
+                          color="error"
+                          variant="flat"
+                          class="ml-13"
+                        ></v-btn>
+                        <v-btn
+                          text="Thoát"
+                          variant="outlined"
+                          @click="isActive.value = false"
+                        ></v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
+    </div>
     <div class="text-center mt-9">
-      <v-pagination v-model="currentPage" :length="totalPages" rounded="circle"></v-pagination>
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        rounded="circle"
+      ></v-pagination>
     </div>
   </div>
 </template>

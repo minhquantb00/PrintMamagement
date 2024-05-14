@@ -104,7 +104,7 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _notificationService.ConfirmIsSeenNotification(notificationId));
         }
-        [HttpGet]
+        [HttpPost]
         [Consumes(contentType: "multipart/form-data")]
         public async Task<IActionResult> GetAllDelivery([FromForm] Request_InputDelivery input)
         {

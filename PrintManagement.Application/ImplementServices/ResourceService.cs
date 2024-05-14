@@ -127,7 +127,7 @@ namespace PrintManagement.Application.ImplementServices
 
         public async Task<IQueryable<DataResponseResource>> GetAll(string? resourceName)
         {
-            var query = await _baseResourceRepository.GetAllAsync();
+            var query = await _baseResourceRepository.GetAllAsync(record => record.IsActive == true);
             if(!string.IsNullOrEmpty(resourceName))
             {
                 query = query.Where(x => x.ResourceName.ToLower().Contains(resourceName.ToLower()));

@@ -1,4 +1,5 @@
 ﻿using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
+using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
 using PrintManagement.Application.Payloads.Responses;
 using System;
@@ -15,5 +16,7 @@ namespace PrintManagement.Application.InterfaceServices
         Task<ResponseObject<DataResponseDelivery>> ShipperConfirmOrderDelivery(Guid shipperId, Request_ShipperConfirmOrderDelivery request);
         Task<ResponseObject<DataResponseDelivery>> ShipperConfirmDelivery(Guid shipperId, Request_ShipperConfirmDelivery request);
         Task<ResponseObject<DataResponseDelivery>> CustomerConfirmDelivery(Guid deliveryId);
+        Task<IQueryable<DataResponseDelivery>> GetAllDelivery(Request_InputDelivery input);
+        Task<DataResponseDelivery> GetDeliveryById(Guid id);
     }
 }

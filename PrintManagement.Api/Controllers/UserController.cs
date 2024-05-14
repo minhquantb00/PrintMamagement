@@ -104,5 +104,16 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _notificationService.ConfirmIsSeenNotification(notificationId));
         }
+        [HttpGet]
+        [Consumes(contentType: "multipart/form-data")]
+        public async Task<IActionResult> GetAllDelivery([FromForm] Request_InputDelivery input)
+        {
+            return Ok(await _deliveryService.GetAllDelivery(input));
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDeliveryById([FromRoute] Guid id)
+        {
+            return Ok(await _deliveryService.GetDeliveryById(id));
+        }
     }
 }

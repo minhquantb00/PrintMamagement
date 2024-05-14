@@ -3,6 +3,7 @@ using PrintManagement.Application.Handle.HandleEmail;
 using PrintManagement.Application.InterfaceServices;
 using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
+using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
 using PrintManagement.Application.Payloads.Responses;
 using PrintManagement.Domain.Entities;
@@ -370,6 +371,33 @@ namespace PrintManagement.Application.ImplementServices
                     Data = null
                 };
             }
+        }
+        public async Task<IQueryable<DataResponseDelivery>> GetAllDelivery(Request_InputDelivery input)
+        {
+            var query = await _baseDeliveryRepository.GetAllAsync(record => record.IsActive == true);
+            if (input.ProjectId.HasValue)
+            {
+                query = query.Where(record => record.ProjectId == input.ProjectId);
+            }
+            if(input.CustomerId.HasValue)
+            {
+                query = query.Where(record => record.CustomerId == input.CustomerId);
+            }
+            if (input.DeliverId.HasValue)
+            {
+                query = query.Where(record => record.DeliverId == input.DeliverId);
+            }
+            if (input.DeliveryStatus.HasValue)
+            {
+                query = query.Where(record => record.DeliveryStatus == input.DeliveryStatus);
+            }
+            return query.Select(item => _deliveryConverter.EntityToDTO(item));
+        }
+
+        public async Task<DataResponseDelivery> GetDeliveryById(Guid id)
+        {
+            var query = await _baseDeliveryRepository.GetByIDAsync(id);
+            return _deliveryConverter.EntityToDTO(query);
         }
     }
 }

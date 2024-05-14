@@ -164,9 +164,9 @@ namespace PrintManagement.Api.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateResourcePropertyInformation(Guid resourceId, IEnumerable<Request_CreateResourceProperty> requests)
+        public async Task<IActionResult> CreateResourcePropertyInformation(Request_CreateResourceProperty requests)
         {
-            return Ok(await _resourceService.CreateResourcePropertyAsync(resourceId, requests));
+            return Ok(await _resourceService.CreateResourcePropertyAsync(requests));
         }
 
         [HttpPut]

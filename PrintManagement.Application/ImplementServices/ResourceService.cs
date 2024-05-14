@@ -196,11 +196,11 @@ namespace PrintManagement.Application.ImplementServices
 
 
         #region Private methods
-        public async Task<ResponseObject<DataResponseResource>> CreateResourcePropertyAsync(Guid resourceId, IEnumerable<Request_CreateResourceProperty> request)
+        public async Task<ResponseObject<DataResponseResource>> CreateResourcePropertyAsync(Request_CreateResourceProperty request)
         {
             try
             {
-                var resource = await _baseResourceRepository.GetByIDAsync(resourceId);
+                var resource = await _baseResourceRepository.GetByIDAsync(request.ResourceId);
                 if (resource == null)
                 {
                     return new ResponseObject<DataResponseResource>
@@ -211,21 +211,18 @@ namespace PrintManagement.Application.ImplementServices
                     };
                 }
                 List<ResourceProperty> resourceProperties = new List<ResourceProperty>();
-                foreach (var property in request)
+                var propertyItem = new ResourceProperty
                 {
-                    var propertyItem = new ResourceProperty
-                    {
-                        IsActive = true,
-                        Id = Guid.NewGuid(),
-                        Quantity = 0,
-                        ResourceId = resourceId,
-                        ResourcePropertyDetails = null,
-                        ResourcePropertyName = property.ResourcePropertyName
-                    };
-                    resourceProperties.Add(propertyItem);
-                    propertyItem = await _baseResourcePropertyRepository.CreateAsync(propertyItem);
-                    propertyItem.ResourcePropertyDetails = CreateResourcePropertyDetailAsync(propertyItem.Id, property.requests).Result.ToList();
-                }
+                    IsActive = true,
+                    Id = Guid.NewGuid(),
+                    Quantity = 0,
+                    ResourceId = request.ResourceId,
+                    ResourcePropertyDetails = null,
+                    ResourcePropertyName = request.ResourcePropertyName
+                };
+                resourceProperties.Add(propertyItem);
+                propertyItem = await _baseResourcePropertyRepository.CreateAsync(propertyItem);
+                propertyItem.ResourcePropertyDetails = CreateResourcePropertyDetailAsync(propertyItem.Id, request.requests).Result.ToList();
                 resource.ResourceProperties = resourceProperties;
                 await _baseResourceRepository.UpdateAsync(resource);
                 return new ResponseObject<DataResponseResource> 

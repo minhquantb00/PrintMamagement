@@ -50,7 +50,6 @@ export const projectApi = defineStore("project", {
       });
     },
     getByIdProject(id) {
-      console.log(id);
       return new Promise((resolve, reject) => {
         axios
           .get(`/Admin/GetProjectById/${id}`, {

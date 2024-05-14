@@ -8,7 +8,6 @@ const ability = useAppAbility();
 let logoutTimer = null; 
 const userData = JSON.parse(localStorage.getItem("userInfo") || "null");
 const accessTokenPhien = localStorage.getItem("accessToken");
-console.log(accessTokenPhien);
 const logout = () => {
   clearTimeout(logoutTimer); 
   localStorage.removeItem("userInfo");
@@ -24,7 +23,6 @@ const startSessionTimer = () => {
 if (accessTokenPhien) {
   startSessionTimer(); 
 }
-console.log(userData.Avatar);
 const userProfileList = [
   { type: "divider" },
   {

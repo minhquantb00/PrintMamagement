@@ -1,410 +1,589 @@
 <script setup>
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { paginationMeta } from '@/@fake-db/utils'
-import { useInvoiceStore } from '@/views/apps/invoice/useInvoiceStore'
-import { avatarText } from '@core/utils/formatters'
-
-const invoiceListStore = useInvoiceStore()
-const searchQuery = ref('')
-const dateRange = ref('')
-const selectedStatus = ref()
-const totalInvoices = ref(0)
-const invoices = ref([])
-const selectedRows = ref([])
-
-const options = ref({
-  page: 1,
-  itemsPerPage: 10,
-  sortBy: [],
-  groupBy: [],
-  search: undefined,
-})
-
-const isLoading = ref(false)
-const currentPage = ref(1)
-
-currentPage.value = options.value.page
-
-// 👉 headers
-const headers = [
-  {
-    title: '#ID',
-    key: 'id',
-  },
-  {
-    title: 'Trending',
-    key: 'trending',
-    sortable: false,
-  },
-  {
-    title: 'Client',
-    key: 'client',
-  },
-  {
-    title: 'Total',
-    key: 'total',
-  },
-  {
-    title: 'Issued Date',
-    key: 'date',
-  },
-  {
-    title: 'Balance',
-    key: 'balance',
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    sortable: false,
-  },
-]
-
-// 👉 Fetch Invoices
-const fetchInvoices = (query, currentStatus, firstDate, lastDate, option) => {
-  isLoading.value = true
-  invoiceListStore.fetchInvoices({
-    q: query,
-    status: currentStatus,
-    startDate: firstDate,
-    endDate: lastDate,
-    options: option,
-  }).then(response => {
-    invoices.value = response.data.invoices
-    totalInvoices.value = response.data.totalInvoices
-    options.value.page = response.data.page
-  }).catch(error => {
-    console.log(error)
-  })
-  isLoading.value = false
+import { ref } from "vue";
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 }
-
-// 👉 Invoice balance variant resolver
-const resolveInvoiceBalanceVariant = (balance, total) => {
-  if (balance === total)
-    return {
-      status: 'Unpaid',
-      chip: { color: 'error' },
-    }
-  if (balance === 0)
-    return {
-      status: 'Paid',
-      chip: { color: 'success' },
-    }
-  
-  return {
-    status: balance,
-    chip: { variant: 'text' },
+const previewVisible = ref(false);
+const previewImage = ref("");
+const previewTitle = ref("");
+const fileList = ref([]);
+const handleCancel = () => {
+  previewVisible.value = false;
+  previewTitle.value = "";
+};
+const handlePreview = async (file) => {
+  if (!file.url && !file.preview) {
+    file.preview = await getBase64(file.originFileObj);
   }
-}
-
-const resolveInvoiceStatusVariantAndIcon = status => {
-  if (status === 'Partial Payment')
-    return {
-      variant: 'success',
-      icon: 'tabler-circle-half-2',
-    }
-  if (status === 'Paid')
-    return {
-      variant: 'warning',
-      icon: 'tabler-chart-pie',
-    }
-  if (status === 'Downloaded')
-    return {
-      variant: 'info',
-      icon: 'tabler-arrow-down-circle',
-    }
-  if (status === 'Draft')
-    return {
-      variant: 'primary',
-      icon: 'tabler-device-floppy',
-    }
-  if (status === 'Sent')
-    return {
-      variant: 'secondary',
-      icon: 'tabler-circle-check',
-    }
-  if (status === 'Past Due')
-    return {
-      variant: 'error',
-      icon: 'tabler-alert-circle',
-    }
-  
-  return {
-    variant: 'secondary',
-    icon: 'tabler-x',
-  }
-}
-
-const computedMoreList = computed(() => {
-  return paramId => [
-    {
-      title: 'Download',
-      value: 'download',
-      prependIcon: 'tabler-download',
-    },
-    {
-      title: 'Edit',
-      value: 'edit',
-      prependIcon: 'tabler-pencil',
-      to: {
-        name: 'apps-invoice-edit-id',
-        params: { id: paramId },
-      },
-    },
-    {
-      title: 'Duplicate',
-      value: 'duplicate',
-      prependIcon: 'tabler-layers-intersect',
-    },
-  ]
-})
-
-const deleteInvoice = id => {
-  invoiceListStore.deleteInvoice(id).then(() => {
-    fetchInvoices(searchQuery.value, selectedStatus.value, dateRange.value?.split('to')[0], dateRange.value?.split('to')[1], options.value)
-  }).catch(error => {
-    console.log(error)
-  })
-}
-
-// 👉 watch for data table options like itemsPerPage,page,searchQuery,sortBy etc...
-watchEffect(() => {
-  const [start, end] = dateRange.value ? dateRange.value.split('to') : ''
-
-  fetchInvoices(searchQuery.value, selectedStatus.value, start, end, options.value)
-})
+  previewImage.value = file.url || file.preview;
+  previewVisible.value = true;
+  previewTitle.value =
+    file.name || file.url.substring(file.url.lastIndexOf("/") + 1);
+};
 </script>
-
 <template>
-  <VCard
-    v-if="invoices"
-    id="invoice-list"
-  >
-    <VCardText class="d-flex align-center flex-wrap gap-4">
-      <div class="me-3 d-flex gap-3">
-        <AppSelect
-          :model-value="options.itemsPerPage"
-          :items="[
-            { value: 10, title: '10' },
-            { value: 25, title: '25' },
-            { value: 50, title: '50' },
-            { value: 100, title: '100' },
-            { value: -1, title: 'All' },
-          ]"
-          style="width: 6.25rem;"
-          @update:model-value="options.itemsPerPage = parseInt($event, 10)"
-        />
-        <!-- 👉 Create invoice -->
-        <VBtn
-          prepend-icon="tabler-plus"
-          :to="{ name: 'apps-invoice-add' }"
-        >
-          Create invoice
-        </VBtn>
-      </div>
-
-      <VSpacer />
-
-      <div class="d-flex align-center flex-wrap gap-4">
-        <!-- 👉 Search  -->
-        <div class="invoice-list-filter">
-          <AppTextField
-            v-model="searchQuery"
-            placeholder="Search Invoice"
-            density="compact"
-          />
-        </div>
-
-        <!-- 👉 Select status -->
-        <div class="invoice-list-filter">
-          <AppSelect
-            v-model="selectedStatus"
-            placeholder="Select Status"
-            clearable
-            clear-icon="tabler-x"
-            single-line
-            :items="['Downloaded', 'Draft', 'Sent', 'Paid', 'Partial Payment', 'Past Due']"
-          />
-        </div>
-      </div>
-    </VCardText>
-
-    <VDivider />
-
-    <!-- SECTION Datatable -->
-    <VDataTableServer
-      v-model="selectedRows"
-      v-model:items-per-page="options.itemsPerPage"
-      v-model:page="options.page"
-      :loading="isLoading"
-      :items-length="totalInvoices"
-      :headers="headers"
-      :items="invoices"
-      class="text-no-wrap"
-      @update:options="options = $event"
-    >
-      <!-- Trending Header -->
-      <template #column.trending>
-        <VIcon
-          size="22"
-          icon="tabler-trending-up"
-        />
-      </template>
-
-      <!-- id -->
-      <template #item.id="{ item }">
-        <RouterLink :to="{ name: 'apps-invoice-preview-id', params: { id: item.value } }">
-          #{{ item.raw.id }}
-        </RouterLink>
-      </template>
-
-      <!-- trending -->
-      <template #item.trending="{ item }">
-        <VTooltip>
-          <template #activator="{ props }">
-            <VAvatar
-              :size="30"
-              v-bind="props"
-              :color="resolveInvoiceStatusVariantAndIcon(item.raw.invoiceStatus).variant"
-              variant="tonal"
-            >
-              <VIcon
-                :size="20"
-                :icon="resolveInvoiceStatusVariantAndIcon(item.raw.invoiceStatus).icon"
-              />
-            </VAvatar>
-          </template>
-          <p class="mb-0">
-            {{ item.raw.invoiceStatus }}
-          </p>
-          <p class="mb-0">
-            Balance: {{ item.raw.balance }}
-          </p>
-          <p class="mb-0">
-            Due date: {{ item.raw.dueDate }}
-          </p>
-        </VTooltip>
-      </template>
-
-      <!-- client -->
-      <template #item.client="{ item }">
-        <div class="d-flex align-center">
-          <VAvatar
-            size="38"
-            :color="!item.raw.avatar.length ? resolveInvoiceStatusVariantAndIcon(item.raw.invoiceStatus).variant : undefined"
-            :variant="!item.raw.avatar.length ? 'tonal' : undefined"
-            class="me-3"
+  <v-row>
+    <v-col>
+      <v-text-field
+        label="Tìm kiếm theo tên"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        hide-details
+        single-line
+      ></v-text-field>
+    </v-col>
+    <v-col class="text-right">
+      <v-dialog max-width="500">
+        <template v-slot:activator="{ props: activatorProps }">
+          <v-btn
+            icon="mdi-plus"
+            active
+            v-bind="activatorProps"
+            density="comfortable"
           >
-            <VImg
-              v-if="item.raw.avatar.length"
-              :src="item.raw.avatar"
-            />
-            <span v-else>{{ avatarText(item.raw.client.name) }}</span>
-          </VAvatar>
-          <div class="d-flex flex-column">
-            <h6 class="text-body-1 font-weight-medium mb-0">
-              {{ item.raw.client.name }}
-            </h6>
-            <span class="text-sm text-disabled">{{ item.raw.client.companyEmail }}</span>
+            <v-icon icon="mdi-plus" style="font-size: 20px"></v-icon>
+            <v-tooltip activator="parent" location="top"
+              >Thêm tài nguyên</v-tooltip
+            >
+          </v-btn>
+        </template>
+
+        <template v-slot:default="{ isActive }">
+          <v-card class="pa-4">
+            <h2 class="mb-4 text-center">Thêm sản phẩm</h2>
+            <div class="clearfix mb-4 text-center">
+              <a-upload
+                v-model:file-list="fileList"
+                list-type="picture-card"
+                @preview="handlePreview"
+              >
+                <div v-if="fileList.length < 1">
+                  <plus-outlined />
+                  <div style="margin-top: 8px; color: grey">
+                    <v-icon
+                      style="font-size: 20px"
+                      icon="mdi-tray-arrow-up"
+                    ></v-icon>
+                    <p class="mt-1">Tải ảnh lên</p>
+                  </div>
+                </div>
+              </a-upload>
+              <a-modal
+                :open="previewVisible"
+                :title="previewTitle"
+                :footer="null"
+                @cancel="handleCancel"
+              >
+              </a-modal>
+            </div>
+            <v-row class="mb-4">
+              <v-col cols="12">
+                <v-text-field
+                  label="Tên sản phẩm"
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-select
+                  clearable
+                  label="Thể loại kho"
+                  :items="dataResourceType"
+                  item-value="id"
+                  item-title="nameOfResourceType"
+                  variant="outlined"
+                ></v-select>
+              </v-col>
+            </v-row>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                text="Thêm mới"
+                variant="flat"
+                @click="isActive.value = false"
+              ></v-btn>
+              <v-btn
+                variant="outlined"
+                text="Thoát"
+                @click="isActive.value = false"
+              ></v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
+    </v-col>
+  </v-row>
+  <VRow>
+    <!-- 👉 Apple iPhone 11 Pro -->
+    <VCol sm="4" cols="12" v-for="item in dataResource" :key="item">
+      <VCard>
+        <div
+          class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row"
+        >
+          <div class="ma-auto pa-5">
+            <VImg width="137" height="176" :src="item.image" />
+          </div>
+
+          <VDivider :vertical="$vuetify.display.mdAndUp" />
+
+          <div>
+            <VCardItem>
+              <VCardTitle>{{ item.resourceName }}</VCardTitle>
+            </VCardItem>
+            <VCardText class="text-subtitle-1">
+              <span>Số lượng tồn: </span>
+              <span class="font-weight-medium">{{
+                item.availableQuantity
+              }}</span>
+            </VCardText>
+            <VCardText class="text-subtitle-1">
+              <span>Loại sản phẩm: </span>
+              <span class="font-weight-medium">{{
+                item.resourceTypeName
+              }}</span>
+            </VCardText>
+            <VCardText class="text-subtitle-1">
+              <span>Trạng thái: </span>
+              <span class="font-weight-medium">{{ item.resourceStatus }}</span>
+            </VCardText>
+            <v-dialog max-width="700">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  class="ma-3"
+                  density="comfortable"
+                  v-bind="activatorProps"
+                  @click="inputCreatePropertyResource.resourceId = item.id"
+                  icon
+                >
+                  <v-icon icon="mdi-plus" style="font-size: 20px"></v-icon>
+                  <v-tooltip activator="parent" location="top"
+                    >Thêm sản phẩm</v-tooltip
+                  >
+                </v-btn>
+              </template>
+
+              <template v-slot:default="{ isActive }">
+                <v-card class="pa-4">
+                  <h2 class="mb-4 text-center">
+                    {{ item.resourceName }}
+                  </h2>
+                  <div class="clearfix mb-4 text-center"></div>
+                  <input
+                    type="hidden"
+                    v-model="inputCreatePropertyResource.resourceId"
+                    readonly
+                  />
+                  <v-row class="mb-4">
+                    <v-col cols="6">
+                      <span class="red">(*)</span>
+                      <v-text-field
+                        label="Tên tài nguyên"
+                        v-model="inputCreatePropertyResource.requests[0].name"
+                        variant="outlined"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                      <span class="red">(*)</span>
+                      <v-text-field
+                        label="Giá sản phẩm"
+                        type="number"
+                        v-model="inputCreatePropertyResource.requests[0].price"
+                        variant="outlined"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <span class="red">(*)</span>
+                      <v-textarea
+                        label="Mô tả"
+                        variant="outlined"
+                        v-model="
+                          inputCreatePropertyResource.resourcePropertyName
+                        "
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text="Thêm mới"
+                      variant="flat"
+                      @click="createPropertyInformation(item.id)"
+                    ></v-btn>
+                    <v-btn
+                      variant="outlined"
+                      text="Thoát"
+                      @click="isActive.value = false"
+                    ></v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+            <v-dialog max-width="700">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  class="mr-3"
+                  color="info"
+                  density="comfortable"
+                  v-bind="activatorProps"
+                  icon
+                  @click="getByIdResource(item.id)"
+                >
+                  <v-icon icon="mdi-eye" style="font-size: 20px"></v-icon>
+                  <v-tooltip activator="parent" location="top"
+                    >Chi tiết tài nguyên</v-tooltip
+                  >
+                </v-btn>
+              </template>
+
+              <template v-slot:default="{ isActive }">
+                <v-card class="pa-4">
+                  <v-table>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Tên tài nguyên</th>
+                        <th class="text-left">Giá</th>
+                        <th class="text-left">Số lượng</th>
+                        <th class="text-left">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in dataResourceProperties" :key="item">
+                        <td>{{ item.name }}</td>
+                        <td>{{ formatCurrency(item.price) }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>
+                          <v-dialog max-width="300">
+                            <template
+                              v-slot:activator="{ props: activatorProps }"
+                            >
+                              <v-btn
+                                class="ma-3"
+                                density="comfortable"
+                                v-bind="activatorProps"
+                                @click="
+                                  inputQuantity.resourcePropertyDetailId =
+                                    item.id
+                                "
+                                icon
+                              >
+                                <v-icon
+                                  icon="mdi-plus"
+                                  style="font-size: 20px"
+                                ></v-icon>
+                                <v-tooltip activator="parent" location="top"
+                                  >Thêm số lượng</v-tooltip
+                                >
+                              </v-btn>
+                            </template>
+
+                            <template v-slot:default="{ isActive }">
+                              <v-card class="pa-4">
+                                <div class="clearfix mb-4 text-center"></div>
+                                <v-row class="mb-4">
+                                  <v-col cols="12">
+                                    <input
+                                      type="hidden"
+                                      v-model="
+                                        inputQuantity.resourcePropertyDetailId
+                                      "
+                                      readonly
+                                    />
+                                    <span class="red">(*)</span>
+                                    <v-text-field
+                                      v-model="inputQuantity.quantity"
+                                      label="Số lượng"
+                                      type="number"
+                                      :rules="[quantityGreaterThanZero]"
+                                      variant="outlined"
+                                    ></v-text-field>
+                                  </v-col>
+                                </v-row>
+
+                                <v-card-actions>
+                                  <v-spacer></v-spacer>
+                                  <v-btn
+                                    text="Thêm mới"
+                                    variant="flat"
+                                    @click="createQuantity"
+                                  ></v-btn>
+                                  <v-btn
+                                    variant="outlined"
+                                    text="Thoát"
+                                    @click="isActive.value = false"
+                                  ></v-btn>
+                                </v-card-actions>
+                              </v-card>
+                            </template>
+                          </v-dialog>
+
+                          <v-dialog max-width="300">
+                            <template
+                              v-slot:activator="{ props: activatorProps }"
+                            >
+                              <v-btn
+                                density="comfortable"
+                                style="font-size: 20px"
+                                v-bind="activatorProps"
+                                color="error"
+                                class="ml-3"
+                                icon
+                              >
+                                <v-icon icon="mdi-delete-outline"></v-icon>
+                                <v-tooltip activator="parent" location="top"
+                                  >Xóa sản phẩm</v-tooltip
+                                >
+                              </v-btn>
+                            </template>
+
+                            <template v-slot:default="{ isActive }">
+                              <v-card class="pa-4 text-center">
+                                <h2>Bạn có muốn xóa</h2>
+                                <v-card-actions class="mt-4">
+                                  <div>
+                                    <v-btn
+                                      text="Xóa"
+                                      @click="deleteCustomer(item.id)"
+                                      color="error"
+                                      variant="flat"
+                                      class="ml-13"
+                                    ></v-btn>
+                                    <v-btn
+                                      text="Thoát"
+                                      variant="outlined"
+                                      @click="isActive.value = false"
+                                    ></v-btn>
+                                  </div>
+                                </v-card-actions>
+                              </v-card>
+                            </template>
+                          </v-dialog>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </v-table>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn
+                      variant="outlined"
+                      text="Thoát"
+                      @click="isActive.value = false"
+                    ></v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+            <v-dialog max-width="300">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  density="comfortable"
+                  style="font-size: 20px"
+                  v-bind="activatorProps"
+                  color="error"
+                  icon
+                >
+                  <v-icon icon="mdi-delete-outline"></v-icon>
+                  <v-tooltip activator="parent" location="top"
+                    >Xóa tài nguyên</v-tooltip
+                  >
+                </v-btn>
+              </template>
+
+              <template v-slot:default="{ isActive }">
+                <v-card class="pa-4 text-center">
+                  <h2>Bạn có muốn xóa</h2>
+                  <v-card-actions class="mt-4">
+                    <div>
+                      <v-btn
+                        text="Xóa"
+                        @click="deleteResources(item.id)"
+                        color="error"
+                        variant="flat"
+                        class="ml-13"
+                      ></v-btn>
+                      <v-btn
+                        text="Thoát"
+                        variant="outlined"
+                        @click="isActive.value = false"
+                      ></v-btn>
+                    </div>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
           </div>
         </div>
-      </template>
-
-      <!-- Total -->
-      <template #item.total="{ item }">
-        ${{ item.raw.total }}
-      </template>
-
-      <!-- Date -->
-      <template #item.date="{ item }">
-        {{ item.raw.issuedDate }}
-      </template>
-
-      <!-- Balance -->
-      <template #item.balance="{ item }">
-        <VChip
-          v-if="typeof ((resolveInvoiceBalanceVariant(item.raw.balance, item.raw.total)).status) === 'string'"
-          :color="resolveInvoiceBalanceVariant(item.raw.balance, item.raw.total).chip.color"
-          label
-        >
-          {{ (resolveInvoiceBalanceVariant(item.raw.balance, item.raw.total)).status }}
-        </VChip>
-
-        <template v-else>
-          <span class="text-base">
-            {{ Number((resolveInvoiceBalanceVariant(item.raw.balance, item.raw.total)).status) > 0 ? `$${(resolveInvoiceBalanceVariant(item.raw.balance, item.raw.total)).status}` : `-$${Math.abs(Number((resolveInvoiceBalanceVariant(item.raw.balance, item.raw.total)).status))}` }}
-          </span>
-        </template>
-      </template>
-
-      <!-- Actions -->
-      <template #item.actions="{ item }">
-        <IconBtn @click="deleteInvoice(item.raw.id)">
-          <VIcon icon="tabler-trash" />
-        </IconBtn>
-
-        <IconBtn :to="{ name: 'apps-invoice-preview-id', params: { id: item.raw.id } }">
-          <VIcon icon="tabler-eye" />
-        </IconBtn>
-
-        <MoreBtn
-          :menu-list="computedMoreList(item.raw.id)"
-          item-props
-          color="undefined"
-        />
-      </template>
-
-      <!-- pagination -->
-
-      <template #bottom>
-        <VDivider />
-        <div class="d-flex align-center justify-sm-space-between justify-center flex-wrap gap-3 pa-5 pt-3">
-          <p class="text-sm text-disabled mb-0">
-            {{ paginationMeta(options, totalInvoices) }}
-          </p>
-
-          <VPagination
-            v-model="options.page"
-            :length="Math.ceil(totalInvoices / options.itemsPerPage)"
-            :total-visible="$vuetify.display.xs ? 1 : Math.ceil(totalInvoices / options.itemsPerPage)"
-          >
-            <template #prev="slotProps">
-              <VBtn
-                variant="tonal"
-                color="default"
-                v-bind="slotProps"
-                :icon="false"
-              >
-                Previous
-              </VBtn>
-            </template>
-
-            <template #next="slotProps">
-              <VBtn
-                variant="tonal"
-                color="default"
-                v-bind="slotProps"
-                :icon="false"
-              >
-                Next
-              </VBtn>
-            </template>
-          </VPagination>
-        </div>
-      </template>
-    </VDataTableServer>
-    <!-- !SECTION -->
-  </VCard>
+      </VCard>
+    </VCol>
+  </VRow>
+  <div class="text-center mt-6">
+    <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
+  </div>
+  <v-snackbar v-model="snackbar" color="blue-grey" rounded="pill" class="mb-5">
+    {{ text }}
+    <template v-slot:actions>
+      <v-btn color="green" variant="text" @click="snackbar = false">
+        Đóng
+      </v-btn>
+    </template>
+  </v-snackbar>
 </template>
+>
+<script>
+import { resourceTypeApi } from "../../../../api/resource/resourceTypeApi";
+import { resourceApi } from "../../../../api/resource/resourceApi";
+import { set } from "@vueuse/core";
+export default {
+  data() {
+    return {
+      resourceTypeApi: resourceTypeApi(),
+      resourceApi: resourceApi(),
+      dataResourceType: [],
+      dataResource: [],
+      text: "",
+      snackbar: false,
+      dataResourceProperties: [],
+      dataById: [],
+      inputQuantity: {
+        resourcePropertyDetailId: "",
+        quantity: null,
+      },
+      inputCreatePropertyResource: {
+        resourcePropertyName: "",
+        requests: [
+          {
+            name: "",
+            price: null,
+          },
+        ],
+      },
+      page: 1,
+    };
+  },
+  methods: {
+    async getAllResourceTypes() {
+      const data = await this.resourceTypeApi.getAllsResourceType();
+      this.dataResourceType = data.data;
+      console.log(this.dataResourceType);
+    },
+    quantityGreaterThanZero(value) {
+      return value > 0 || "Số lượng phải lớn hơn 0";
+    },
+    async createPropertyInformation(id) {
+      const res = await this.resourceApi.createResourcePropertyInFormation(
+        id,
+        this.inputCreatePropertyResource
+      );
+      console.log(res);
+    },
+    async getAllsResource() {
+      const data = await this.resourceApi.getAllsResource();
+      this.dataResource = data.data;
 
-<style lang="scss">
-#invoice-list {
-  .invoice-list-actions {
-    inline-size: 8rem;
-  }
+      console.log(this.dataResource);
+      console.log(this.dataResourceProperties);
+    },
+    async getByIdResource(id) {
+      try {
+        const res = await this.resourceApi.getByIdResource(id);
+        this.dataById = res.data;
+        console.log(res);
+        console.log(this.dataById);
 
-  .invoice-list-filter {
-    inline-size: 12rem;
+        const dataPropertyDetails = this.dataById.resourceProperties
+          .map((property) => property.resourcePropertyDetails)
+          .flat();
+
+        this.dataResourceProperties = dataPropertyDetails;
+        console.log(this.dataResourceProperties);
+      } catch (error) {
+        console.error("Error fetching resource by ID:", error);
+      }
+    },
+    async createQuantity() {
+      const res = await this.resourceApi.createImportCoupon(this.inputQuantity);
+      if (res.data.status === 200) {
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
+        this.text = res.data.message;
+        this.snackbar = true;
+      } else {
+        this.text = res.data.messeage;
+        this.snackbar = true;
+      }
+      console.log(res);
+    },
+    async deleteResources(id) {
+      const res = await this.resourceApi.deleteResource(id);
+      console.log(res);
+      if (res.status === 200) {
+        // setTimeout(() =>{location.reload();});
+        this.text = res.data;
+        this.snackbar = true;
+      } else {
+        this.text = res.data;
+        this.snackbar = true;
+      }
+    },
+    formatCurrency(value) {
+      const intValue = parseInt(value);
+      return intValue.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
+    },
+  },
+  created() {
+    this.getAllResourceTypes();
+    this.getAllsResource();
+  },
+};
+</script>
+<style lang="scss" scoped>
+.avatar-center {
+  position: absolute;
+  border: 3px solid rgb(var(--v-theme-surface));
+  inset-block-start: -2rem;
+  inset-inline-start: 1rem;
+}
+.text-width {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 270px;
+}
+// membership pricing
+.member-pricing-bg {
+  position: relative;
+  background-color: rgba(var(--v-theme-on-surface), var(--v-hover-opacity));
+}
+
+.membership-pricing {
+  sup {
+    inset-block-start: 9px;
   }
+}
+.red {
+  color: rgb(253, 75, 75);
+}
+.v-btn {
+  transform: none;
+}
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #d9d9d9;
 }
 </style>

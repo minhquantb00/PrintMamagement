@@ -45,7 +45,12 @@ const handlePreview = async (file) => {
             active
             v-bind="activatorProps"
             density="comfortable"
-          ></v-btn>
+          >
+            <v-icon icon="mdi-plus" style="font-size: 20px"></v-icon>
+            <v-tooltip activator="parent" location="top"
+              >Thêm tài nguyên</v-tooltip
+            >
+          </v-btn>
         </template>
 
         <template v-slot:default="{ isActive }">
@@ -117,89 +122,306 @@ const handlePreview = async (file) => {
   <VRow>
     <!-- 👉 Apple iPhone 11 Pro -->
     <VCol sm="4" cols="12" v-for="item in dataResource" :key="item">
-      <v-dialog max-width="700">
-        <template v-slot:activator="{ props: activatorProps }">
-          <VCard v-bind="activatorProps">
-            <div
-              class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row"
-            >
-              <div class="ma-auto pa-5">
-                <VImg width="137" height="176" :src="item" />
-              </div>
+      <VCard>
+        <div
+          class="d-flex justify-space-between flex-wrap flex-md-nowrap flex-column flex-md-row"
+        >
+          <div class="ma-auto pa-5">
+            <VImg width="137" height="176" :src="item.image" />
+          </div>
 
-              <VDivider :vertical="$vuetify.display.mdAndUp" />
+          <VDivider :vertical="$vuetify.display.mdAndUp" />
 
-              <div>
-                <VCardItem>
-                  <VCardTitle
-                    >Ream giấy A4 70 gsm IK Copy (500 tờ) - Hàng nhập khẩu
-                    Indonesia</VCardTitle
+          <div>
+            <VCardItem>
+              <VCardTitle>{{ item.resourceName }}</VCardTitle>
+            </VCardItem>
+            <VCardText class="text-subtitle-1">
+              <span>Số lượng tồn: </span>
+              <span class="font-weight-medium">{{
+                item.availableQuantity
+              }}</span>
+            </VCardText>
+            <VCardText class="text-subtitle-1">
+              <span>Loại sản phẩm: </span>
+              <span class="font-weight-medium">{{
+                item.resourceTypeName
+              }}</span>
+            </VCardText>
+            <VCardText class="text-subtitle-1">
+              <span>Trạng thái: </span>
+              <span class="font-weight-medium">{{ item.resourceStatus }}</span>
+            </VCardText>
+            <v-dialog max-width="700">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  class="ma-3"
+                  density="comfortable"
+                  v-bind="activatorProps"
+                  @click="inputCreatePropertyResource.resourceId = item.id"
+                  icon
+                >
+                  <v-icon icon="mdi-plus" style="font-size: 20px"></v-icon>
+                  <v-tooltip activator="parent" location="top"
+                    >Thêm sản phẩm</v-tooltip
                   >
-                </VCardItem>
-                <VCardText class="text-subtitle-1">
-                  <span>Giá: </span>
-                  <span class="font-weight-medium">78,300 VND</span>
-                </VCardText>
-                <VCardText class="text-subtitle-1">
-                  <span>Số lượng tồn:</span>
-                  <span class="font-weight-medium">100</span>
-                </VCardText>
-                <VCardText class="text-subtitle-1">
-                  <span>Loại sản phẩm:</span>
-                  <span class="font-weight-medium">Giấy</span>
-                </VCardText>
-              </div>
-            </div>
-          </VCard>
-        </template>
+                </v-btn>
+              </template>
 
-        <template v-slot:default="{ isActive }">
-          <v-card class="pa-4">
-            <h2 class="mb-4 text-center">
-              Ream giấy A4 70 gsm IK Copy (500 tờ) - Hàng nhập khẩu Indonesia
-            </h2>
-            <div class="clearfix mb-4 text-center"></div>
-            <v-row class="mb-4">
-              <v-col cols="6">
-                <span class="red">(*)</span>
-                <v-text-field
-                  label="Số lượng"
-                  variant="outlined"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <span class="red">(*)</span>
-                <v-text-field
-                  label="Giá sản phẩm"
-                  variant="outlined"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <span class="red">(*)</span>
-                <v-select
-                  label="Phân loại"
-                  :items="['Máy móc', 'Đồ văn phòng', 'Giấy']"
-                  variant="outlined"
-                ></v-select>
-              </v-col>
-            </v-row>
+              <template v-slot:default="{ isActive }">
+                <v-card class="pa-4">
+                  <h2 class="mb-4 text-center">
+                    {{ item.resourceName }}
+                  </h2>
+                  <div class="clearfix mb-4 text-center"></div>
+                  <input
+                    type="hidden"
+                    v-model="inputCreatePropertyResource.resourceId"
+                    readonly
+                  />
+                  <v-row class="mb-4">
+                    <v-col cols="6">
+                      <span class="red">(*)</span>
+                      <v-text-field
+                        label="Tên tài nguyên"
+                        v-model="inputCreatePropertyResource.requests.name"
+                        variant="outlined"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                      <span class="red">(*)</span>
+                      <v-text-field
+                        label="Giá sản phẩm"
+                        type="number"
+                        v-model="inputCreatePropertyResource.requests.price"
+                        variant="outlined"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <span class="red">(*)</span>
+                      <v-textarea
+                        label="Mô tả"
+                        variant="outlined"
+                        v-model="
+                          inputCreatePropertyResource.resourcePropertyName
+                        "
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                text="Thêm mới"
-                variant="flat"
-                @click="isActive.value = false"
-              ></v-btn>
-              <v-btn
-                variant="outlined"
-                text="Thoát"
-                @click="isActive.value = false"
-              ></v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text="Thêm mới"
+                      variant="flat"
+                      @click="createPropertyInformation"
+                    ></v-btn>
+                    <v-btn
+                      variant="outlined"
+                      text="Thoát"
+                      @click="isActive.value = false"
+                    ></v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+            <v-dialog max-width="700">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  class="mr-3"
+                  color="info"
+                  density="comfortable"
+                  v-bind="activatorProps"
+                  icon
+                  @click="getByIdResource(item.id)"
+                >
+                  <v-icon icon="mdi-eye" style="font-size: 20px"></v-icon>
+                  <v-tooltip activator="parent" location="top"
+                    >Chi tiết tài nguyên</v-tooltip
+                  >
+                </v-btn>
+              </template>
+
+              <template v-slot:default="{ isActive }">
+                <v-card class="pa-4">
+                  <v-table>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Tên tài nguyên</th>
+                        <th class="text-left">Giá</th>
+                        <th class="text-left">Số lượng</th>
+                        <th class="text-left">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in dataResourceProperties" :key="item">
+                        <td>{{ item.name }}</td>
+                        <td>{{ formatCurrency(item.price) }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>
+                          <v-dialog max-width="300">
+                            <template
+                              v-slot:activator="{ props: activatorProps }"
+                            >
+                              <v-btn
+                                class="ma-3"
+                                density="comfortable"
+                                v-bind="activatorProps"
+                                @click="
+                                  inputQuantity.resourcePropertyDetailId =
+                                    item.id
+                                "
+                                icon
+                              >
+                                <v-icon
+                                  icon="mdi-plus"
+                                  style="font-size: 20px"
+                                ></v-icon>
+                                <v-tooltip activator="parent" location="top"
+                                  >Thêm số lượng</v-tooltip
+                                >
+                              </v-btn>
+                            </template>
+
+                            <template v-slot:default="{ isActive }">
+                              <v-card class="pa-4">
+                                <div class="clearfix mb-4 text-center"></div>
+                                <v-row class="mb-4">
+                                  <v-col cols="12">
+                                    <input
+                                      type="hidden"
+                                      v-model="
+                                        inputQuantity.resourcePropertyDetailId
+                                      "
+                                      readonly
+                                    />
+                                    <span class="red">(*)</span>
+                                    <v-text-field
+                                      v-model="inputQuantity.quantity"
+                                      label="Số lượng"
+                                      type="number"
+                                      :rules="[quantityGreaterThanZero]"
+                                      variant="outlined"
+                                    ></v-text-field>
+                                  </v-col>
+                                </v-row>
+
+                                <v-card-actions>
+                                  <v-spacer></v-spacer>
+                                  <v-btn
+                                    text="Thêm mới"
+                                    variant="flat"
+                                    @click="createQuantity"
+                                  ></v-btn>
+                                  <v-btn
+                                    variant="outlined"
+                                    text="Thoát"
+                                    @click="isActive.value = false"
+                                  ></v-btn>
+                                </v-card-actions>
+                              </v-card>
+                            </template>
+                          </v-dialog>
+
+                          <v-dialog max-width="300">
+                            <template
+                              v-slot:activator="{ props: activatorProps }"
+                            >
+                              <v-btn
+                                density="comfortable"
+                                style="font-size: 20px"
+                                v-bind="activatorProps"
+                                color="error"
+                                class="ml-3"
+                                icon
+                              >
+                                <v-icon icon="mdi-delete-outline"></v-icon>
+                                <v-tooltip activator="parent" location="top"
+                                  >Xóa sản phẩm</v-tooltip
+                                >
+                              </v-btn>
+                            </template>
+
+                            <template v-slot:default="{ isActive }">
+                              <v-card class="pa-4 text-center">
+                                <h2>Bạn có muốn xóa</h2>
+                                <v-card-actions class="mt-4">
+                                  <div>
+                                    <v-btn
+                                      text="Xóa"
+                                      @click="deleteCustomer(item.id)"
+                                      color="error"
+                                      variant="flat"
+                                      class="ml-13"
+                                    ></v-btn>
+                                    <v-btn
+                                      text="Thoát"
+                                      variant="outlined"
+                                      @click="isActive.value = false"
+                                    ></v-btn>
+                                  </div>
+                                </v-card-actions>
+                              </v-card>
+                            </template>
+                          </v-dialog>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </v-table>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn
+                      variant="outlined"
+                      text="Thoát"
+                      @click="isActive.value = false"
+                    ></v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+            <v-dialog max-width="300">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  density="comfortable"
+                  style="font-size: 20px"
+                  v-bind="activatorProps"
+                  color="error"
+                  icon
+                >
+                  <v-icon icon="mdi-delete-outline"></v-icon>
+                  <v-tooltip activator="parent" location="top"
+                    >Xóa tài nguyên</v-tooltip
+                  >
+                </v-btn>
+              </template>
+
+              <template v-slot:default="{ isActive }">
+                <v-card class="pa-4 text-center">
+                  <h2>Bạn có muốn xóa</h2>
+                  <v-card-actions class="mt-4">
+                    <div>
+                      <v-btn
+                        text="Xóa"
+                        @click="deleteCustomer(item.id)"
+                        color="error"
+                        variant="flat"
+                        class="ml-13"
+                      ></v-btn>
+                      <v-btn
+                        text="Thoát"
+                        variant="outlined"
+                        @click="isActive.value = false"
+                      ></v-btn>
+                    </div>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+          </div>
+        </div>
+      </VCard>
     </VCol>
   </VRow>
   <div class="text-center mt-6">
@@ -217,6 +439,22 @@ export default {
       resourceApi: resourceApi(),
       dataResourceType: [],
       dataResource: [],
+      dataResourceProperties: [],
+      dataById: [],
+      inputQuantity: {
+        resourcePropertyDetailId: "",
+        quantity: null,
+      },
+      inputCreatePropertyResource: {
+        resourceId: "",
+        resourcePropertyName: "",
+        requests: [
+          {
+            name: "",
+            price: null,
+          },
+        ],
+      },
       page: 1,
     };
   },
@@ -226,9 +464,52 @@ export default {
       this.dataResourceType = data.data;
       console.log(this.dataResourceType);
     },
+    quantityGreaterThanZero(value) {
+      return value > 0 || "Số lượng phải lớn hơn 0";
+    },
+    async createPropertyInformation() {
+      const res = await this.resourceApi.createResourcePropertyInFormation(
+        this.inputCreatePropertyResource
+      );
+      console.log(res);
+    },
     async getAllsResource() {
       const data = await this.resourceApi.getAllsResource();
       this.dataResource = data.data;
+
+      console.log(this.dataResource);
+      console.log(this.dataResourceProperties);
+    },
+    async getByIdResource(id) {
+      try {
+        const res = await this.resourceApi.getByIdResource(id);
+        this.dataById = res.data;
+        console.log(res);
+        console.log(this.dataById);
+
+        const dataPropertyDetails = this.dataById.resourceProperties
+          .map((property) => property.resourcePropertyDetails)
+          .flat();
+
+        this.dataResourceProperties = dataPropertyDetails;
+        console.log(this.dataResourceProperties);
+      } catch (error) {
+        console.error("Error fetching resource by ID:", error);
+      }
+    },
+    async createQuantity() {
+      const res = await this.resourceApi.createImportCoupon(this.inputQuantity);
+      console.log(res);
+    },
+    formatCurrency(value) {
+      // Chuyển đổi giá trị sang kiểu số nguyên
+      const intValue = parseInt(value);
+
+      // Sử dụng hàm toLocaleString để định dạng giá tiền theo tiêu chuẩn của quốc gia
+      return intValue.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
     },
   },
   created() {

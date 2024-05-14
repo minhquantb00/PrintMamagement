@@ -25,6 +25,7 @@ export default [
   //     { title: 'Add', to: 'apps-invoice-add' },
   //   ],
   // },
+  { title: 'Quản lý kho', to: 'apps-invoice-list' },
   // {
   //   title: "User",
   //   icon: { icon: "tabler-users" },

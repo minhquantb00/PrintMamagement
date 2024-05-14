@@ -50,7 +50,6 @@ export const resourceApi = defineStore("resource", {
       });
     },
     deleteResource(id) {
-      console.log(id);
       return new Promise((resolve, reject) => {
         axios
           .delete(`/Admin/DeleteResource/${id}`, {
@@ -86,6 +85,38 @@ export const resourceApi = defineStore("resource", {
               resourceName: param.name,
             },
           })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    createImportCoupon(params) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "/Admin/CreateImportCoupon",
+            { ...params },
+            {
+              headers: {
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    createResourcePropertyInFormation(id, params) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "/Admin/CreateResourcePropertyInformation",id,
+            { ...params},
+            {
+              headers: {
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

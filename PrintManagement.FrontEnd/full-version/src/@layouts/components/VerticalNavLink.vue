@@ -1,39 +1,40 @@
 <script setup>
-import { useLayouts } from '@layouts'
-import { config } from '@layouts/config'
-import { can } from '@layouts/plugins/casl'
-import {
-  getComputedNavLinkToProp,
-  isNavLinkActive,
-} from '@layouts/utils'
+import { useLayouts } from "@layouts";
+import { config } from "@layouts/config";
+import { can } from "@layouts/plugins/casl";
+import { getComputedNavLinkToProp, isNavLinkActive } from "@layouts/utils";
 
 const props = defineProps({
   item: {
     type: null,
     required: true,
   },
-})
+});
 
-const { width: windowWidth } = useWindowSize()
-const { isVerticalNavMini, dynamicI18nProps } = useLayouts()
-const hideTitleAndBadge = isVerticalNavMini(windowWidth)
+const { width: windowWidth } = useWindowSize();
+const { isVerticalNavMini, dynamicI18nProps } = useLayouts();
+const hideTitleAndBadge = isVerticalNavMini(windowWidth);
 </script>
 
 <template>
-<!-- custom cái cũ là có 
-    v-if="can(item.action, item.subject)"
+  <!-- custom cái cũ là có 
+    
 trong thẻ li
  -->
- 
-  <li
 
+  <li
     class="nav-link"
     :class="{ disabled: item.disable }"
   >
     <Component
       :is="item.to ? 'RouterLink' : 'a'"
       v-bind="getComputedNavLinkToProp(item)"
-      :class="{ 'router-link-active router-link-exact-active': isNavLinkActive(item, $router) }"
+      :class="{
+        'router-link-active router-link-exact-active': isNavLinkActive(
+          item,
+          $router
+        ),
+      }"
     >
       <Component
         :is="config.app.iconRenderer || 'div'"

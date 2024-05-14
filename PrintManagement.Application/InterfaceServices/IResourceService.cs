@@ -17,6 +17,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<string> DeleteResource(Guid resourceId);
         Task<IQueryable<DataResponseResource>> GetAll(string? resourceName);
         Task<DataResponseResource> GetById(Guid resourceId);
-        Task<ResponseObject<DataResponseResource>> CreateResourcePropertyAsync(Guid resourceId, IEnumerable<Request_CreateResourceProperty> request);
+        Task<ResponseObject<DataResponseResource>> CreateResourcePropertyAsync(Request_CreateResourceProperty request);
     }
 }

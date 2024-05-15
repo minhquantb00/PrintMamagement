@@ -186,7 +186,7 @@ namespace PrintManagement.Application.ImplementServices
                 {
                     IsActive = true,
                     DesignerId = designerId,
-                    DesignImage = await HandleUploadFile.WriteFile(request.DesignImage),
+                    DesignImage = await HandleUploadFile.Upfile(request.DesignImage),
                     DesignStatus = Domain.Enumerates.DesignStatusEnum.NotYetApproved,
                     DesignTime = DateTime.Now,
                     ProjectId = request.ProjectId,

@@ -73,7 +73,7 @@ namespace PrintManagement.Application.ImplementServices
                     AvailableQuantity = 0,
                     IsActive = true,
                     Id = Guid.NewGuid(),
-                    Image = await HandleUploadFile.WriteFile(request.Image),
+                    Image = await HandleUploadFile.Upfile(request.Image),
                     ResourceName = request.ResourceName,
                     ResourceProperties = null,
                     ResourceTypeId = request.ResourceTypeId,

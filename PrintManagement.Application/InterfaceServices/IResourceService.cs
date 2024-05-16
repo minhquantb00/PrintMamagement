@@ -18,5 +18,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<IQueryable<DataResponseResource>> GetAll(string? resourceName);
         Task<DataResponseResource> GetById(Guid resourceId);
         Task<ResponseObject<DataResponseResource>> CreateResourcePropertyAsync(Request_CreateResourceProperty request);
+        Task<string> DeleteResourcePropertyDetail(Guid id);
     }
 }

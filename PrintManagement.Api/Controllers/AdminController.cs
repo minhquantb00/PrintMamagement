@@ -291,6 +291,12 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _resourceTypeService.CreateResourceType(request));
         }
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteResourcePropertyDetail([FromRoute] Guid id)
+        {
+            return Ok(await _resourceService.DeleteResourcePropertyDetail(id));
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllResourceType()
         {

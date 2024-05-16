@@ -242,6 +242,14 @@ namespace PrintManagement.Application.ImplementServices
             }
         }
 
+        public async Task<string> DeleteResourcePropertyDetail(Guid id)
+        {
+            var resourceProperty = await _baseResourcePropertyDetailRepository.GetByIDAsync(id);
+            resourceProperty.IsActive = false;
+            await _baseResourcePropertyDetailRepository.UpdateAsync(resourceProperty);
+            return "Xóa bản ghi thành công";
+        }
+
         private async Task<IQueryable<ResourcePropertyDetail>> CreateResourcePropertyDetailAsync(Guid resourcePropertyId, IEnumerable<Request_CreateResourcePropertyDetail> requets)
         {
             try

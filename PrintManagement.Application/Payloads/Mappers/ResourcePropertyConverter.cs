@@ -25,7 +25,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 Id = resourceProperty.Id,
                 Quantity = resourceProperty.Quantity,
                 ResourcePropertyName = resourceProperty.ResourcePropertyName,
-                ResourcePropertyDetails = _reposiroty.GetAllAsync(x => x.ResourcePropertyId == resourceProperty.Id).Result.Select(x => _converter.EntityToDTO(x))
+                ResourcePropertyDetails = _reposiroty.GetAllAsync(x => x.ResourcePropertyId == resourceProperty.Id && x.IsActive == true).Result.Select(x => _converter.EntityToDTO(x))
             };
         }
     }

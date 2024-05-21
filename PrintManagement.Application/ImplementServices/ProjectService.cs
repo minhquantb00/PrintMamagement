@@ -167,7 +167,6 @@ namespace PrintManagement.Application.ImplementServices
                 return "Error: " + ex.Message;
             }
         }
-
         public async Task<IQueryable<DataResponseProject>> GetAllProject(Request_InputProject? request)
         {
             var currentUser = _httpContextAccessor.HttpContext.User;

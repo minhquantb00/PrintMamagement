@@ -150,7 +150,7 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
-                var listDesign = await _baseDesignRepository.GetAllAsync(x => x.ProjectId == request.ProjectId);
+                var listDesign = await _baseDesignRepository.GetAllAsync(x => x.ProjectId == request.ProjectId && x.DesignStatus == Domain.Enumerates.DesignStatusEnum.HasBeenApproved);
                 if(listDesign.ToList().Count > 0)
                 {
                     return new ResponseObject<DataResponseDesign> 

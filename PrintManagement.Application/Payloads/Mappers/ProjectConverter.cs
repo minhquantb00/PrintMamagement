@@ -54,7 +54,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 CommissionPercentage = project.CommissionPercentage,
                 ImageDescription = project.ImageDescription,
                 EmployeeCreateName = _baseUserRepository.GetAsync(x => x.Id == project.EmployeeCreateId).Result.FullName,
-                Designs = _baseDesignRepository.GetAllAsync(x => x.IsActive == true).Result.Select(x => _designConverter.EntityToDTOForDesign(x))
+                Designs = _baseDesignRepository.GetAllAsync(x => x.IsActive == true && x.ProjectId == project.Id).Result.Select(x => _designConverter.EntityToDTOForDesign(x))
             };
         }
     }

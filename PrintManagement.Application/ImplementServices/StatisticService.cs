@@ -82,19 +82,16 @@ namespace PrintManagement.Application.ImplementServices
             return result.AsQueryable();
         }
 
-
-
         public async Task<IQueryable<DataResponseStatisticSales>> GetStatisticSales(Request_StatisticSales request)
         {
             var query = await _billRepository.GetAllAsync(record => record.IsActive == true && record.BillStatus == BillStatusEnum.Paid);
 
-            if(query == null)
+            if (query == null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            List<DataResponseStatisticSales> dataStatistics = new List<DataResponseStatisticSales>();
-            
-            if(request.StartTime.HasValue)
+
+            if (request.StartTime.HasValue)
             {
                 query = query.Where(record => record.CreateTime >= request.StartTime);
             }
@@ -102,16 +99,17 @@ namespace PrintManagement.Application.ImplementServices
             {
                 query = query.Where(record => record.CreateTime <= request.EndTime);
             }
-            foreach(var item in query)
+
+            var totalSales = query.Sum(x => x.TotalMoney);
+
+            DataResponseStatisticSales data = new DataResponseStatisticSales
             {
-                DataResponseStatisticSales data = new DataResponseStatisticSales
-                {
-                    Sales = query.Sum(x => x.TotalMoney)
-                };
-                dataStatistics.Add(data);
-            }
-            return dataStatistics.AsQueryable();
+                Sales = totalSales
+            };
+
+            return new List<DataResponseStatisticSales> { data }.AsQueryable();
         }
+
 
         public Task<IQueryable<DataResponseStatisticSalesOfUser>> GetStatisticSalesOfUserAsync(Guid userId, Request_StatisticSalesOfUser request)
         {

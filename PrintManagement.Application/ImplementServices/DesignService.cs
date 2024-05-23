@@ -98,9 +98,6 @@ namespace PrintManagement.Application.ImplementServices
                     design.DesignStatus = Domain.Enumerates.DesignStatusEnum.Refuse;
                     design.ApproverId = Guid.Parse(currentUser.FindFirst("Id").Value);
                     await _baseDesignRepository.UpdateAsync(design);
-                    project.ProjectStatus = Domain.Enumerates.ProjectStatusEnum.Refuse;
-                    project.Progress = 0;
-                    await _baseProjectReposiroty.UpdateAsync(project);
                     Notification notification = new Notification
                     {
                         IsActive = true,

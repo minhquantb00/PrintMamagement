@@ -66,7 +66,7 @@ namespace PrintManagement.Application.ImplementServices
                 {
                     return "Thiết kế này đã được duyệt trước đó";
                 }
-                var listDesign = await _baseDesignRepository.GetAllAsync(record => record.IsActive == true && record.DesignerId == design.DesignerId && record.DesignStatus == Domain.Enumerates.DesignStatusEnum.HasBeenApproved);
+                var listDesign = await _baseDesignRepository.GetAllAsync(record => record.ProjectId == project.Id && record.IsActive == true && record.DesignerId == design.DesignerId && record.DesignStatus == Domain.Enumerates.DesignStatusEnum.HasBeenApproved);
                 if(listDesign.ToList().Count > 1)
                 {
                     return "Đã có thiết kế được duyệt trước đó";

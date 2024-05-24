@@ -114,6 +114,11 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _projectService.GetProjectById(projectId));
         }
+        [HttpPut]
+        public async Task<IActionResult> UpdateProject(Request_UpdateProject request)
+        {
+            return Ok(await _projectService.UpdateProject(request));
+        }
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddRoleToUser(Guid userId, List<string> roles)

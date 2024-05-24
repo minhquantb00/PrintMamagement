@@ -12,6 +12,7 @@ namespace PrintManagement.Application.Payloads.RequestModels.ProjectRequests
         public string ProjectName { get; set; }
         public string Description { get; set; }
         public string RequestDescriptionFromCustomer { get; set; }
+        public decimal StartingPrice { get; set; }
         public Guid LeaderId { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public Guid CustomerId { get; set; }

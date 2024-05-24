@@ -250,6 +250,7 @@ namespace PrintManagement.Application.ImplementServices
                 project.RequestDescriptionFromCustomer = request.RequestDescriptionFromCustomer;
                 project.LeaderId = request.LeaderId;
                 project.CustomerId = request.CustomerId;
+                project.StartingPrice = request.StartingPrice;
                 project.Description = request.Description;
                 project.ExpectedEndDate = request.ExpectedEndDate;
                 await _baseProjectRepository.UpdateAsync(project);

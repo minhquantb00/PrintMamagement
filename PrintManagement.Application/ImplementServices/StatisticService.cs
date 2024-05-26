@@ -36,6 +36,51 @@ namespace PrintManagement.Application.ImplementServices
             _contextAccessor = contextAccessor;
         }
 
+        //public async Task<IQueryable<DataResponseStatisticSalary>> GetStatisticSalary(Guid userId)
+        //{
+        //    var user = await _userRepository.GetByIDAsync(userId);
+        //    if (user == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(user));
+        //    }
+
+        //    var listProject = await _projectRepository.GetAllAsync(x => x.EmployeeCreateId == userId && x.Progress == 100);
+        //    if (listProject == null || !listProject.Any())
+        //    {
+        //        return Enumerable.Empty<DataResponseStatisticSalary>().AsQueryable();
+        //    }
+
+        //    List<DataResponseStatisticSalary> result = new List<DataResponseStatisticSalary>();
+
+        //    foreach (var project in listProject)
+        //    {
+        //        var listBill = await _billRepository.GetAllAsync(x => x.ProjectId == project.Id && x.BillStatus == BillStatusEnum.Paid);
+        //        if (listBill == null || !listBill.Any())
+        //        {
+        //            continue;
+        //        }
+
+        //        var groupedByMonthYear = listBill
+        //            .GroupBy(b => new { Month = b.CreateTime.Month, Year = b.CreateTime.Year })
+        //            .Select(g => new
+        //            {
+        //                MonthYear = g.Key,
+        //                Salary = g.Sum(b => b.TotalMoney * (project.CommissionPercentage))
+        //            });
+
+        //        foreach (var group in groupedByMonthYear)
+        //        {
+        //            result.Add(new DataResponseStatisticSalary
+        //            {
+        //                Month = group.MonthYear.Month,
+        //                Salary = group.Salary,
+        //                User = _userConverter.EntityToDTOForUser(user)
+        //            });
+        //        }
+        //    }
+
+        //    return result.AsQueryable();
+        //}
         public async Task<IQueryable<DataResponseStatisticSalary>> GetStatisticSalary(Guid userId)
         {
             var user = await _userRepository.GetByIDAsync(userId);
@@ -61,26 +106,36 @@ namespace PrintManagement.Application.ImplementServices
                 }
 
                 var groupedByMonthYear = listBill
-                    .GroupBy(b => new { Month = b.CreateTime.Month, Year = b.CreateTime.Year })
+                    .GroupBy(b => new { b.CreateTime.Month, b.CreateTime.Year })
                     .Select(g => new
                     {
-                        MonthYear = g.Key,
-                        Salary = g.Sum(b => b.TotalMoney * (project.CommissionPercentage))
+                        Month = g.Key.Month,
+                        Year = g.Key.Year,
+                        Salary = g.Sum(b => b.TotalMoney * project.CommissionPercentage)
                     });
 
                 foreach (var group in groupedByMonthYear)
                 {
-                    result.Add(new DataResponseStatisticSalary
+                    var existingEntry = result.FirstOrDefault(r => r.Month == group.Month);
+                    if (existingEntry != null)
                     {
-                        Month = group.MonthYear.Month,
-                        Salary = group.Salary,
-                        User = _userConverter.EntityToDTOForUser(user)
-                    });
+                        existingEntry.Salary += group.Salary;
+                    }
+                    else
+                    {
+                        result.Add(new DataResponseStatisticSalary
+                        {
+                            Month = group.Month,
+                            Salary = group.Salary,
+                            User = _userConverter.EntityToDTOForUser(user)
+                        });
+                    }
                 }
             }
 
             return result.AsQueryable();
         }
+
 
         public async Task<IQueryable<DataResponseStatisticSales>> GetStatisticSales(Request_StatisticSales request)
         {

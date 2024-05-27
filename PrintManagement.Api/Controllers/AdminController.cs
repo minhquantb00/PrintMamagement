@@ -317,5 +317,15 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _teamService.GetAllUserHaveRoleManager());
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllPrintJobs()
+        {
+            return Ok(await _printJobService.GetAllPrintJobs());
+        }
+        [HttpGet("{printJobId}")]
+        public async Task<IActionResult> GetPrintJobById([FromRoute] Guid printJobId)
+        {
+            return Ok(await _printJobService.GetPrintJobById(printJobId));
+        }
     }
 }

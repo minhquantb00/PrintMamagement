@@ -408,5 +408,17 @@ namespace PrintManagement.Application.ImplementServices
             }
             return listResult;
         }
+
+        public async Task<IQueryable<DataResponsePrintJob>> GetAllPrintJobs()
+        {
+            var query = await _basePrintJobRepository.GetAllAsync(record => record.IsActive == true);
+            return query.Select(item => _printerConverter.EntityToDTO(item));
+        }
+
+        public async Task<DataResponsePrintJob> GetPrintJobById(Guid printJobId)
+        {
+            var query = await _basePrintJobRepository.GetAsync(record => record.Id == printJobId);
+            return _printerConverter.EntityToDTO(query);
+        }
     }
 }

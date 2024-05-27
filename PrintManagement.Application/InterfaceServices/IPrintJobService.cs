@@ -13,5 +13,7 @@ namespace PrintManagement.Application.InterfaceServices
     {
         Task<ResponseObject<DataResponsePrintJob>> CreatePrintJob(Request_CreatePrintJob request);
         Task<ResponseObject<DataResponsePrintJob>> ConfirmDonePrintJob(Guid printJobId);
+        Task<IQueryable<DataResponsePrintJob>> GetAllPrintJobs();
+        Task<DataResponsePrintJob> GetPrintJobById(Guid printJobId);
     }
 }

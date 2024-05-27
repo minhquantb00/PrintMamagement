@@ -10,6 +10,7 @@ using PrintManagement.Application.Payloads.RequestModels.StatisticRequests;
 using PrintManagement.Application.Payloads.RequestModels.UserRequests;
 using PrintManagement.Application.Payloads.ResponseModels.DataDelivery;
 using PrintManagement.Application.Payloads.ResponseModels.DataKPI;
+using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
 using PrintManagement.Application.Payloads.ResponseModels.DataStatistics;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
@@ -115,5 +116,7 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _deliveryService.GetDeliveryById(id));
         }
+
+        
     }
 }

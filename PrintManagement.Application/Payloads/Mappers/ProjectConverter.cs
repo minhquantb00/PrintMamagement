@@ -35,7 +35,7 @@ namespace PrintManagement.Application.Payloads.Mappers
             var customer = _baseCustomerRepository.GetByIDAsync(project.CustomerId).Result;
             var leader = _baseUserRepository.GetByIDAsync(project.LeaderId).Result;
             var design = _baseDesignRepository.GetAsync(item => item.ProjectId == project.Id && item.DesignStatus == Domain.Enumerates.DesignStatusEnum.HasBeenApproved).Result;
-            var printJob = _printJobRepository.GetAsync(item => item.DesignId == design.Id).Result;
+            var printJob = design != null ?  _printJobRepository.GetAsync(item => item.DesignId == design.Id).Result : null;
             return new DataResponseProject
             {
                 ActualEndDate = project.ActualEndDate,

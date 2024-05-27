@@ -43,6 +43,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 Id = printJob.Id,
                 PrintJobStatus = printJob.PrintJobStatus.ToString(),
                 DesignImage = _baseDesignRepository.GetAsync(x => x.Id == printJob.DesignId).Result.DesignImage,
+                DesignId = printJob.DesignId,
                 ResourceForPrints = result.AsQueryable(),
             };
         }

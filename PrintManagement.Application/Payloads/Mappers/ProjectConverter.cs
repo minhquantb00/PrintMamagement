@@ -53,6 +53,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 PrintJobId = printJob == null ? Guid.Empty : printJob.Id,
                 ProjectName = project.ProjectName,
                 ProjectStatus = project.ProjectStatus.ToString(),
+                CustomerId = customer.Id,
                 RequestDescriptionFromCustomer = project.RequestDescriptionFromCustomer,
                 StartDate = project.StartDate,
                 StartingPrice = project.StartingPrice,

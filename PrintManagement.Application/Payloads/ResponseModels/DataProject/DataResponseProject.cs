@@ -24,6 +24,7 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataProject
         public DateTime ExpectedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }
         public string Customer { get; set; }
+        public Guid CustomerId { get; set; }
         public string PhoneCustomer { get; set; }
         public string EmailCustomer { get; set; }
         public string AddressCustomer { get; set; }

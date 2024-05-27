@@ -51,7 +51,10 @@ namespace PrintManagement.Infrastructure.ImplementRepositories.ImplementUser
                 var rolesOfUser = await GetRolesOfUserAsync(user);
                 if (await IsStringInListAsync(role, rolesOfUser.ToList()))
                 {
-                    throw new ArgumentException("Người dùng đã có quyền này rồi");
+                    var roleItem = await _context.Roles.SingleOrDefaultAsync(x => x.RoleCode.Equals(role));
+                    var permission = await _context.Permissions.Where(record => record.UserId == user.Id && record.RoleId == roleItem.Id).SingleOrDefaultAsync();
+                    permission.RoleId = roleItem.Id;
+                    _context.Permissions.Update(permission);
                 }
                 else
                 {

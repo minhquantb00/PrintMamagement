@@ -50,7 +50,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 PhoneCustomer = customer.PhoneNumber,
                 EmailCustomer = customer.Email,
                 AddressCustomer = customer.Address,
-                PrintJobId = printJob.Id,
+                PrintJobId = printJob == null ? Guid.Parse(0.ToString()) : printJob.Id,
                 ProjectName = project.ProjectName,
                 ProjectStatus = project.ProjectStatus.ToString(),
                 RequestDescriptionFromCustomer = project.RequestDescriptionFromCustomer,

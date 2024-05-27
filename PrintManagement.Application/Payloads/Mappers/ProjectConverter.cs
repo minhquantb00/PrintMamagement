@@ -18,7 +18,8 @@ namespace PrintManagement.Application.Payloads.Mappers
         private readonly IBaseReposiroty<Customer> _baseCustomerRepository;
         private readonly IBaseReposiroty<Design> _baseDesignRepository;
         private readonly DesignConverter _designConverter;
-        public ProjectConverter(IBaseReposiroty<Project> baseProjectRepository, CustomerConverter customerConverter, UserConverter userConverter, IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<User> baseUserRepository, DesignConverter designConverter)
+        private readonly IBaseReposiroty<PrintJob> _printJobRepository;
+        public ProjectConverter(IBaseReposiroty<Project> baseProjectRepository, CustomerConverter customerConverter, UserConverter userConverter, IBaseReposiroty<Customer> baseCustomerRepository, IBaseReposiroty<Design> baseDesignRepository, IBaseReposiroty<User> baseUserRepository, DesignConverter designConverter, IBaseReposiroty<PrintJob> printJobRepository)
         {
             _baseProjectRepository = baseProjectRepository;
             _customerConverter = customerConverter;
@@ -27,11 +28,14 @@ namespace PrintManagement.Application.Payloads.Mappers
             _baseCustomerRepository = baseCustomerRepository;
             _baseDesignRepository = baseDesignRepository;
             _designConverter = designConverter;
+            _printJobRepository = printJobRepository;
         }
         public  DataResponseProject EntityToDTOForProject(Project project)
         {
             var customer = _baseCustomerRepository.GetByIDAsync(project.CustomerId).Result;
             var leader = _baseUserRepository.GetByIDAsync(project.LeaderId).Result;
+            var design = _baseDesignRepository.GetAsync(item => item.ProjectId == project.Id && item.DesignStatus == Domain.Enumerates.DesignStatusEnum.HasBeenApproved).Result;
+            var printJob = _printJobRepository.GetAsync(item => item.DesignId == design.Id).Result;
             return new DataResponseProject
             {
                 ActualEndDate = project.ActualEndDate,
@@ -46,6 +50,7 @@ namespace PrintManagement.Application.Payloads.Mappers
                 PhoneCustomer = customer.PhoneNumber,
                 EmailCustomer = customer.Email,
                 AddressCustomer = customer.Address,
+                PrintJobId = printJob.Id,
                 ProjectName = project.ProjectName,
                 ProjectStatus = project.ProjectStatus.ToString(),
                 RequestDescriptionFromCustomer = project.RequestDescriptionFromCustomer,

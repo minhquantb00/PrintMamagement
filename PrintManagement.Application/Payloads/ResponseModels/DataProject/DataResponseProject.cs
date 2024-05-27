@@ -20,6 +20,7 @@ namespace PrintManagement.Application.Payloads.ResponseModels.DataProject
         public string Leader { get; set; }
         public string PhoneLeader { get; set; }
         public string EmailLeader { get; set; }
+        public Guid PrintJobId { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }
         public string Customer { get; set; }

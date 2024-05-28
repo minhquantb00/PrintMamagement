@@ -93,7 +93,7 @@ namespace PrintManagement.Application.ImplementServices
 
         public async Task<IQueryable<DataResponseStatisticSales>> GetStatisticSales(Request_StatisticSales request)
         {
-            var query = await _billRepository.GetAllAsync(record => record.IsActive == true && record.BillStatus == BillStatusEnum.Paid);
+            var query = await _billRepository.GetAllAsync(record => record.IsActive && record.BillStatus == BillStatusEnum.Paid);
 
             if (query == null)
             {
@@ -102,22 +102,24 @@ namespace PrintManagement.Application.ImplementServices
 
             if (request.StartTime.HasValue)
             {
-                query = query.Where(record => record.CreateTime >= request.StartTime);
+                query = query.Where(record => record.CreateTime >= request.StartTime.Value);
             }
             if (request.EndTime.HasValue)
             {
-                query = query.Where(record => record.CreateTime <= request.EndTime);
+                query = query.Where(record => record.CreateTime <= request.EndTime.Value);
             }
 
-            var totalSales = query.Sum(x => x.TotalMoney);
+            var groupedByMonth = query
+                .GroupBy(record => new { record.CreateTime.Year, record.CreateTime.Month })
+                .Select(g => new DataResponseStatisticSales
+                {
+                    Month = g.Key.Month,
+                    Sales = g.Sum(x => x.TotalMoney)
+                });
 
-            DataResponseStatisticSales data = new DataResponseStatisticSales
-            {
-                Sales = totalSales
-            };
-
-            return new List<DataResponseStatisticSales> { data }.AsQueryable();
+            return groupedByMonth.AsQueryable();
         }
+
 
 
         public Task<IQueryable<DataResponseStatisticSalesOfUser>> GetStatisticSalesOfUserAsync(Guid userId, Request_StatisticSalesOfUser request)

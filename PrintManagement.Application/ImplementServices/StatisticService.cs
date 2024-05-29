@@ -65,7 +65,7 @@ namespace PrintManagement.Application.ImplementServices
                     {
                         Month = g.Key.Month,
                         Year = g.Key.Year,
-                        Salary = g.Sum(b => b.TotalMoney )
+                        Salary = g.Sum(b => b.TotalMoney)
                     });
 
                 foreach (var group in groupedByMonthYear)
@@ -80,7 +80,7 @@ namespace PrintManagement.Application.ImplementServices
                         result.Add(new DataResponseStatisticSalary
                         {
                             Month = group.Month,
-                            Salary = group.Salary,
+                            Salary = group.Salary * project.CommissionPercentage ,
                             User = _userConverter.EntityToDTOForUser(user)
                         });
                     }

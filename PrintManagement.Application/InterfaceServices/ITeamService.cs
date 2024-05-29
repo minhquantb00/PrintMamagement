@@ -20,5 +20,6 @@ namespace PrintManagement.Application.InterfaceServices
         Task<ResponseObject<DataResponseTeam>> ChangeManagerForTeam(Request_ChangeManager request);
         Task<string> ChangeDepartmentForUser(Request_ChangeDepartmentForUser request);
         Task<IQueryable<DataResponseUser>> GetAllUserHaveRoleManager();
+        Task<IQueryable<DataResponseUser>> GetAllUserByTeam(Guid teamId);
     }
 }

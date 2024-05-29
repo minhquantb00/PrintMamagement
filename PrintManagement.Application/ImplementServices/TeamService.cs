@@ -139,6 +139,12 @@ namespace PrintManagement.Application.ImplementServices
             }
         }
 
+        public async Task<IQueryable<DataResponseUser>> GetAllUserByTeam(Guid teamId)
+        {
+            var query = await _baseUserRepository.GetAllAsync(item => item.IsActive == true && item.TeamId == teamId);
+            return query.Select(item => _userConverter.EntityToDTOForUser(item));
+        }
+
         public async Task<ResponseObject<DataResponseTeam>> CreateTeam(Request_CreateTeam request)
         {
             var currentUser = _contextAccessor.HttpContext.User;

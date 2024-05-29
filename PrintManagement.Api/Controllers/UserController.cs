@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrintManagement.Application.Constants;
 using PrintManagement.Application.InterfaceServices;
+using PrintManagement.Application.Payloads.Mappers;
 using PrintManagement.Application.Payloads.RequestModels.DeliveryRequests;
 using PrintManagement.Application.Payloads.RequestModels.InputRequests;
 using PrintManagement.Application.Payloads.RequestModels.StatisticRequests;
@@ -26,14 +27,16 @@ namespace PrintManagement.Api.Controllers
         private readonly IStatisticService _statisticService;
         private readonly IKPIService _KPIService;
         private readonly INotificationService _notificationService;
+        private readonly ITeamService _teamService;
 
-        public UserController(IUserService userService, IDeliveryService deliveryService, IStatisticService statisticService, IKPIService kPIService, INotificationService notificationService)
+        public UserController(IUserService userService, IDeliveryService deliveryService, IStatisticService statisticService, IKPIService kPIService, INotificationService notificationService, ITeamService teamService)
         {
             _userService = userService;
             _deliveryService = deliveryService;
             _statisticService = statisticService;
             _KPIService = kPIService;
             _notificationService = notificationService;
+            _teamService = teamService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] Request_InputUser request)
@@ -116,7 +119,10 @@ namespace PrintManagement.Api.Controllers
         {
             return Ok(await _deliveryService.GetDeliveryById(id));
         }
-
-        
+        [HttpGet("{teamId}")]
+        public async Task<IActionResult> GetAllUserByTeam([FromRoute] Guid teamId)
+        {
+            return Ok(await _teamService.GetAllUserByTeam(teamId));
+        }
     }
 }

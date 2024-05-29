@@ -65,7 +65,7 @@ namespace PrintManagement.Application.ImplementServices
                     {
                         Month = g.Key.Month,
                         Year = g.Key.Year,
-                        Salary = g.Sum(b => b.TotalMoney * project.CommissionPercentage)
+                        Salary = g.Sum(b => b.TotalMoney )
                     });
 
                 foreach (var group in groupedByMonthYear)
@@ -73,7 +73,7 @@ namespace PrintManagement.Application.ImplementServices
                     var existingEntry = result.FirstOrDefault(r => r.Month == group.Month);
                     if (existingEntry != null)
                     {
-                        existingEntry.Salary += group.Salary;
+                        existingEntry.Salary += group.Salary * project.CommissionPercentage;
                     }
                     else
                     {

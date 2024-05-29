@@ -325,6 +325,15 @@ namespace PrintManagement.Application.ImplementServices
                         Data = null
                     };
                 }
+                if(shipperId != delivery.DeliverId)
+                {
+                    return new ResponseObject<DataResponseDelivery>
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Data = null,
+                        Message = "Bạn không phải là người giao đơn hàng này"
+                    };
+                }
                 if (delivery.DeliveryStatus.ToString().Equals("Delivered"))
                 {
                     return new ResponseObject<DataResponseDelivery>

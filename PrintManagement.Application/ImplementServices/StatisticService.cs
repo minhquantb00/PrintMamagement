@@ -80,7 +80,7 @@ namespace PrintManagement.Application.ImplementServices
                         result.Add(new DataResponseStatisticSalary
                         {
                             Month = group.Month,
-                            Salary = group.Salary * project.CommissionPercentage ,
+                            Salary = group.Salary * project.CommissionPercentage,
                             User = _userConverter.EntityToDTOForUser(user)
                         });
                     }

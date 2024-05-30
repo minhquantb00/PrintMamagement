@@ -14,5 +14,7 @@ namespace PrintManagement.Application.InterfaceServices
         Task<ResponseObject<DataResponseKPI>> CreateKPIForEmployee(Request_CreateKPI request);
         Task<ResponseObject<DataResponseKPI>> UpdateKPIForEmployee(Request_UpdateKPI request);
         Task<ResponseObject<DataResponseKPI>> NotificationDoneKpi(Guid kpiId);
+        Task<IQueryable<DataResponseKPI>> GetAllKpi(Guid? userId);
+        Task<DataResponseKPI> GetKpiById(Guid kpiId);
     }
 }

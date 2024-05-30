@@ -131,6 +131,19 @@ namespace PrintManagement.Application.ImplementServices
             }
         }
 
+        public async Task<IQueryable<DataResponseKPI>> GetAllKpi(Guid? userId)
+        {
+            var query = await _keyPerformanceIndicatorRepository.GetAllAsync(item => item.EmployeeId == userId);
+            return query.Select(item => _converter.EntityToDTO(item));
+        }
+
+        public async Task<DataResponseKPI> GetKpiById(Guid kpiId)
+        {
+            var query = await _keyPerformanceIndicatorRepository.GetAsync(item => item.Id == kpiId);
+            return _converter.EntityToDTO(query);
+
+        }
+
         public async Task<ResponseObject<DataResponseKPI>> NotificationDoneKpi(Guid kpiId)
         {
             var kpi = await _keyPerformanceIndicatorRepository.GetByIDAsync(kpiId);

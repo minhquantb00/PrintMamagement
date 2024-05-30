@@ -27,8 +27,10 @@ import {
   Upload,
 } from "ant-design-vue";
 import { createPinia } from "pinia";
-import { createApp } from "vue";
+import { createApp, h } from "vue";
 
+import * as echarts from "echarts";
+import { plugin } from "echarts-for-vue";
 loadFonts();
 
 // Create vue app
@@ -37,6 +39,7 @@ const app = createApp(App);
 // Use plugins
 app.use(vuetify);
 app.use(createPinia());
+app.use(plugin, { echarts, h });
 app.use(router);
 app.use(DatePicker);
 app.use(Button);

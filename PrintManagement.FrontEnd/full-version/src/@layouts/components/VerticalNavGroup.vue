@@ -101,10 +101,10 @@ watch(isVerticalNavMini(windowWidth, isVerticalNavHovered), (val) => {
 
 <template>
   <!-- custom cái cũ là có 
-        v-if="canViewNavMenuGroup(item)"
 trong thẻ li
  -->
   <li
+    v-if="canViewNavMenuGroup(item)"
     class="nav-group"
     :class="[
       {

@@ -1,10 +1,12 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 // Định nghĩa baseURL cho axios
-axios.defaults.baseURL = "https://localhost:7070/api";
+axios.defaults.baseURL = "https://localhost:44389/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";
+const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+const id = userInfo.Id;
 export const userApi = defineStore("user", {
   actions: {
     getAllUsers() {
@@ -17,7 +19,6 @@ export const userApi = defineStore("user", {
     },
     updateUserAccount(id, params) {
       return new Promise((resolve, reject) => {
-        console.log(params);
         axios
           .put(
             "/User/UpdateUser",
@@ -25,6 +26,40 @@ export const userApi = defineStore("user", {
             {
               headers: {
                 "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    updateChangeTeamForUser(params) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            "/Admin/ChangeDepartmentForUser",
+            { ...params },
+            {
+              headers: {
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    addRoleUser(id, roles) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            `/Admin/AddRoleToUser?userId=${id}`,
+
+            roles,
+
+            {
+              headers: {
                 Authorization: `Bearer ${authorization}`,
               },
             }
@@ -46,7 +81,6 @@ export const userApi = defineStore("user", {
       });
     },
     filterUser(param) {
-      console.log(param);
       return new Promise((resolve, reject) => {
         // https://localhost:7070/api/User/GetAllUsers?Name=D%C6%B0%C6%A1ng&Email=duongtv280703%40gmail.com&PhoneNumber=0388049008
         axios
@@ -63,7 +97,6 @@ export const userApi = defineStore("user", {
       });
     },
     getUserById(id) {
-      console.log(id);
       return new Promise((resolve, reject) => {
         axios
           .get(`/User/GetUserById/${id}`)
@@ -72,7 +105,6 @@ export const userApi = defineStore("user", {
       });
     },
     getRolesByIdUser(id) {
-      console.log(id);
       return new Promise((resolve, reject) => {
         axios
           .get(`/Admin/GetRolesByUserId/${id}`, {

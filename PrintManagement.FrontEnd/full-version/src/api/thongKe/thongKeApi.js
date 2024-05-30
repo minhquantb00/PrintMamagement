@@ -1,45 +1,41 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 // Định nghĩa baseURL cho axios
-axios.defaults.baseURL = "https://localhost:7070/api";
+axios.defaults.baseURL = "https://localhost:44389/api";
 function getAccessToken() {
   return localStorage.getItem("accessToken") || "";
 }
 const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-export const thongkeApi = defineStore("thongke", {
+export const thongKeApi = defineStore("thongke", {
   actions: {
     thongKeLuong() {
       return new Promise((resolve, reject) => {
         axios
           .get("/User/GetstatisticSalary", {
             params: {
-              id: userInfo.Id,
+              userId: userInfo.Id,
             },
           })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
     },
-    getTeamById(id) {
+    getKpiUser() {
       return new Promise((resolve, reject) => {
         axios
-          .get("/Admin/GetTeamById", {
+          .get("/User/GetAllKpi", {
             params: {
-              teamId: id,
+              userId: userInfo.Id,
             },
           })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
     },
-    updateTeams() {
+    thongKeDoanhSo(param) {
       return new Promise((resolve, reject) => {
         axios
-          .put("/Admin/GetTeamById", {
-            params: {
-              teamId: id,
-            },
-          })
+          .get("/User/GetStatisticSales", { params: param })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

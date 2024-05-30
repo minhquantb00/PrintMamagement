@@ -201,6 +201,104 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
                 </v-card>
               </template>
             </v-dialog>
+            <v-dialog max-width="700">
+              <template v-slot:activator="{ props: activatorProps }">
+                <VBtn
+                  variant="flat"
+                  class="mr-2"
+                  v-if="userManager && salesTeam && salesTeam.name === 'Sales'"
+                  v-bind="activatorProps"
+                  density="comfortable"
+                  @click="getUserTeam(item.id)"
+                  icon
+                >
+                  <v-icon
+                    icon="mdi-account-file-text-outline"
+                    style="font-size: 22px"
+                  ></v-icon>
+                  <v-tooltip activator="parent" location="top"
+                    >Giao KPI cho nhân viên</v-tooltip
+                  ></VBtn
+                >
+              </template>
+
+              <template v-slot:default="{ isActive }">
+                <v-card>
+                  <v-form ref="refVForm" @submit.prevent="onSubmit">
+                    <div class="pa-3">
+                      <div class="text-center mb-4 mt-4">
+                        <h2>Giao KPI dự án</h2>
+                      </div>
+                      <v-row class="mb-1">
+                        <v-col cols="6">
+                          <span class="obligatory">(*)</span>
+
+                          <v-text-field
+                            label="Tên chỉ tiêu"
+                            :rules="[requiredValidator]"
+                            v-model="inputKpi.IndicatorName"
+                            variant="outlined"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="6">
+                          <span class="obligatory">(*)</span>
+                          <v-select
+                            clearable
+                            v-model="inputKpi.EmployeeId"
+                            label="Nhân viên"
+                            :rules="[requiredValidator]"
+                            :items="dataLocUsers"
+                            item-value="id"
+                            item-title="fullName"
+                            variant="outlined"
+                          >
+                          </v-select>
+                        </v-col>
+                        <v-col cols="6">
+                          <span class="obligatory">(*)</span>
+                          <v-select
+                            clearable
+                            v-model="inputKpi.Period"
+                            label="Thời gian làm"
+                            :rules="[requiredValidator]"
+                            :items="dataPeriod"
+                            item-value="value"
+                            item-title="name"
+                            variant="outlined"
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="6">
+                          <span class="obligatory">(*)</span>
+
+                          <v-text-field
+                            label="Chỉ tiêu"
+                            type="number"
+                            :rules="[requiredValidator]"
+                            v-model="inputKpi.Target"
+                            variant="outlined"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </div>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn
+                        text="Giao KPI"
+                        variant="flat"
+                        type="submit"
+                        @click="createKpi"
+                      ></v-btn>
+                      <v-btn
+                        text="Thoát"
+                        variant="outlined"
+                        @click="isActive.value = false"
+                      ></v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </template>
+            </v-dialog>
             <v-dialog max-width="300">
               <template v-slot:activator="{ props: activatorProps }">
                 <VBtn
@@ -254,55 +352,6 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
         rounded="circle"
       ></v-pagination>
     </div>
-    <VRow id="apex-chart-wrapper">
-      <!-- 👉 Data Science -->
-      <VCol cols="12">
-        <VCard>
-          <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
-            <VCardTitle>Data Science</VCardTitle>
-
-            <template #append>
-              <div class="date-picker-wrapper">
-                <AppDateTimePicker
-                  model-value="2022-06-09"
-                  prepend-inner-icon="tabler-calendar"
-                  density="compact"
-                  :config="{ position: 'auto right' }"
-                />
-              </div>
-            </template>
-          </VCardItem>
-
-          <VCardText>
-            <ApexChartDataScience />
-          </VCardText>
-        </VCard>
-      </VCol>
-
-      <!-- 👉 Balance Line Chart  -->
-      <VCol cols="12">
-        <VCard>
-          <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
-            <VCardTitle>Balance</VCardTitle>
-            <VCardSubtitle>Commercial networks &amp; enterprises</VCardSubtitle>
-
-            <template #append>
-              <div class="d-flex align-center">
-                <h6 class="text-h6 me-3">$221,267</h6>
-                <VChip label color="success">
-                  <VIcon start icon="tabler-arrow-up" size="15" />
-                  <span>22%</span>
-                </VChip>
-              </div>
-            </template>
-          </VCardItem>
-
-          <VCardText>
-            <ApexChartBalance />
-          </VCardText>
-        </VCard>
-      </VCol>
-    </VRow>
   </div>
   <v-snackbar v-model="snackbar" color="blue-grey" rounded="pill" class="mb-5">
     {{ text }}
@@ -327,11 +376,26 @@ export default {
     return {
       page: 1,
       text: "",
+      inputKpi: {
+        EmployeeId: "",
+        IndicatorName: "",
+        Target: null,
+        Period: null,
+      },
+      dataPeriod: [
+        { name: "Theo ngày", value: "Quater" },
+        { name: "Theo tháng", value: "Month" },
+        { name: "Theo năm", value: "Year" },
+      ],
       snackbar: false,
       isLoading: true,
       teamApi: teamApi(),
       userApi: userApi(),
+      userManager: false,
       dataUsers: [],
+      userById: {},
+      salesTeam: null,
+      dataLocUsers: [],
       dataTeams: [],
       filters: { name: "" },
       dataUserRoles: [],
@@ -340,15 +404,29 @@ export default {
         description: "",
         managerId: "",
       },
-      perPage: 3,
+      perPage: 6,
       currentPage: 1,
       update: {},
     };
+  },
+  async mounted() {
+    await this.CheckManager();
+    await this.getDataUserById();
+    await this.getDataTeams();
   },
   methods: {
     async getByTeamId(id) {
       const getById = await this.teamApi.getTeamById(id);
       this.update = getById.data;
+    },
+    async CheckManager() {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+      if (userInfo && userInfo.Permission) {
+        this.userManager = userInfo.Permission.includes("Manager");
+      } else {
+        this.userManager = false;
+      }
     },
     async createTeam() {
       const res = await this.teamApi.createTeams(this.inputAddTeam);
@@ -365,6 +443,11 @@ export default {
       }
       console.log(res.data.status);
     },
+    async getUserTeam(id) {
+      const res = await this.teamApi.getTeamUserById(id);
+      this.dataLocUsers = res.data;
+      console.log(res);
+    },
     async deleteTeam(id) {
       const res = await this.teamApi.deleteTeams(id);
       console.log(res);
@@ -376,6 +459,21 @@ export default {
         }, 2000);
       } else {
         this.text = res.data;
+        this.snackbar = true;
+      }
+    },
+    async createKpi() {
+      const res = await this.teamApi.createKpiEmployee(
+        this.inputKpi.EmployeeId,
+        this.inputKpi.IndicatorName,
+        this.inputKpi.Period,
+        this.inputKpi.Target
+      );
+      if (res.data.status === 200) {
+        this.text = res.data.message;
+        this.snackbar = true;
+      } else {
+        this.text = res.data.message;
         this.snackbar = true;
       }
     },
@@ -410,7 +508,16 @@ export default {
       try {
         const dataUser = await this.userApi.getAllUsers();
         this.dataUsers = dataUser.data;
-        console.log(this.dataUsers);
+        console.log(this.salesTeam);
+      } catch (e) {
+        console.error("Error fetching data:", error);
+      }
+    },
+    async getDataUserById() {
+      try {
+        const userId = JSON.parse(localStorage.getItem("userInfo"));
+        const dataUser = await this.userApi.getUserById(userId.Id);
+        this.userById = dataUser.data;
       } catch (e) {
         console.error("Error fetching data:", error);
       }
@@ -421,8 +528,9 @@ export default {
     async getDataTeams() {
       this.isLoading = true;
       try {
-        const dataTeam = await this.teamApi.getAllTeams();
-        this.dataTeams = dataTeam.data;
+        const data = await this.teamApi.getAllTeams();
+        this.dataTeams = data.data;
+        this.salesTeam = this.dataTeams.find((team) => team.name === "Sales");
       } catch (e) {
         console.error("Error fetching data:", error);
       } finally {
@@ -431,7 +539,6 @@ export default {
     },
   },
   created() {
-    this.getDataTeams();
     this.getDataUser();
     this.getUserRole();
     this.filter();

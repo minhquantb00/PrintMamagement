@@ -1,7 +1,7 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 // Định nghĩa baseURL cho axios
-axios.defaults.baseURL = "https://localhost:7070/api";
+axios.defaults.baseURL = "https://localhost:44389/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";

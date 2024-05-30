@@ -22,10 +22,7 @@ const hideTitleAndBadge = isVerticalNavMini(windowWidth);
 trong thẻ li
  -->
 
-  <li
-    class="nav-link"
-    :class="{ disabled: item.disable }"
-  >
+  <li class="nav-link" :class="{ disabled: item.disable }">
     <Component
       :is="item.to ? 'RouterLink' : 'a'"
       v-bind="getComputedNavLinkToProp(item)"

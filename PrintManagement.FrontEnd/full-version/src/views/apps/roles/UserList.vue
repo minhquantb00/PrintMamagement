@@ -1,82 +1,10 @@
-<script setup>
-import { ref, onMounted } from "vue";
-import { VDataTableServer } from "vuetify/labs/VDataTable";
-import { paginationMeta } from "@/@fake-db/utils";
-import AddNewUserDrawer from "@/views/apps/user/list/AddNewUserDrawer.vue";
-import { useUserListStore } from "@/views/apps/user/useUserListStore";
-import { avatarText } from "@core/utils/formatters";
-import { giaoHangApi } from "@/api/giaoHang/giaoHangApi";
-const userListStore = useUserListStore();
-const searchQuery = ref("");
-const selectedRole = ref();
-const selectedPlan = ref();
-const selectedStatus = ref();
-const totalUsers = ref(0);
-const dataGiaoHang = ref([]);
-const giaoHangResApi = giaoHangApi();
-const options = ref({
-  page: 1,
-  itemsPerPage: 10,
-  sortBy: [],
-  groupBy: [],
-  search: undefined,
-});
-
-const headers = [
-  {
-    title: "Mã đơn hàng",
-    key: "projectName",
-  },
-  {
-    title: "Tên đơn hàng",
-    key: "test",
-  },
-  {
-    title: "Khách hàng",
-    key: "role",
-  },
-  {
-    title: "Số điện thoại",
-    key: "plan",
-  },
-  {
-    title: "Giá đơn hàng",
-    key: "billing",
-  },
-  {
-    title: "Trạng thái",
-    key: "shippingMethodName",
-  },
-  {
-    title: "PTVN",
-    key: "status",
-  },
-  {
-    title: "Vận chuyển",
-    key: "actions",
-    sortable: false,
-  },
-];
-
-const fetchProjects = async () => {
-  try {
-    const res = await giaoHangResApi.getAllGiaoHang();
-    dataGiaoHang.value = res.data;
-    console.log("Fetched projects:", dataGiaoHang.value);
-  } catch (error) {
-    console.error("Error fetching projects:", error);
-  }
-};
-
-onMounted(() => {
-  fetchProjects();
-});
-
-const isAddNewUserDrawerVisible = ref(false);
-</script>
-
 <template>
-  <div class="table-giao-hang">
+  <div v-if="isLoading" class="text-center mt-15">
+    <a-space>
+      <a-spin size="large" />
+    </a-space>
+  </div>
+  <div class="table-giao-hang" v-else>
     <v-table>
       <thead>
         <tr>
@@ -86,10 +14,11 @@ const isAddNewUserDrawerVisible = ref(false);
           <th class="text-left">ptvc</th>
           <th class="text-left">Vận chuyển</th>
           <th class="text-left">Trạng thái</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in dataGiaoHang" :key="item">
+        <tr v-for="(item, index) in paginatedData" :key="index">
           <td>{{ item.project.projectName }}</td>
           <td>{{ item.project.customer }}</td>
           <td>{{ item.deliveryAddress }}</td>
@@ -97,9 +26,12 @@ const isAddNewUserDrawerVisible = ref(false);
           <td>{{ item.deliver.fullName }}</td>
           <td>
             {{ item.deliveryStatus }}
+          </td>
+          <td>
             <v-menu>
               <template v-slot:activator="{ props }">
                 <v-btn
+                  v-if="userById.teamName === 'Delivery'"
                   icon="mdi-dots-vertical"
                   density="comfortable"
                   variant="text"
@@ -126,6 +58,10 @@ const isAddNewUserDrawerVisible = ref(false);
                             Mã đơn hàng: {{ item.id }}
                           </v-list-item>
                           <v-list-item>
+                            Giá đơn hàng:
+                            {{ formatCurrency(item.project.startingPrice) }}
+                          </v-list-item>
+                          <v-list-item>
                             Tên đơn hàng: {{ item.project.projectName }}
                           </v-list-item>
                           <v-list-item>
@@ -149,11 +85,37 @@ const isAddNewUserDrawerVisible = ref(false);
                           </v-list-item>
                         </v-list>
                       </div>
-
+                      <div
+                        v-if="item.deliveryStatus === 'Delivering'"
+                        class="pl-9 pr-9 mb-7"
+                      >
+                        <v-select
+                          label="Xác nhận giao hàng"
+                          clearable
+                          :items="items"
+                          :rules="[requiredValidator]"
+                          item-title="label"
+                          v-model="inputDevilery.ConfirmStatus"
+                          item-value="value"
+                          variant="outlined"
+                        ></v-select>
+                      </div>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-
                         <v-btn
+                          variant="flat"
+                          v-if="item.deliveryStatus === 'Waiting'"
+                          @click="ShipperConfirmOrder(item.id)"
+                          >Xác nhận đơn hàng</v-btn
+                        >
+                        <v-btn
+                          v-if="item.deliveryStatus === 'Delivering'"
+                          variant="flat"
+                          @click="shipDone(item.id)"
+                          text="Xác nhận"
+                        ></v-btn>
+                        <v-btn
+                          variant="outlined"
                           text="Thoát"
                           @click="isActive.value = false"
                         ></v-btn>
@@ -167,22 +129,165 @@ const isAddNewUserDrawerVisible = ref(false);
         </tr>
       </tbody>
     </v-table>
+    <div class="text-center mt-4">
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        rounded="circle"
+      ></v-pagination>
+    </div>
+    <v-snackbar
+      v-model="snackbar"
+      color="blue-grey"
+      rounded="pill"
+      class="mb-5"
+    >
+      {{ text }}
+      <template v-slot:actions>
+        <v-btn color="green" variant="text" @click="snackbar = false">
+          Đóng
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 <script>
+import { giaoHangApi } from "@/api/giaoHang/giaoHangApi";
+import { userApi } from "@/api/User/userApi";
+
 export default {
   data() {
     return {
+      giaoHangApi: giaoHangApi(),
+      userApi: userApi(),
+      dataGiaoHang: [],
+      refVForm: "",
+      userById: {},
+      inputDevilery: {
+        DeliveryId: "",
+        ConfirmStatus: "",
+      },
+      requiredValidator: (value) =>
+        !!value || "Vui lòng chọn nhân viên giao hàng",
+      isLoading: true,
+      text: "",
+      snackbar: false,
+      idDelivery: {},
       items: [
-        { title: "Click Me" },
-        { title: "Click Me" },
-        { title: "Click Me" },
-        { title: "Click Me 2" },
+        {
+          value: "NotReceived",
+          label: "Không nhận",
+        },
+        {
+          value: "Reject",
+          label: "Từ chối",
+        },
+        {
+          value: "Received",
+          label: "Đã giao",
+        },
       ],
+      currentPage: 1,
+      perPage: 10,
+      isConfirmed: false,
     };
+  },
+  watch: {
+    "item.id": function (newVal) {
+      this.deliveryId = newVal;
+    },
+  },
+  async mounted() {
+    await this.getUserById();
+  },
+  methods: {
+    async getAllGiaoHang() {
+      this.isLoading = true;
+      try {
+        const res = await this.giaoHangApi.getAllGiaoHang();
+        this.dataGiaoHang = res.data;
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async getUserById() {
+      const idUser = JSON.parse(localStorage.getItem("userInfo"));
+      const res = await this.userApi.getUserById(idUser.Id);
+      this.userById = res.data;
+      console.log(this.userById);
+    },
+    async ShipperConfirmOrder(deliveryId) {
+      try {
+        const res = await this.giaoHangApi.shipperOder({ deliveryId });
+        if (res.data.status === 200) {
+          this.text = res.data.message;
+          this.snackbar = true;
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+        } else {
+          this.text = res.data.message;
+          this.snackbar = true;
+        }
+        this.isConfirmed = true;
+      } catch (error) {
+        console.error("Error in ShipperConfirmOrder:", error);
+        this.text = "An error occurred";
+        this.snackbar = true;
+      }
+    },
+    formatCurrency(value) {
+      const intValue = parseInt(value);
+      return intValue.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
+    },
+    async shipDone(id) {
+      try {
+        const res = await this.giaoHangApi.shipperConfirm(
+          (this.inputDevilery.DeliveryId = id),
+          this.inputDevilery.ConfirmStatus
+        );
+        if (res.data.status === 200) {
+          this.text = res.data.message;
+          this.snackbar = true;
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+        } else {
+          this.text = res.data.message;
+          this.snackbar = true;
+        }
+      } catch (error) {
+        this.text = "Lỗi hệ thống";
+        this.snackbar = true;
+      }
+    },
+    onSubmit() {
+      this.refVForm.validate().then(({ valid: isValid }) => {
+        if (isValid) this.shipDone();
+      });
+    },
+  },
+  created() {
+    this.getAllGiaoHang();
+  },
+  computed: {
+    paginatedData() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.dataGiaoHang.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.dataGiaoHang.length / this.perPage);
+    },
   },
 };
 </script>
+
 <style lang="scss">
 .text-capitalize {
   text-transform: capitalize;

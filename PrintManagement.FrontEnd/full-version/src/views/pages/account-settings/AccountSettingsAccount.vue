@@ -1,7 +1,7 @@
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard title="Profile Details">
+      <VCard title="Thông tin cá nhân">
         <VCardText class="d-flex">
           <!-- 👉 Avatar -->
           <v-avatar
@@ -33,7 +33,7 @@
                 style="max-width: 100px; max-height: 100px"
               /> -->
 
-              <VBtn
+              <!-- <VBtn
                 type="reset"
                 color="secondary"
                 variant="tonal"
@@ -41,11 +41,11 @@
               >
                 <span class="d-none d-sm-block">Ảnh mặc định</span>
                 <VIcon icon="tabler-refresh" class="d-sm-none" />
-              </VBtn>
+              </VBtn> -->
             </div>
 
             <p class="text-body-1 mb-0">
-              Allowed JPG, GIF or PNG. Max size of 2MB
+              Được phép JPG, GIF hoặc PNG. Kích thước tối đa 2MB
             </p>
           </form>
         </VCardText>
@@ -164,42 +164,11 @@ export default {
   },
   async mounted() {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    console.log(userInfo.Id);
     this.UserNames = userInfo.UserName;
     const user = await this.usersApi.getUserById(userInfo.Id);
     this.updateUser = user.data;
-    console.log(this.updateUser);
   },
   methods: {
-    // handleImageChange(event) {
-    //   const file = event.target.files[0];
-    //   const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-    //   const allowedExtensions = [".jpg", ".jpeg", ".png"];
-    //   if (!file) {
-    //     return;
-    //   }
-    //   if (file.size > maxSizeInBytes) {
-    //     this.text = "Kích thước ảnh không được vượt quá 2MB";
-    //     this.snackbar = true;
-    //     return;
-    //   }
-    //   const fileName = file.name;
-    //   const fileExtension = fileName.split(".").pop();
-    //   if (!allowedExtensions.includes("." + fileExtension.toLowerCase())) {
-    //     this.text = "Hệ thống chỉ hỗ trợ file ảnh dạng: jpg, png, jpeg";
-    //     this.snackbar = true;
-    //     return;
-    //   }
-    //   const fileReader = new FileReader();
-    //   fileReader.readAsDataURL(file);
-    //   fileReader.onload = () => {
-    //     if (typeof fileReader.result == "string") {
-    //       this.accountDataLocal.avatarImg = fileReader.result;
-    //       this.$refs.imagePreview.src = fileReader.result;
-    //     }
-    //     this.updateUser.avatar = file;
-    //   };
-    // },
     handleImageChange(event) {
       const file = event.target.files[0];
       const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
@@ -225,55 +194,14 @@ export default {
         if (typeof fileReader.result == "string") {
           this.accountDataLocal.avatarImg = fileReader.result;
           this.$refs.imagePreview.src = fileReader.result;
-          // Di chuyển dòng này vào bên trong onload
           this.updateUser.avatar = file;
         }
       };
     },
 
-    // handleImageChange(event) {
-    //   const file = event.target.files[0];
-    //   const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-    //   const allowedExtensions = [".jpg", ".jpeg", ".png"];
-    //   if (!file) {
-    //     return;
-    //   }
-    //   if (file.size > maxSizeInBytes) {
-    //     this.text = "Kích thước ảnh không được vượt quá 2MB";
-    //     this.snackbar = true;
-    //     return;
-    //   }
-    //   const fileName = file.name;
-    //   const fileExtension = fileName.split(".").pop();
-    //   if (!allowedExtensions.includes("." + fileExtension.toLowerCase())) {
-    //     this.text = "Hệ thống chỉ hỗ trợ file ảnh dạng: jpg, png, jpeg";
-    //     this.snackbar = true;
-    //     return;
-    //   }
-    //   const fileReader = new FileReader();
-    //   fileReader.readAsDataURL(file);
-    //   fileReader.onload = () => {
-    //     if (typeof fileReader.result === "string") {
-    //       // Hiển thị ảnh
-    //       // Lưu trữ tệp
-    //     }
-    //   };
-    //   this.updateUser.avatar = file;
-    // },
     resetForm() {
       this.accountDataLocal = structuredClone(this.accountData);
     },
-    // changeAvatar(file) {
-    //   const fileReader = new FileReader();
-    //   const { files } = file.target;
-    //   if (files && files.length) {
-    //     fileReader.readAsDataURL(files[0]);
-    //     fileReader.onload = () => {
-    //       if (typeof fileReader.result === "string")
-    //         this.accountDataLocal.avatarImg = fileReader.result;
-    //     };
-    //   }
-    // },
     resetAvatar() {
       this.accountDataLocal.avatarImg = this.accountData.avatarImg;
     },

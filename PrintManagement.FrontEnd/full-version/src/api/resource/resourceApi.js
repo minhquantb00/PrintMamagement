@@ -1,7 +1,7 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 // Định nghĩa baseURL cho axios
-axios.defaults.baseURL = "https://localhost:7070/api";
+axios.defaults.baseURL = "https://localhost:44389/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";
@@ -16,6 +16,7 @@ export const resourceApi = defineStore("resource", {
       });
     },
     createResouce(params) {
+      console.log(params);
       return new Promise((resolve, reject) => {
         axios
           .post(
@@ -77,14 +78,19 @@ export const resourceApi = defineStore("resource", {
     fillterData(param) {
       return new Promise((resolve, reject) => {
         axios
-          .get("/Admin/GetAll", {
-            headers: {
-              Authorization: `Bearer ${authorization}`,
+          .get(
+            "/Admin/GetAll",
+            {
+              params: {
+                resourceName: param,
+              },
             },
-            params: {
-              resourceName: param.name,
-            },
-          })
+            {
+              headers: {
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });
@@ -105,18 +111,30 @@ export const resourceApi = defineStore("resource", {
           .catch((error) => reject(error));
       });
     },
-    createResourcePropertyInFormation(id, params) {
+    createResourcePropertyInFormation(params) {
       return new Promise((resolve, reject) => {
         axios
           .post(
-            "/Admin/CreateResourcePropertyInformation",id,
-            { ...params},
+            "/Admin/CreateResourcePropertyInformation",
+            { ...params },
             {
               headers: {
                 Authorization: `Bearer ${authorization}`,
               },
             }
           )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    deleteCoupon(id) {
+      return new Promise((resolve, reject) => {
+        axios
+          .delete(`/Admin/DeleteResourcePropertyDetail/${id}`, {
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

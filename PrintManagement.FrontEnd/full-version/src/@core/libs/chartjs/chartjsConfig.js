@@ -31,7 +31,7 @@ export const getLatestBarChartConfig = themeColors => {
       },
       y: {
         min: 0,
-        max: 400,
+        max: 0,
         grid: {
           borderColor,
           drawBorder: false,

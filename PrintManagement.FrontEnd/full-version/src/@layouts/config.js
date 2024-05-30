@@ -5,7 +5,7 @@ import {
   NavbarType,
 } from "@layouts/enums";
 import { breakpointsVuetify } from "@vueuse/core";
-
+import { VIcon } from "vuetify/components/VIcon";
 export const config = {
   app: {
     title: "InkMastery",
@@ -17,6 +17,7 @@ export const config = {
     overlayNavFromBreakpoint: breakpointsVuetify.md,
     enableI18n: true,
     isRtl: ref(false),
+    iconRenderer: VIcon,
   },
   navbar: {
     type: ref(NavbarType.Sticky),

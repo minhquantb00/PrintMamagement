@@ -11,12 +11,13 @@ namespace PrintManagement.Application.Handle.HandleTemplate
     {
         public static string GenerateNotificationBillEmail(Bill bill)
         {
-            string htmlContent = $@"
-                                    <html
+            string htmlContent = $@"<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+<html
   dir=""ltr""
   xmlns=""http://www.w3.org/1999/xhtml""
   xmlns:o=""urn:schemas-microsoft-com:office:office""
-  lang=""en""
+  lang=""vi""
+  style=""padding: 0; margin: 0""
 >
   <head>
     <meta charset=""UTF-8"" />
@@ -24,7 +25,7 @@ namespace PrintManagement.Application.Handle.HandleTemplate
     <meta name=""x-apple-disable-message-reformatting"" />
     <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"" />
     <meta content=""telephone=no"" name=""format-detection"" />
-    <title>New Template 3</title>
+    <title>New Template 4</title>
     <!--[if (mso 16)
       ]><style type=""text/css"">
         a {{
@@ -49,6 +50,17 @@ namespace PrintManagement.Application.Handle.HandleTemplate
     <style type=""text/css"">
       #outlook a {{
         padding: 0;
+      }}
+      .ExternalClass {{
+        width: 100%;
+      }}
+      .ExternalClass,
+      .ExternalClass p,
+      .ExternalClass span,
+      .ExternalClass font,
+      .ExternalClass td,
+      .ExternalClass div {{
+        line-height: 100%;
       }}
       .es-button {{
         mso-style-priority: 100 !important;
@@ -87,55 +99,52 @@ namespace PrintManagement.Application.Handle.HandleTemplate
           line-height: 120% !important;
         }}
         h1 {{
-          font-size: 36px !important;
-          text-align: left;
+          font-size: 30px !important;
+          text-align: center;
         }}
         h2 {{
           font-size: 26px !important;
-          text-align: left;
+          text-align: center;
         }}
         h3 {{
           font-size: 20px !important;
-          text-align: left;
+          text-align: center;
         }}
         .es-header-body h1 a,
         .es-content-body h1 a,
         .es-footer-body h1 a {{
-          font-size: 36px !important;
-          text-align: left;
+          font-size: 30px !important;
         }}
         .es-header-body h2 a,
         .es-content-body h2 a,
         .es-footer-body h2 a {{
           font-size: 26px !important;
-          text-align: left;
         }}
         .es-header-body h3 a,
         .es-content-body h3 a,
         .es-footer-body h3 a {{
           font-size: 20px !important;
-          text-align: left;
         }}
         .es-menu td a {{
-          font-size: 12px !important;
+          font-size: 14px !important;
         }}
         .es-header-body p,
         .es-header-body ul li,
         .es-header-body ol li,
         .es-header-body a {{
-          font-size: 14px !important;
+          font-size: 16px !important;
         }}
         .es-content-body p,
         .es-content-body ul li,
         .es-content-body ol li,
         .es-content-body a {{
-          font-size: 14px !important;
+          font-size: 16px !important;
         }}
         .es-footer-body p,
         .es-footer-body ul li,
         .es-footer-body ol li,
         .es-footer-body a {{
-          font-size: 14px !important;
+          font-size: 13px !important;
         }}
         .es-infoblock p,
         .es-infoblock ul li,
@@ -170,14 +179,21 @@ namespace PrintManagement.Application.Handle.HandleTemplate
           display: inline !important;
         }}
         .es-button-border {{
-          display: inline-block !important;
+          display: block !important;
         }}
         a.es-button,
         button.es-button {{
           font-size: 20px !important;
-          display: inline-block !important;
+          display: block !important;
+          padding: 10px 0px 10px 0px !important;
+        }}
+        .es-btn-fw {{
+          border-width: 10px 0px !important;
+          text-align: center !important;
         }}
         .es-adaptive table,
+        .es-btn-fw,
+        .es-btn-fw-brdr,
         .es-left,
         .es-right {{
           width: 100% !important;
@@ -200,16 +216,16 @@ namespace PrintManagement.Application.Handle.HandleTemplate
           height: auto !important;
         }}
         .es-m-p0 {{
-          padding: 0 !important;
+          padding: 0px !important;
         }}
         .es-m-p0r {{
-          padding-right: 0 !important;
+          padding-right: 0px !important;
         }}
         .es-m-p0l {{
-          padding-left: 0 !important;
+          padding-left: 0px !important;
         }}
         .es-m-p0t {{
-          padding-top: 0 !important;
+          padding-top: 0px !important;
         }}
         .es-m-p0b {{
           padding-bottom: 0 !important;
@@ -252,126 +268,6 @@ namespace PrintManagement.Application.Handle.HandleTemplate
         table.es-social td {{
           display: inline-block !important;
         }}
-        .es-m-p5 {{
-          padding: 5px !important;
-        }}
-        .es-m-p5t {{
-          padding-top: 5px !important;
-        }}
-        .es-m-p5b {{
-          padding-bottom: 5px !important;
-        }}
-        .es-m-p5r {{
-          padding-right: 5px !important;
-        }}
-        .es-m-p5l {{
-          padding-left: 5px !important;
-        }}
-        .es-m-p10 {{
-          padding: 10px !important;
-        }}
-        .es-m-p10t {{
-          padding-top: 10px !important;
-        }}
-        .es-m-p10b {{
-          padding-bottom: 10px !important;
-        }}
-        .es-m-p10r {{
-          padding-right: 10px !important;
-        }}
-        .es-m-p10l {{
-          padding-left: 10px !important;
-        }}
-        .es-m-p15 {{
-          padding: 15px !important;
-        }}
-        .es-m-p15t {{
-          padding-top: 15px !important;
-        }}
-        .es-m-p15b {{
-          padding-bottom: 15px !important;
-        }}
-        .es-m-p15r {{
-          padding-right: 15px !important;
-        }}
-        .es-m-p15l {{
-          padding-left: 15px !important;
-        }}
-        .es-m-p20 {{
-          padding: 20px !important;
-        }}
-        .es-m-p20t {{
-          padding-top: 20px !important;
-        }}
-        .es-m-p20r {{
-          padding-right: 20px !important;
-        }}
-        .es-m-p20l {{
-          padding-left: 20px !important;
-        }}
-        .es-m-p25 {{
-          padding: 25px !important;
-        }}
-        .es-m-p25t {{
-          padding-top: 25px !important;
-        }}
-        .es-m-p25b {{
-          padding-bottom: 25px !important;
-        }}
-        .es-m-p25r {{
-          padding-right: 25px !important;
-        }}
-        .es-m-p25l {{
-          padding-left: 25px !important;
-        }}
-        .es-m-p30 {{
-          padding: 30px !important;
-        }}
-        .es-m-p30t {{
-          padding-top: 30px !important;
-        }}
-        .es-m-p30b {{
-          padding-bottom: 30px !important;
-        }}
-        .es-m-p30r {{
-          padding-right: 30px !important;
-        }}
-        .es-m-p30l {{
-          padding-left: 30px !important;
-        }}
-        .es-m-p35 {{
-          padding: 35px !important;
-        }}
-        .es-m-p35t {{
-          padding-top: 35px !important;
-        }}
-        .es-m-p35b {{
-          padding-bottom: 35px !important;
-        }}
-        .es-m-p35r {{
-          padding-right: 35px !important;
-        }}
-        .es-m-p35l {{
-          padding-left: 35px !important;
-        }}
-        .es-m-p40 {{
-          padding: 40px !important;
-        }}
-        .es-m-p40t {{
-          padding-top: 40px !important;
-        }}
-        .es-m-p40b {{
-          padding-bottom: 40px !important;
-        }}
-        .es-m-p40r {{
-          padding-right: 40px !important;
-        }}
-        .es-m-p40l {{
-          padding-left: 40px !important;
-        }}
-        button.es-button {{
-          width: 100%;
-        }}
         .es-desk-hidden {{
           display: table-row !important;
           width: auto !important;
@@ -387,6 +283,7 @@ namespace PrintManagement.Application.Handle.HandleTemplate
     </style>
   </head>
   <body
+    data-new-gr-c-s-loaded=""14.1175.0""
     style=""
       width: 100%;
       font-family: arial, 'helvetica neue', helvetica, sans-serif;
@@ -399,12 +296,12 @@ namespace PrintManagement.Application.Handle.HandleTemplate
     <div
       dir=""ltr""
       class=""es-wrapper-color""
-      lang=""en""
-      style=""background-color: #fafafa""
+      lang=""vi""
+      style=""background-color: #333333""
     >
       <!--[if gte mso 9
         ]><v:background xmlns:v=""urn:schemas-microsoft-com:vml"" fill=""t"">
-          <v:fill type=""tile"" color=""#fafafa""></v:fill> </v:background
+          <v:fill type=""tile"" color=""#333333""></v:fill> </v:background
       ><![endif]-->
       <table
         class=""es-wrapper""
@@ -423,15 +320,15 @@ namespace PrintManagement.Application.Handle.HandleTemplate
           height: 100%;
           background-repeat: repeat;
           background-position: center top;
-          background-color: #fafafa;
+          background-color: #333333;
         ""
       >
-        <tr>
+        <tr style=""border-collapse: collapse"">
           <td valign=""top"" style=""padding: 0; margin: 0"">
             <table
-              class=""es-content""
-              cellspacing=""0""
               cellpadding=""0""
+              cellspacing=""0""
+              class=""es-content""
               align=""center""
               role=""none""
               style=""
@@ -443,8 +340,12 @@ namespace PrintManagement.Application.Handle.HandleTemplate
                 width: 100%;
               ""
             >
-              <tr>
-                <td align=""center"" style=""padding: 0; margin: 0"">
+              <tr style=""border-collapse: collapse"">
+                <td
+                  class=""es-adaptive""
+                  align=""center""
+                  style=""padding: 0; margin: 0""
+                >
                   <table
                     class=""es-content-body""
                     style=""
@@ -460,374 +361,17 @@ namespace PrintManagement.Application.Handle.HandleTemplate
                     align=""center""
                     role=""none""
                   >
-                    <tr>
+                    <tr style=""border-collapse: collapse"">
                       <td
-                        align=""left""
                         style=""
+                          padding: 10px;
                           margin: 0;
-                          padding-bottom: 5px;
-                          padding-top: 20px;
-                          padding-left: 20px;
-                          padding-right: 20px;
+                          background-position: center top;
                         ""
-                      >
-                        <table
-                          width=""100%""
-                          cellspacing=""0""
-                          cellpadding=""0""
-                          role=""none""
-                          style=""
-                            mso-table-lspace: 0pt;
-                            mso-table-rspace: 0pt;
-                            border-collapse: collapse;
-                            border-spacing: 0px;
-                          ""
-                        >
-                          <tr>
-                            <td
-                              valign=""top""
-                              align=""center""
-                              style=""padding: 0; margin: 0; width: 560px""
-                            >
-                              <table
-                                width=""100%""
-                                cellspacing=""0""
-                                cellpadding=""0""
-                                role=""presentation""
-                                style=""
-                                  mso-table-lspace: 0pt;
-                                  mso-table-rspace: 0pt;
-                                  border-collapse: collapse;
-                                  border-spacing: 0px;
-                                ""
-                              >
-                                <tr>
-                                  <td
-                                    align=""right""
-                                    style=""padding: 0; margin: 0""
-                                  >
-                                    <p
-                                      style=""
-                                        margin: 0;
-                                        -webkit-text-size-adjust: none;
-                                        -ms-text-size-adjust: none;
-                                        mso-line-height-rule: exactly;
-                                        font-family: arial, 'helvetica neue',
-                                          helvetica, sans-serif;
-                                        line-height: 21px;
-                                        color: #666666;
-                                        font-size: 14px;
-                                      ""
-                                    >
-                                      October 1st, 2021
-                                    </p>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            <table
-              class=""es-content""
-              cellspacing=""0""
-              cellpadding=""0""
-              align=""center""
-              role=""none""
-              style=""
-                mso-table-lspace: 0pt;
-                mso-table-rspace: 0pt;
-                border-collapse: collapse;
-                border-spacing: 0px;
-                table-layout: fixed !important;
-                width: 100%;
-              ""
-            >
-              <tr>
-                <td align=""center"" style=""padding: 0; margin: 0"">
-                  <table
-                    class=""es-content-body""
-                    cellspacing=""0""
-                    cellpadding=""0""
-                    bgcolor=""#ffffff""
-                    align=""center""
-                    role=""none""
-                    style=""
-                      mso-table-lspace: 0pt;
-                      mso-table-rspace: 0pt;
-                      border-collapse: collapse;
-                      border-spacing: 0px;
-                      background-color: #ffffff;
-                      width: 600px;
-                    ""
-                  >
-                    <tr>
-                      <td
                         align=""left""
-                        style=""
-                          padding: 0;
-                          margin: 0;
-                          padding-top: 20px;
-                          padding-left: 20px;
-                          padding-right: 20px;
-                        ""
                       >
-                        <table
-                          width=""100%""
-                          cellspacing=""0""
-                          cellpadding=""0""
-                          role=""none""
-                          style=""
-                            mso-table-lspace: 0pt;
-                            mso-table-rspace: 0pt;
-                            border-collapse: collapse;
-                            border-spacing: 0px;
-                          ""
-                        >
-                          <tr>
-                            <td
-                              valign=""top""
-                              align=""center""
-                              style=""padding: 0; margin: 0; width: 560px""
-                            >
-                              <table
-                                width=""100%""
-                                cellspacing=""0""
-                                cellpadding=""0""
-                                role=""presentation""
-                                style=""
-                                  mso-table-lspace: 0pt;
-                                  mso-table-rspace: 0pt;
-                                  border-collapse: collapse;
-                                  border-spacing: 0px;
-                                ""
-                              >
-                                <tr>
-                                  <td
-                                    class=""es-m-txt-l""
-                                    align=""left""
-                                    style=""
-                                      padding: 0;
-                                      margin: 0;
-                                      padding-top: 5px;
-                                      padding-bottom: 10px;
-                                    ""
-                                  >
-                                    <h3
-                                      style=""
-                                        margin: 0;
-                                        line-height: 24px;
-                                        mso-line-height-rule: exactly;
-                                        font-family: arial, 'helvetica neue',
-                                          helvetica, sans-serif;
-                                        font-size: 20px;
-                                        font-style: normal;
-                                        font-weight: bold;
-                                        color: #333333;
-                                      ""
-                                    >
-                                      Dear *|FNAME|*,
-                                    </h3>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td
-                                    align=""left""
-                                    style=""
-                                      padding: 0;
-                                      margin: 0;
-                                      padding-top: 5px;
-                                      padding-bottom: 10px;
-                                    ""
-                                  >
-                                    <p
-                                      style=""
-                                        margin: 0;
-                                        -webkit-text-size-adjust: none;
-                                        -ms-text-size-adjust: none;
-                                        mso-line-height-rule: exactly;
-                                        font-family: arial, 'helvetica neue',
-                                          helvetica, sans-serif;
-                                        line-height: 21px;
-                                        color: #333333;
-                                        font-size: 14px;
-                                      ""
-                                    >
-                                      It's been a year since you joined our
-                                      team.<br />You had your ups and downs. But
-                                      I am extremely happy you are one of us.<br /><br />Your
-                                      experience in Mobile Apps Development is
-                                      something we truly needed.<br />Now we
-                                      provide our clients both with professional
-                                      email marketing and high-quality mobile
-                                      apps that help them boost their
-                                      sales.&nbsp;<br /><br />It's been a nice
-                                      year together. You showed yourself as a
-                                      skilled professional.<br />Now it's time
-                                      to move on.<br />We decided to start a new
-                                      direction -- Mobile Apps for external
-                                      IT&nbsp;companies -- which we want you to
-                                      run. Your duties will be:&nbsp;
-                                    </p>
-                                    <ul>
-                                      <li
-                                        style=""
-                                          -webkit-text-size-adjust: none;
-                                          -ms-text-size-adjust: none;
-                                          mso-line-height-rule: exactly;
-                                          font-family: arial, 'helvetica neue',
-                                            helvetica, sans-serif;
-                                          line-height: 21px;
-                                          margin-bottom: 15px;
-                                          margin-left: 0;
-                                          color: #333333;
-                                          font-size: 14px;
-                                        ""
-                                      >
-                                        you will be a team leader&nbsp;of your
-                                        own unit;
-                                      </li>
-                                      <li
-                                        style=""
-                                          -webkit-text-size-adjust: none;
-                                          -ms-text-size-adjust: none;
-                                          mso-line-height-rule: exactly;
-                                          font-family: arial, 'helvetica neue',
-                                            helvetica, sans-serif;
-                                          line-height: 21px;
-                                          margin-bottom: 15px;
-                                          margin-left: 0;
-                                          color: #333333;
-                                          font-size: 14px;
-                                        ""
-                                      >
-                                        interviewing new developers;
-                                      </li>
-                                      <li
-                                        style=""
-                                          -webkit-text-size-adjust: none;
-                                          -ms-text-size-adjust: none;
-                                          mso-line-height-rule: exactly;
-                                          font-family: arial, 'helvetica neue',
-                                            helvetica, sans-serif;
-                                          line-height: 21px;
-                                          margin-bottom: 15px;
-                                          margin-left: 0;
-                                          color: #333333;
-                                          font-size: 14px;
-                                        ""
-                                      >
-                                        monitoring performance of the entire
-                                        unit;
-                                      </li>
-                                      <li
-                                        style=""
-                                          -webkit-text-size-adjust: none;
-                                          -ms-text-size-adjust: none;
-                                          mso-line-height-rule: exactly;
-                                          font-family: arial, 'helvetica neue',
-                                            helvetica, sans-serif;
-                                          line-height: 21px;
-                                          margin-bottom: 15px;
-                                          margin-left: 0;
-                                          color: #333333;
-                                          font-size: 14px;
-                                        ""
-                                      >
-                                        communication with clients after they
-                                        placed an order to better understand
-                                        what they need;
-                                      </li>
-                                      <li
-                                        style=""
-                                          -webkit-text-size-adjust: none;
-                                          -ms-text-size-adjust: none;
-                                          mso-line-height-rule: exactly;
-                                          font-family: arial, 'helvetica neue',
-                                            helvetica, sans-serif;
-                                          line-height: 21px;
-                                          margin-bottom: 15px;
-                                          margin-left: 0;
-                                          color: #333333;
-                                          font-size: 14px;
-                                        ""
-                                      >
-                                        if you like, you can continue to
-                                        work&nbsp;on Mobile Apps development on
-                                        your own, too.
-                                      </li>
-                                    </ul>
-                                    <p
-                                      style=""
-                                        margin: 0;
-                                        -webkit-text-size-adjust: none;
-                                        -ms-text-size-adjust: none;
-                                        mso-line-height-rule: exactly;
-                                        font-family: arial, 'helvetica neue',
-                                          helvetica, sans-serif;
-                                        line-height: 21px;
-                                        color: #333333;
-                                        font-size: 14px;
-                                      ""
-                                    >
-                                      We hope you will take&nbsp;our offer as we
-                                      trust in you.&nbsp;<br />Please, give us
-                                      your answer by October 4th.<br /><br />Regards,<br />Aaron
-                                      Parker.
-                                    </p>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            <table
-              class=""es-content""
-              cellspacing=""0""
-              cellpadding=""0""
-              align=""center""
-              role=""none""
-              style=""
-                mso-table-lspace: 0pt;
-                mso-table-rspace: 0pt;
-                border-collapse: collapse;
-                border-spacing: 0px;
-                table-layout: fixed !important;
-                width: 100%;
-              ""
-            >
-              <tr>
-                <td align=""center"" style=""padding: 0; margin: 0"">
-                  <table
-                    class=""es-content-body""
-                    cellspacing=""0""
-                    cellpadding=""0""
-                    bgcolor=""#ffffff""
-                    align=""center""
-                    role=""none""
-                    style=""
-                      mso-table-lspace: 0pt;
-                      mso-table-rspace: 0pt;
-                      border-collapse: collapse;
-                      border-spacing: 0px;
-                      background-color: #ffffff;
-                      width: 600px;
-                    ""
-                  >
-                    <tr>
-                      <td align=""left"" style=""padding: 20px; margin: 0"">
-                        <!--[if mso]><table style=""width:560px"" cellpadding=""0"" cellspacing=""0""><tr><td style=""width:296px"" valign=""top""><![endif]-->
+                        <!--[if mso]><table style=""width:580px""><tr>
+    <td style=""width:280px"" valign=""top""><![endif]-->
                         <table
                           class=""es-left""
                           cellspacing=""0""
@@ -842,10 +386,10 @@ namespace PrintManagement.Application.Handle.HandleTemplate
                             float: left;
                           ""
                         >
-                          <tr>
+                          <tr style=""border-collapse: collapse"">
                             <td
                               align=""left""
-                              style=""padding: 0; margin: 0; width: 276px""
+                              style=""padding: 0; margin: 0; width: 280px""
                             >
                               <table
                                 width=""100%""
@@ -859,103 +403,40 @@ namespace PrintManagement.Application.Handle.HandleTemplate
                                   border-spacing: 0px;
                                 ""
                               >
-                                <tr>
+                                <tr style=""border-collapse: collapse"">
                                   <td
-                                    class=""es-m-txt-l""
-                                    style=""
-                                      padding: 0;
-                                      margin: 0;
-                                      font-size: 0px;
-                                    ""
+                                    class=""es-infoblock es-m-txt-c""
                                     align=""left""
-                                  >
-                                    <img
-                                      src=""https://eeslewt.stripocdn.email/content/guids/CABINET_5855bdf78ca537e4d15709a026af93a6/images/89501626684388018.png""
-                                      alt
-                                      style=""
-                                        display: block;
-                                        border: 0;
-                                        outline: none;
-                                        text-decoration: none;
-                                        -ms-interpolation-mode: bicubic;
-                                      ""
-                                      width=""186""
-                                      height=""68""
-                                    />
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                            <td
-                              class=""es-hidden""
-                              style=""padding: 0; margin: 0; width: 20px""
-                            ></td>
-                          </tr>
-                        </table>
-                        <!--[if mso]></td><td style=""width:96px"" valign=""top""><![endif]-->
-                        <table
-                          class=""es-left""
-                          cellspacing=""0""
-                          cellpadding=""0""
-                          align=""left""
-                          role=""none""
-                          style=""
-                            mso-table-lspace: 0pt;
-                            mso-table-rspace: 0pt;
-                            border-collapse: collapse;
-                            border-spacing: 0px;
-                            float: left;
-                          ""
-                        >
-                          <tr>
-                            <td
-                              align=""left""
-                              style=""padding: 0; margin: 0; width: 96px""
-                            >
-                              <table
-                                width=""100%""
-                                cellspacing=""0""
-                                cellpadding=""0""
-                                role=""presentation""
-                                style=""
-                                  mso-table-lspace: 0pt;
-                                  mso-table-rspace: 0pt;
-                                  border-collapse: collapse;
-                                  border-spacing: 0px;
-                                ""
-                              >
-                                <tr>
-                                  <td
-                                    class=""es-m-txt-c""
                                     style=""
                                       padding: 0;
                                       margin: 0;
-                                      padding-top: 5px;
-                                      padding-bottom: 5px;
-                                      font-size: 0px;
+                                      line-height: 14px;
+                                      font-size: 12px;
+                                      color: #cccccc;
                                     ""
-                                    align=""right""
                                   >
-                                    <img
-                                      src=""https://eeslewt.stripocdn.email/content/guids/CABINET_5855bdf78ca537e4d15709a026af93a6/images/12581621865359778.png""
-                                      alt
+                                    <p
                                       style=""
-                                        display: block;
-                                        border: 0;
-                                        outline: none;
-                                        text-decoration: none;
-                                        -ms-interpolation-mode: bicubic;
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 14px;
+                                        color: #cccccc;
+                                        font-size: 12px;
                                       ""
-                                      width=""96""
-                                      height=""96""
-                                    />
+                                    >
+                                      Put your preheader text here
+                                    </p>
                                   </td>
                                 </tr>
                               </table>
                             </td>
                           </tr>
                         </table>
-                        <!--[if mso]></td><td style=""width:20px""></td><td style=""width:148px"" valign=""top""><![endif]-->
+                        <!--[if mso]></td><td style=""width:20px""></td><td style=""width:280px"" valign=""top""><![endif]-->
                         <table
                           class=""es-right""
                           cellspacing=""0""
@@ -970,10 +451,10 @@ namespace PrintManagement.Application.Handle.HandleTemplate
                             float: right;
                           ""
                         >
-                          <tr>
+                          <tr style=""border-collapse: collapse"">
                             <td
                               align=""left""
-                              style=""padding: 0; margin: 0; width: 148px""
+                              style=""padding: 0; margin: 0; width: 280px""
                             >
                               <table
                                 width=""100%""
@@ -987,27 +468,18 @@ namespace PrintManagement.Application.Handle.HandleTemplate
                                   border-spacing: 0px;
                                 ""
                               >
-                                <tr>
+                                <tr style=""border-collapse: collapse"">
                                   <td
-                                    class=""es-m-txt-c""
-                                    align=""left""
-                                    style=""padding: 0; margin: 0""
+                                    align=""right""
+                                    class=""es-infoblock es-m-txt-c""
+                                    style=""
+                                      padding: 0;
+                                      margin: 0;
+                                      line-height: 14px;
+                                      font-size: 12px;
+                                      color: #cccccc;
+                                    ""
                                   >
-                                    <h3
-                                      style=""
-                                        margin: 0;
-                                        line-height: 30px;
-                                        mso-line-height-rule: exactly;
-                                        font-family: arial, 'helvetica neue',
-                                          helvetica, sans-serif;
-                                        font-size: 20px;
-                                        font-style: normal;
-                                        font-weight: bold;
-                                        color: #333333;
-                                      ""
-                                    >
-                                      Aaron Parker
-                                    </h3>
                                     <p
                                       style=""
                                         margin: 0;
@@ -1016,190 +488,26 @@ namespace PrintManagement.Application.Handle.HandleTemplate
                                         mso-line-height-rule: exactly;
                                         font-family: arial, 'helvetica neue',
                                           helvetica, sans-serif;
-                                        line-height: 21px;
-                                        color: #333333;
-                                        font-size: 14px;
-                                      ""
-                                    >
-                                      CEO of ""Style Casual""
-                                    </p>
-                                    <p
-                                      style=""
-                                        margin: 0;
-                                        -webkit-text-size-adjust: none;
-                                        -ms-text-size-adjust: none;
-                                        mso-line-height-rule: exactly;
-                                        font-family: arial, 'helvetica neue',
-                                          helvetica, sans-serif;
-                                        line-height: 21px;
-                                        color: #333333;
-                                        font-size: 14px;
+                                        line-height: 14px;
+                                        color: #cccccc;
+                                        font-size: 12px;
                                       ""
                                     >
                                       <a
+                                        href=""https://viewstripo.email/""
                                         target=""_blank""
-                                        style=""
-                                          -webkit-text-size-adjust: none;
-                                          -ms-text-size-adjust: none;
-                                          mso-line-height-rule: exactly;
-                                          text-decoration: none;
-                                          color: #333333;
-                                          font-size: 14px;
-                                          line-height: 21px;
-                                        ""
-                                        href=""""
-                                        >+0 (000) 123 456 789</a
-                                      >
-                                    </p>
-                                    <p
-                                      style=""
-                                        margin: 0;
-                                        -webkit-text-size-adjust: none;
-                                        -ms-text-size-adjust: none;
-                                        mso-line-height-rule: exactly;
-                                        font-family: arial, 'helvetica neue',
-                                          helvetica, sans-serif;
-                                        line-height: 21px;
-                                        color: #333333;
-                                        font-size: 14px;
-                                      ""
-                                    >
-                                      <a
-                                        target=""_blank""
-                                        href=""mailto:aaronparker@email.com""
+                                        class=""view""
                                         style=""
                                           -webkit-text-size-adjust: none;
                                           -ms-text-size-adjust: none;
                                           mso-line-height-rule: exactly;
                                           text-decoration: underline;
-                                          color: #333333;
-                                          font-size: 14px;
-                                          line-height: 21px;
+                                          color: #cccccc;
+                                          font-size: 12px;
                                         ""
-                                        >parker@email.com</a
+                                        >View in browser</a
                                       >
                                     </p>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td
-                                    class=""es-m-txt-c""
-                                    style=""
-                                      padding: 0;
-                                      margin: 0;
-                                      padding-top: 5px;
-                                      padding-bottom: 5px;
-                                      font-size: 0;
-                                    ""
-                                    align=""left""
-                                  >
-                                    <table
-                                      class=""es-table-not-adapt es-social""
-                                      cellspacing=""0""
-                                      cellpadding=""0""
-                                      role=""presentation""
-                                      style=""
-                                        mso-table-lspace: 0pt;
-                                        mso-table-rspace: 0pt;
-                                        border-collapse: collapse;
-                                        border-spacing: 0px;
-                                      ""
-                                    >
-                                      <tr>
-                                        <td
-                                          valign=""top""
-                                          align=""center""
-                                          style=""
-                                            padding: 0;
-                                            margin: 0;
-                                            padding-right: 10px;
-                                          ""
-                                        >
-                                          <img
-                                            title=""Facebook""
-                                            src=""https://eeslewt.stripocdn.email/content/assets/img/social-icons/logo-black/facebook-logo-black.png""
-                                            alt=""Fb""
-                                            width=""24""
-                                            height=""24""
-                                            style=""
-                                              display: block;
-                                              border: 0;
-                                              outline: none;
-                                              text-decoration: none;
-                                              -ms-interpolation-mode: bicubic;
-                                            ""
-                                          />
-                                        </td>
-                                        <td
-                                          valign=""top""
-                                          align=""center""
-                                          style=""
-                                            padding: 0;
-                                            margin: 0;
-                                            padding-right: 10px;
-                                          ""
-                                        >
-                                          <img
-                                            title=""Twitter""
-                                            src=""https://eeslewt.stripocdn.email/content/assets/img/social-icons/logo-black/twitter-logo-black.png""
-                                            alt=""Tw""
-                                            width=""24""
-                                            height=""24""
-                                            style=""
-                                              display: block;
-                                              border: 0;
-                                              outline: none;
-                                              text-decoration: none;
-                                              -ms-interpolation-mode: bicubic;
-                                            ""
-                                          />
-                                        </td>
-                                        <td
-                                          valign=""top""
-                                          align=""center""
-                                          style=""
-                                            padding: 0;
-                                            margin: 0;
-                                            padding-right: 10px;
-                                          ""
-                                        >
-                                          <img
-                                            title=""Instagram""
-                                            src=""https://eeslewt.stripocdn.email/content/assets/img/social-icons/logo-black/instagram-logo-black.png""
-                                            alt=""Inst""
-                                            width=""24""
-                                            height=""24""
-                                            style=""
-                                              display: block;
-                                              border: 0;
-                                              outline: none;
-                                              text-decoration: none;
-                                              -ms-interpolation-mode: bicubic;
-                                            ""
-                                          />
-                                        </td>
-                                        <td
-                                          valign=""top""
-                                          align=""center""
-                                          style=""padding: 0; margin: 0""
-                                        >
-                                          <img
-                                            title=""Youtube""
-                                            src=""https://eeslewt.stripocdn.email/content/assets/img/social-icons/logo-black/youtube-logo-black.png""
-                                            alt=""Yt""
-                                            width=""24""
-                                            height=""24""
-                                            style=""
-                                              display: block;
-                                              border: 0;
-                                              outline: none;
-                                              text-decoration: none;
-                                              -ms-interpolation-mode: bicubic;
-                                            ""
-                                          />
-                                        </td>
-                                      </tr>
-                                    </table>
                                   </td>
                                 </tr>
                               </table>
@@ -1213,13 +521,1018 @@ namespace PrintManagement.Application.Handle.HandleTemplate
                 </td>
               </tr>
             </table>
+            <table
+              class=""es-content""
+              cellspacing=""0""
+              cellpadding=""0""
+              align=""center""
+              role=""none""
+              style=""
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+                border-collapse: collapse;
+                border-spacing: 0px;
+                table-layout: fixed !important;
+                width: 100%;
+              ""
+            >
+              <tr style=""border-collapse: collapse""></tr>
+              <tr style=""border-collapse: collapse"">
+                <td align=""center"" style=""padding: 0; margin: 0"">
+                  <table
+                    class=""es-header-body""
+                    style=""
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      border-collapse: collapse;
+                      border-spacing: 0px;
+                      background-color: #2b2c2c;
+                      width: 600px;
+                    ""
+                    cellspacing=""0""
+                    cellpadding=""0""
+                    bgcolor=""#2b2c2c""
+                    align=""center""
+                    role=""none""
+                  >
+                    <tr style=""border-collapse: collapse"">
+                      <td align=""left"" style=""padding: 10px; margin: 0"">
+                        <table
+                          width=""100%""
+                          cellspacing=""0""
+                          cellpadding=""0""
+                          role=""none""
+                          style=""
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                            border-collapse: collapse;
+                            border-spacing: 0px;
+                          ""
+                        >
+                          <tr style=""border-collapse: collapse"">
+                            <td
+                              valign=""top""
+                              align=""center""
+                              style=""padding: 0; margin: 0; width: 580px""
+                            >
+                              <table
+                                width=""100%""
+                                cellspacing=""0""
+                                cellpadding=""0""
+                                role=""presentation""
+                                style=""
+                                  mso-table-lspace: 0pt;
+                                  mso-table-rspace: 0pt;
+                                  border-collapse: collapse;
+                                  border-spacing: 0px;
+                                ""
+                              >
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    align=""center""
+                                    style=""
+                                      padding: 10px;
+                                      margin: 0;
+                                      font-size: 0;
+                                    ""
+                                  >
+                                    <img
+                                      src=""https://eeslewt.stripocdn.email/content/guids/CABINET_48bba02538722a91504d04e69a808999/images/30851517396685967.png""
+                                      alt=""InkMastery""
+                                      title=""InkMastery""
+                                      width=""184""
+                                      style=""
+                                        display: block;
+                                        border: 0;
+                                        outline: none;
+                                        text-decoration: none;
+                                        -ms-interpolation-mode: bicubic;
+                                        font-size: 12px;
+                                      ""
+                                      height=""44""
+                                    />
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr style=""border-collapse: collapse"">
+                      <td
+                        style=""
+                          padding: 0;
+                          margin: 0;
+                          padding-top: 10px;
+                          padding-bottom: 10px;
+                          background-color: #e2e3e3;
+                        ""
+                        bgcolor=""#e2e3e3""
+                        align=""left""
+                      >
+                        <table
+                          width=""100%""
+                          cellspacing=""0""
+                          cellpadding=""0""
+                          role=""none""
+                          style=""
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                            border-collapse: collapse;
+                            border-spacing: 0px;
+                          ""
+                        >
+                          <tr style=""border-collapse: collapse"">
+                            <td
+                              valign=""top""
+                              align=""center""
+                              style=""padding: 0; margin: 0; width: 600px""
+                            >
+                              <table
+                                width=""100%""
+                                cellspacing=""0""
+                                cellpadding=""0""
+                                role=""presentation""
+                                style=""
+                                  mso-table-lspace: 0pt;
+                                  mso-table-rspace: 0pt;
+                                  border-collapse: collapse;
+                                  border-spacing: 0px;
+                                ""
+                              >
+                                <tr style=""border-collapse: collapse"">
+                                  <td style=""padding: 0; margin: 0"">
+                                    <table
+                                      class=""es-menu""
+                                      width=""100%""
+                                      cellspacing=""0""
+                                      cellpadding=""0""
+                                      role=""presentation""
+                                      style=""
+                                        mso-table-lspace: 0pt;
+                                        mso-table-rspace: 0pt;
+                                        border-collapse: collapse;
+                                        border-spacing: 0px;
+                                      ""
+                                    >
+                                      <tr
+                                        class=""links""
+                                        style=""border-collapse: collapse""
+                                      >
+                                        <td
+                                          class=""es-hidden""
+                                          style=""
+                                            margin: 0;
+                                            padding-left: 5px;
+                                            padding-right: 5px;
+                                            padding-top: 0px;
+                                            padding-bottom: 0px;
+                                            border: 0;
+                                          ""
+                                          id=""esd-menu-id-4""
+                                          esdev-border-color=""#000000""
+                                          width=""100%""
+                                          bgcolor=""transparent""
+                                          align=""center""
+                                        >
+                                          <a
+                                            target=""_blank""
+                                            style=""
+                                              -webkit-text-size-adjust: none;
+                                              -ms-text-size-adjust: none;
+                                              mso-line-height-rule: exactly;
+                                              text-decoration: none;
+                                              display: block;
+                                              font-family: arial,
+                                                'helvetica neue', helvetica,
+                                                sans-serif;
+                                              color: #333333;
+                                              font-size: 14px;
+                                            ""
+                                            href=""https://viewstripo.email/""
+                                          ></a>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            <table
+              class=""es-content""
+              cellspacing=""0""
+              cellpadding=""0""
+              align=""center""
+              role=""none""
+              style=""
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+                border-collapse: collapse;
+                border-spacing: 0px;
+                table-layout: fixed !important;
+                width: 100%;
+              ""
+            >
+              <tr style=""border-collapse: collapse"">
+                <td align=""center"" style=""padding: 0; margin: 0"">
+                  <table
+                    class=""es-content-body""
+                    style=""
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      border-collapse: collapse;
+                      border-spacing: 0px;
+                      background-color: #2b2c2c;
+                      width: 600px;
+                    ""
+                    cellspacing=""0""
+                    cellpadding=""0""
+                    bgcolor=""#2b2c2c""
+                    align=""center""
+                    role=""none""
+                  >
+                    <tr style=""border-collapse: collapse"">
+                      <td
+                        style=""
+                          padding: 0;
+                          margin: 0;
+                          padding-top: 20px;
+                          background-color: #040404;
+                        ""
+                        bgcolor=""#040404""
+                        align=""left""
+                      >
+                        <table
+                          width=""100%""
+                          cellspacing=""0""
+                          cellpadding=""0""
+                          role=""none""
+                          style=""
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                            border-collapse: collapse;
+                            border-spacing: 0px;
+                          ""
+                        >
+                          <tr style=""border-collapse: collapse"">
+                            <td
+                              valign=""top""
+                              align=""center""
+                              style=""padding: 0; margin: 0; width: 600px""
+                            >
+                              <table
+                                width=""100%""
+                                cellspacing=""0""
+                                cellpadding=""0""
+                                role=""presentation""
+                                style=""
+                                  mso-table-lspace: 0pt;
+                                  mso-table-rspace: 0pt;
+                                  border-collapse: collapse;
+                                  border-spacing: 0px;
+                                ""
+                              >
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    align=""center""
+                                    style=""padding: 0; margin: 0; font-size: 0""
+                                  >
+                                    <a
+                                      target=""_blank""
+                                      href=""https://viewstripo.email/""
+                                      style=""
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        text-decoration: underline;
+                                        color: #de4a4a;
+                                        font-size: 16px;
+                                      ""
+                                      ><img
+                                        class=""adapt-img""
+                                        src=""https://eeslewt.stripocdn.email/content/guids/CABINET_ec03bfe212a3efb29764f8962995b8ec/images/97851527778563879.gif""
+                                        alt=""InkMastery""
+                                        style=""
+                                          display: block;
+                                          border: 0;
+                                          outline: none;
+                                          text-decoration: none;
+                                          -ms-interpolation-mode: bicubic;
+                                        ""
+                                        width=""441""
+                                        title=""InkMastery""
+                                        height=""306""
+                                    /></a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            <table
+              class=""es-content""
+              cellspacing=""0""
+              cellpadding=""0""
+              align=""center""
+              role=""none""
+              style=""
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+                border-collapse: collapse;
+                border-spacing: 0px;
+                table-layout: fixed !important;
+                width: 100%;
+              ""
+            >
+              <tr style=""border-collapse: collapse"">
+                <td align=""center"" style=""padding: 0; margin: 0"">
+                  <table
+                    class=""es-content-body""
+                    style=""
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      border-collapse: collapse;
+                      border-spacing: 0px;
+                      background-color: #2b2c2c;
+                      width: 600px;
+                    ""
+                    cellspacing=""0""
+                    cellpadding=""0""
+                    bgcolor=""#2b2c2c""
+                    align=""center""
+                    role=""none""
+                  >
+                    <tr style=""border-collapse: collapse"">
+                      <td
+                        style=""
+                          margin: 0;
+                          padding-left: 20px;
+                          padding-right: 20px;
+                          padding-top: 25px;
+                          padding-bottom: 30px;
+                          background-color: #020202;
+                        ""
+                        bgcolor=""#020202""
+                        align=""left""
+                      >
+                        <table
+                          width=""100%""
+                          cellspacing=""0""
+                          cellpadding=""0""
+                          role=""none""
+                          style=""
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                            border-collapse: collapse;
+                            border-spacing: 0px;
+                          ""
+                        >
+                          <tr style=""border-collapse: collapse"">
+                            <td
+                              valign=""top""
+                              align=""center""
+                              style=""padding: 0; margin: 0; width: 560px""
+                            >
+                              <table
+                                width=""100%""
+                                cellspacing=""0""
+                                cellpadding=""0""
+                                role=""presentation""
+                                style=""
+                                  mso-table-lspace: 0pt;
+                                  mso-table-rspace: 0pt;
+                                  border-collapse: collapse;
+                                  border-spacing: 0px;
+                                ""
+                              >
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    class=""es-m-txt-c""
+                                    align=""center""
+                                    style=""
+                                      margin: 0;
+                                      padding-top: 5px;
+                                      padding-bottom: 5px;
+                                      padding-left: 20px;
+                                      padding-right: 20px;
+                                    ""
+                                  >
+                                    <h1
+                                      style=""
+                                        margin: 0;
+                                        line-height: 66px;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        font-size: 55px;
+                                        font-style: normal;
+                                        font-weight: normal;
+                                        color: #e35367;
+                                      ""
+                                    >
+                                      InkMastery
+                                    </h1>
+                                  </td>
+                                </tr>
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    class=""es-m-txt-c""
+                                    align=""center""
+                                    style=""
+                                      padding: 0;
+                                      margin: 0;
+                                      padding-left: 20px;
+                                      padding-right: 20px;
+                                    ""
+                                  >
+                                    <p
+                                      style=""
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 24px;
+                                        color: #cccccc;
+                                        font-size: 16px;
+                                      ""
+                                    >
+                                      Cảm ơn quý khách đã tin tưởng và đặt hàng
+                                      từ chúng tôi
+                                    </p>
+                                  </td>
+                                </tr>
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    class=""es-m-txt-c""
+                                    align=""center""
+                                    style=""
+                                      padding: 0;
+                                      margin: 0;
+                                      padding-left: 20px;
+                                      padding-right: 20px;
+                                    ""
+                                  >
+                                    <p
+                                      style=""
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 21px;
+                                        color: #cccccc;
+                                        font-size: 14px;
+                                      ""
+                                    >
+                                      <br />
+                                    </p>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            <table
+              cellpadding=""0""
+              cellspacing=""0""
+              class=""es-footer""
+              align=""center""
+              role=""none""
+              style=""
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+                border-collapse: collapse;
+                border-spacing: 0px;
+                table-layout: fixed !important;
+                width: 100%;
+                background-color: transparent;
+                background-repeat: repeat;
+                background-position: center top;
+              ""
+            >
+              <tr style=""border-collapse: collapse"">
+                <td align=""center"" style=""padding: 0; margin: 0"">
+                  <table
+                    class=""es-footer-body""
+                    style=""
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      border-collapse: collapse;
+                      border-spacing: 0px;
+                      background-color: #212121;
+                      width: 600px;
+                    ""
+                    cellspacing=""0""
+                    cellpadding=""0""
+                    bgcolor=""#212121""
+                    align=""center""
+                    role=""none""
+                  >
+                    <tr style=""border-collapse: collapse"">
+                      <td
+                        align=""left""
+                        style=""
+                          margin: 0;
+                          padding-top: 20px;
+                          padding-left: 20px;
+                          padding-right: 20px;
+                          padding-bottom: 30px;
+                        ""
+                      >
+                        <table
+                          width=""100%""
+                          cellspacing=""0""
+                          cellpadding=""0""
+                          role=""none""
+                          style=""
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                            border-collapse: collapse;
+                            border-spacing: 0px;
+                          ""
+                        >
+                          <tr style=""border-collapse: collapse"">
+                            <td
+                              valign=""top""
+                              align=""center""
+                              style=""padding: 0; margin: 0; width: 560px""
+                            >
+                              <table
+                                width=""100%""
+                                cellspacing=""0""
+                                cellpadding=""0""
+                                role=""presentation""
+                                style=""
+                                  mso-table-lspace: 0pt;
+                                  mso-table-rspace: 0pt;
+                                  border-collapse: collapse;
+                                  border-spacing: 0px;
+                                ""
+                              >
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    align=""center""
+                                    style=""
+                                      padding: 0;
+                                      margin: 0;
+                                      padding-bottom: 15px;
+                                      font-size: 0;
+                                    ""
+                                  >
+                                    <a
+                                      href=""https://viewstripo.email""
+                                      target=""_blank""
+                                      style=""
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        text-decoration: underline;
+                                        color: #dbdbdb;
+                                        font-size: 14px;
+                                      ""
+                                      ><img
+                                        src=""https://eeslewt.stripocdn.email/content/guids/CABINET_48bba02538722a91504d04e69a808999/images/30851517396685967.png""
+                                        alt=""Automotive logo""
+                                        title=""Automotive logo""
+                                        width=""144""
+                                        height=""35""
+                                        style=""
+                                          display: block;
+                                          border: 0;
+                                          outline: none;
+                                          text-decoration: none;
+                                          -ms-interpolation-mode: bicubic;
+                                        ""
+                                    /></a>
+                                  </td>
+                                </tr>
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    align=""center""
+                                    style=""
+                                      padding: 0;
+                                      margin: 0;
+                                      padding-bottom: 15px;
+                                      font-size: 0;
+                                    ""
+                                  >
+                                    <table
+                                      class=""es-table-not-adapt es-social""
+                                      cellspacing=""0""
+                                      cellpadding=""0""
+                                      role=""presentation""
+                                      style=""
+                                        mso-table-lspace: 0pt;
+                                        mso-table-rspace: 0pt;
+                                        border-collapse: collapse;
+                                        border-spacing: 0px;
+                                      ""
+                                    >
+                                      <tr style=""border-collapse: collapse"">
+                                        <td
+                                          valign=""top""
+                                          align=""center""
+                                          style=""
+                                            padding: 0;
+                                            margin: 0;
+                                            padding-right: 20px;
+                                          ""
+                                        >
+                                          <a
+                                            target=""_blank""
+                                            href=""https://www.facebook.com/minhquantb00""
+                                            style=""
+                                              -webkit-text-size-adjust: none;
+                                              -ms-text-size-adjust: none;
+                                              mso-line-height-rule: exactly;
+                                              text-decoration: underline;
+                                              color: #dbdbdb;
+                                              font-size: 14px;
+                                            ""
+                                            ><img
+                                              title=""Facebook""
+                                              src=""https://eeslewt.stripocdn.email/content/assets/img/social-icons/logo-gray/facebook-logo-gray.png""
+                                              alt=""Fb""
+                                              width=""32""
+                                              height=""32""
+                                              style=""
+                                                display: block;
+                                                border: 0;
+                                                outline: none;
+                                                text-decoration: none;
+                                                -ms-interpolation-mode: bicubic;
+                                              ""
+                                          /></a>
+                                        </td>
+                                        <td
+                                          valign=""top""
+                                          align=""center""
+                                          style=""
+                                            padding: 0;
+                                            margin: 0;
+                                            padding-right: 20px;
+                                          ""
+                                        >
+                                          <img
+                                            title=""Twitter""
+                                            src=""https://eeslewt.stripocdn.email/content/assets/img/social-icons/logo-gray/twitter-logo-gray.png""
+                                            alt=""Tw""
+                                            width=""32""
+                                            height=""32""
+                                            style=""
+                                              display: block;
+                                              border: 0;
+                                              outline: none;
+                                              text-decoration: none;
+                                              -ms-interpolation-mode: bicubic;
+                                            ""
+                                          />
+                                        </td>
+                                        <td
+                                          valign=""top""
+                                          align=""center""
+                                          style=""
+                                            padding: 0;
+                                            margin: 0;
+                                            padding-right: 20px;
+                                          ""
+                                        >
+                                          <img
+                                            title=""Instagram""
+                                            src=""https://eeslewt.stripocdn.email/content/assets/img/social-icons/logo-gray/instagram-logo-gray.png""
+                                            alt=""Inst""
+                                            width=""32""
+                                            height=""32""
+                                            style=""
+                                              display: block;
+                                              border: 0;
+                                              outline: none;
+                                              text-decoration: none;
+                                              -ms-interpolation-mode: bicubic;
+                                            ""
+                                          />
+                                        </td>
+                                        <td
+                                          valign=""top""
+                                          align=""center""
+                                          style=""
+                                            padding: 0;
+                                            margin: 0;
+                                            padding-right: 10px;
+                                          ""
+                                        >
+                                          <a
+                                            target=""_blank""
+                                            href=""https://www.youtube.com/channel/UC3CVoJo3JI7LWjD1-ezBWBA""
+                                            style=""
+                                              -webkit-text-size-adjust: none;
+                                              -ms-text-size-adjust: none;
+                                              mso-line-height-rule: exactly;
+                                              text-decoration: underline;
+                                              color: #dbdbdb;
+                                              font-size: 14px;
+                                            ""
+                                            ><img
+                                              title=""Youtube""
+                                              src=""https://eeslewt.stripocdn.email/content/assets/img/social-icons/logo-gray/youtube-logo-gray.png""
+                                              alt=""Yt""
+                                              width=""32""
+                                              height=""32""
+                                              style=""
+                                                display: block;
+                                                border: 0;
+                                                outline: none;
+                                                text-decoration: none;
+                                                -ms-interpolation-mode: bicubic;
+                                              ""
+                                          /></a>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    align=""center""
+                                    style=""padding: 0; margin: 0""
+                                  >
+                                    <p
+                                      style=""
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 20px;
+                                        color: #a2a2a2;
+                                        font-size: 13px;
+                                      ""
+                                    >
+                                      Automotive Motors, 1230 Deer Creek Road,
+                                      Gilbert, CA 99999
+                                    </p>
+                                    <p
+                                      style=""
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 20px;
+                                        color: #a2a2a2;
+                                        font-size: 13px;
+                                      ""
+                                    >
+                                      <a
+                                        target=""_blank""
+                                        style=""
+                                          -webkit-text-size-adjust: none;
+                                          -ms-text-size-adjust: none;
+                                          mso-line-height-rule: exactly;
+                                          text-decoration: underline;
+                                          color: #dbdbdb;
+                                          font-size: 13px;
+                                        ""
+                                        class=""unsubscribe""
+                                        href=""""
+                                        >Unsubscribe</a
+                                      >
+                                      |
+                                      <a
+                                        target=""_blank""
+                                        style=""
+                                          -webkit-text-size-adjust: none;
+                                          -ms-text-size-adjust: none;
+                                          mso-line-height-rule: exactly;
+                                          text-decoration: underline;
+                                          color: #dbdbdb;
+                                          font-size: 13px;
+                                        ""
+                                        href=""https://viewstripo.email""
+                                        >Update Preferences</a
+                                      >
+                                    </p>
+                                  </td>
+                                </tr>
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    align=""center""
+                                    style=""
+                                      padding: 0;
+                                      margin: 0;
+                                      padding-top: 5px;
+                                    ""
+                                  >
+                                    <p
+                                      style=""
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 20px;
+                                        color: #a2a2a2;
+                                        font-size: 13px;
+                                      ""
+                                    >
+                                      You are receiving this email because you
+                                      have visited our site or asked us about
+                                      regular newsletter. Make sure our messages
+                                      get to your Inbox (and not your bulk or
+                                      junk folders).
+                                    </p>
+                                    <p
+                                      style=""
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 20px;
+                                        color: #a2a2a2;
+                                        font-size: 13px;
+                                      ""
+                                    >
+                                      Vectors graphics designed by
+                                      <a
+                                        target=""_blank""
+                                        style=""
+                                          -webkit-text-size-adjust: none;
+                                          -ms-text-size-adjust: none;
+                                          mso-line-height-rule: exactly;
+                                          text-decoration: underline;
+                                          color: #dbdbdb;
+                                          font-size: 13px;
+                                        ""
+                                        href=""http://www.freepik.com/""
+                                        >Freepik</a
+                                      >.
+                                    </p>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            <table
+              class=""es-footer""
+              cellspacing=""0""
+              cellpadding=""0""
+              align=""center""
+              role=""none""
+              style=""
+                mso-table-lspace: 0pt;
+                mso-table-rspace: 0pt;
+                border-collapse: collapse;
+                border-spacing: 0px;
+                table-layout: fixed !important;
+                width: 100%;
+                background-color: transparent;
+                background-repeat: repeat;
+                background-position: center top;
+              ""
+            >
+              <tr style=""border-collapse: collapse"">
+                <td align=""center"" style=""padding: 0; margin: 0"">
+                  <table
+                    class=""es-footer-body""
+                    style=""
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      border-collapse: collapse;
+                      border-spacing: 0px;
+                      background-color: transparent;
+                      width: 600px;
+                    ""
+                    cellspacing=""0""
+                    cellpadding=""0""
+                    align=""center""
+                    role=""none""
+                  >
+                    <tr style=""border-collapse: collapse"">
+                      <td
+                        align=""left""
+                        style=""
+                          margin: 0;
+                          padding-left: 20px;
+                          padding-right: 20px;
+                          padding-top: 30px;
+                          padding-bottom: 30px;
+                        ""
+                      >
+                        <table
+                          width=""100%""
+                          cellspacing=""0""
+                          cellpadding=""0""
+                          role=""none""
+                          style=""
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                            border-collapse: collapse;
+                            border-spacing: 0px;
+                          ""
+                        >
+                          <tr style=""border-collapse: collapse"">
+                            <td
+                              valign=""top""
+                              align=""center""
+                              style=""padding: 0; margin: 0; width: 560px""
+                            >
+                              <table
+                                width=""100%""
+                                cellspacing=""0""
+                                cellpadding=""0""
+                                role=""presentation""
+                                style=""
+                                  mso-table-lspace: 0pt;
+                                  mso-table-rspace: 0pt;
+                                  border-collapse: collapse;
+                                  border-spacing: 0px;
+                                ""
+                              >
+                                <tr style=""border-collapse: collapse"">
+                                  <td
+                                    class=""made_with""
+                                    align=""center""
+                                    style=""padding: 0; margin: 0; font-size: 0""
+                                  >
+                                    <a
+                                      target=""_blank""
+                                      href=""https://viewstripo.email/?utm_source=templates&utm_medium=email&utm_campaign=car&utm_content=fathers_day""
+                                      style=""
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        text-decoration: underline;
+                                        color: #dbdbdb;
+                                        font-size: 14px;
+                                      ""
+                                      ><img
+                                        src=""https://eeslewt.stripocdn.email/content/guids/CABINET_9df86e5b6c53dd0319931e2447ed854b/images/64951510234941531.png""
+                                        alt
+                                        width=""125""
+                                        height=""56""
+                                        style=""
+                                          display: block;
+                                          border: 0;
+                                          outline: none;
+                                          text-decoration: none;
+                                          -ms-interpolation-mode: bicubic;
+                                        ""
+                                    /></a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
       </table>
     </div>
   </body>
 </html>
-                                   ";
+";
             return htmlContent;
         }
     }

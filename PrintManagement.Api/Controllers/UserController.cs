@@ -15,6 +15,7 @@ using PrintManagement.Application.Payloads.ResponseModels.DataPrintJob;
 using PrintManagement.Application.Payloads.ResponseModels.DataStatistics;
 using PrintManagement.Application.Payloads.ResponseModels.DataUser;
 using PrintManagement.Application.Payloads.Responses;
+using System;
 
 namespace PrintManagement.Api.Controllers
 {
@@ -123,6 +124,16 @@ namespace PrintManagement.Api.Controllers
         public async Task<IActionResult> GetAllUserByTeam([FromRoute] Guid teamId)
         {
             return Ok(await _teamService.GetAllUserByTeam(teamId));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllKpi( Guid? userId)
+        {
+            return Ok(await _KPIService.GetAllKpi(userId));
+        }
+        [HttpGet("{kpiId}")]
+        public async Task<IActionResult> GetKpiById([FromRoute] Guid kpiId)
+        {
+            return Ok(await _KPIService.GetKpiById(kpiId));
         }
     }
 }

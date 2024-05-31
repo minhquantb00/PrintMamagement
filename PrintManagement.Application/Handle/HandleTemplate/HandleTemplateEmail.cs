@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PrintManagement.Application.Handle.HandleTemplate
 {
-    public class HandleTemplateEmail
+    public  class HandleTemplateEmail
     {
         public static string GenerateNotificationBillEmail(Bill bill)
         {

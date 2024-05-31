@@ -819,7 +819,7 @@
                                   <thead>
                                     <tr>
                                       <th class="text-left">Tài nguyên</th>
-                                      <th class="text-left">Đơn giá</th>
+                                      <!-- <th class="text-left">Đơn giá</th> -->
                                       <th class="text-left">Số lượng</th>
                                     </tr>
                                   </thead>
@@ -831,7 +831,7 @@
                                       :key="item.id"
                                     >
                                       <td>{{ item.name }}</td>
-                                      <td>{{ item.price }}</td>
+                                      <!-- <td>{{ item.price }}</td> -->
                                       <td>
                                         <div
                                           class="text-right"
@@ -942,12 +942,7 @@
                                   }}</span>
                                 </div>
                                 <VBtn
-                                  v-if="
-                                    isLeader &&
-                                    !isPrintingCompleted &&
-                                    progress !== 75 &&
-                                    progress !== 100
-                                  "
+                                  v-if="isLeader && !isPrintingCompleted && progress !== 100"
                                   block
                                   class="mt-4"
                                   @click="
@@ -957,18 +952,6 @@
                                   "
                                 >
                                   Bắt đầu in
-                                </VBtn>
-                                <VBtn
-                                  block
-                                  v-else
-                                  class="mt-4"
-                                  color="success"
-                                  variant="flat"
-                                  :disabled="isPrinting || progress == 100"
-                                  @click="ComfirmDonePrint"
-                                >
-                                  Hoàn thành
-                                  <VIcon icon=" mdi-arrow-right" class="ml-3" />
                                 </VBtn>
                               </VCardText>
                             </VCard>
@@ -1905,13 +1888,11 @@ export default {
         );
 
         const res = await this.projectApi.createPrintJob(this.inputPrintJob);
-        console.log(res, 1771717171);
         if (res.data.status === 200) {
           this.text = res.data.message;
           this.snackbar = true;
           this.isPrintingCompleted = true;
           const idPrint = res.data.data;
-          console.log(idPrint.id, 1231231231231);
           return idPrint.id;
         } else {
           this.text = res.data.message;
@@ -1928,9 +1909,9 @@ export default {
       this.goToStep(3);
     },
     async initiatePrintAndConfirm(id) {
+      this.pro
       try {
         const printJobId = await this.printing(id);
-        console.log(printJobId, 121121211);
         if (printJobId) {
           await this.ComfirmDonePrint(printJobId);
         } else {

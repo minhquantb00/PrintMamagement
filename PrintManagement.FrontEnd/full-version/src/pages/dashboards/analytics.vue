@@ -1,168 +1,182 @@
-<script setup>
-import { useTheme } from 'vuetify'
-import AnalyticsEarningReportsWeeklyOverview from '@/views/dashboards/analytics/AnalyticsEarningReportsWeeklyOverview.vue'
-import AnalyticsMonthlyCampaignState from '@/views/dashboards/analytics/AnalyticsMonthlyCampaignState.vue'
-import AnalyticsProjectTable from '@/views/dashboards/analytics/AnalyticsProjectTable.vue'
-import AnalyticsSalesByCountries from '@/views/dashboards/analytics/AnalyticsSalesByCountries.vue'
-import AnalyticsSalesOverview from '@/views/dashboards/analytics/AnalyticsSalesOverview.vue'
-import AnalyticsSourceVisits from '@/views/dashboards/analytics/AnalyticsSourceVisits.vue'
-import AnalyticsSupportTracker from '@/views/dashboards/analytics/AnalyticsSupportTracker.vue'
-import AnalyticsTotalEarning from '@/views/dashboards/analytics/AnalyticsTotalEarning.vue'
-import AnalyticsWebsiteAnalytics from '@/views/dashboards/analytics/AnalyticsWebsiteAnalytics.vue'
-
-const vuetifyTheme = useTheme()
-const currentTheme = vuetifyTheme.current.value.colors
-
-const statisticsVertical = {
-  title: 'Revenue Generated',
-  color: 'success',
-  icon: 'tabler-credit-card',
-  stats: '97.5k',
-  height: 97,
-  series: [{
-    data: [
-      300,
-      350,
-      330,
-      380,
-      340,
-      400,
-      380,
-    ],
-  }],
-  chartOptions: {
-    chart: {
-      height: 110,
-      type: 'area',
-      parentHeightOffset: 0,
-      toolbar: { show: false },
-      sparkline: { enabled: true },
-    },
-    tooltip: { enabled: false },
-    markers: {
-      colors: 'transparent',
-      strokeColors: 'transparent',
-    },
-    grid: { show: false },
-    colors: [currentTheme.success],
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shadeIntensity: 0.8,
-        opacityFrom: 0.6,
-        opacityTo: 0.1,
-      },
-    },
-    dataLabels: { enabled: false },
-    stroke: {
-      width: 2,
-      curve: 'smooth',
-    },
-    xaxis: {
-      show: true,
-      lines: { show: false },
-      labels: { show: false },
-      stroke: { width: 0 },
-      axisBorder: { show: false },
-    },
-    yaxis: {
-      stroke: { width: 0 },
-      show: false,
-    },
-  },
-}
-</script>
-
 <template>
   <VRow class="match-height">
-    <!-- 👉 Website analytics -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <AnalyticsWebsiteAnalytics />
+    <v-col cols="7"></v-col>
+    <VCol cols="2">
+      <AppDateTimePicker
+        clearable
+        :format="dateFormat"
+        v-model="inputData.StartTime"
+        placeholder="Ngày bắt đầu"
+        :rules="[startDateRule]"
+        prepend-inner-icon="tabler-calendar"
+        class="date-picker-input"
+      ></AppDateTimePicker>
     </VCol>
-
-    <!-- 👉 Sales Overview -->
-    <VCol
-      cols="12"
-      md="3"
-      sm="6"
-    >
-      <AnalyticsSalesOverview />
+    <VCol cols="2">
+      <AppDateTimePicker
+        clearable
+        :format="dateFormat"
+        v-model="inputData.EndTime"
+        placeholder="Ngày kết thúc"
+        prepend-inner-icon="tabler-calendar"
+        :rules="[endDateRule]"
+        class="date-picker-input"
+      ></AppDateTimePicker>
     </VCol>
-
-    <!-- 👉 Statistics Vertical -->
-    <VCol
-      cols="12"
-      md="3"
-      sm="6"
-    >
-      <CardStatisticsVertical v-bind="statisticsVertical" />
+    <VCol cols="1">
+      <v-btn block @click="thongKeSales"
+        ><v-icon icon="mdi-filter-outline" class="text-h2"></v-icon>
+        <v-tooltip activator="parent" location="top">Thống kê</v-tooltip></v-btn
+      >
     </VCol>
-
-    <!-- 👉 Earning Reports Weekly Overview -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <AnalyticsEarningReportsWeeklyOverview />
-    </VCol>
-
-    <!-- 👉 Support Tracker -->
-    <VCol
-      cols="12"
-      md="6"
-    >
-      <AnalyticsSupportTracker />
-    </VCol>
-
-    <!-- 👉 Sales by Countries -->
-    <VCol
-      cols="12"
-      sm="6"
-      lg="4"
-    >
-      <AnalyticsSalesByCountries />
-    </VCol>
-
-    <!-- 👉 Total Earning -->
-    <VCol
-      cols="12"
-      sm="6"
-      lg="4"
-    >
-      <AnalyticsTotalEarning />
-    </VCol>
-
-    <!-- 👉 Monthly Campaign State -->
-    <VCol
-      cols="12"
-      sm="6"
-      lg="4"
-    >
-      <AnalyticsMonthlyCampaignState />
-    </VCol>
-
-    <!-- 👉 Source Visits -->
-    <VCol
-      cols="12"
-      sm="6"
-      lg="4"
-    >
-      <AnalyticsSourceVisits />
-    </VCol>
-
-    <!-- 👉 Project Table -->
-    <VCol
-      cols="12"
-      lg="8"
-    >
-      <AnalyticsProjectTable />
-    </VCol>
+    <v-col cols="12">
+      <div class="heightChart">
+        <ECharts ref="chart" :option="chartOption" autoresize />
+      </div>
+    </v-col>
   </VRow>
 </template>
 
+<script setup>
+import { useTheme } from "vuetify";
+import { thongKeApi } from "@/api/thongKe/thongKeApi";
+import { ref, onMounted } from "vue";
+import ECharts from "vue-echarts";
+import * as echarts from "echarts";
+
+const vuetifyTheme = useTheme();
+const currentTheme = vuetifyTheme.current.value.colors;
+const dateFormat = "yyyy-MM-dd";
+const thongKeApiInstance = thongKeApi();
+const startDateRule = (value) => {
+  const startTime = new Date(value);
+  const endTime = new Date(inputData.value.EndTime);
+  if (endTime && startTime >= endTime) {
+    return "Ngày bắt đầu phải nhỏ hơn ngày kết thúc";
+  }
+  return true;
+};
+
+const endDateRule = (value) => {
+  const endTime = new Date(value);
+  const startTime = new Date(inputData.value.StartTime);
+  if (startTime && startTime >= endTime) {
+    return "Ngày kết thúc phải lớn hơn ngày bắt đầu";
+  }
+  return true;
+};
+const chartOption = ref({
+  title: {
+    text: "Thống kê doanh thu",
+  },
+  tooltip: {
+    trigger: "axis",
+  },
+  legend: {
+    data: ["Doanh thu"],
+  },
+  toolbox: {
+    show: true,
+    feature: {
+      dataView: { show: true, readOnly: false },
+      magicType: { show: true, type: ["line", "bar"] },
+      restore: { show: true },
+      saveAsImage: { show: true },
+    },
+  },
+  calculable: true,
+  xAxis: [
+    {
+      type: "category",
+      data: [
+        "Tháng 1",
+        "Tháng 2",
+        "Tháng 3",
+        "Tháng 4",
+        "Tháng 5",
+        "Tháng 6",
+        "Tháng 7",
+        "Tháng 8",
+        "Tháng 9",
+        "Tháng 10",
+        "Tháng 11",
+        "Tháng 12",
+      ],
+    },
+  ],
+  yAxis: [
+    {
+      type: "value",
+    },
+  ],
+  series: [
+    {
+      name: "Doanh thu",
+      type: "bar",
+      data: [], // Initially empty
+      markPoint: {
+        data: [
+          { type: "max", name: "Max" },
+          { type: "min", name: "Min" },
+        ],
+      },
+      markLine: {
+        data: [{ type: "average", name: "Avg" }],
+      },
+    },
+  ],
+});
+
+const salesData = ref([]);
+const inputData = ref({ StartTime: "", EndTime: "" });
+
+const thongKeSales = async () => {
+  try {
+    const params = {
+      StartTime: inputData.value.StartTime,
+      EndTime: inputData.value.EndTime,
+    };
+
+    const response = await thongKeApiInstance.thongKeDoanhSo(params);
+    const responseData = response.data;
+    console.log(responseData);
+
+    const salesData = ref([]);
+
+    responseData.forEach((item) => {
+      salesData.value.push({
+        month: item.month,
+        sales: item.sales,
+      });
+    });
+
+    const salesSeriesData = [];
+    for (let i = 0; i < 12; i++) {
+      const monthSales = salesData.value.find((item) => item.month === i + 1);
+      if (monthSales) {
+        salesSeriesData.push(monthSales.sales);
+      } else {
+        salesSeriesData.push(null);
+      }
+    }
+
+    chartOption.value.series[0].data = salesSeriesData;
+  } catch (error) {
+    console.error("Error fetching sales data:", error);
+  }
+};
+
+onMounted(() => {
+  thongKeSales();
+});
+</script>
+
 <style lang="scss">
 @use "@core/scss/template/libs/apex-chart.scss";
+.heightChart {
+  height: 570px;
+  border-radius: 5px;
+  background: rgb(255, 255, 255);
+  padding: 10px;
+}
 </style>

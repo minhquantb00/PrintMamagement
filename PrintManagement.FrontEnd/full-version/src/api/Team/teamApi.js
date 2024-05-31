@@ -1,10 +1,11 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 // Định nghĩa baseURL cho axios
-axios.defaults.baseURL = "https://localhost:7070/api";
+axios.defaults.baseURL = "https://localhost:44389/api";
 function getAccessToken() {
   return localStorage.getItem("accessToken") || "";
 }
+console.log(getAccessToken());
 export const teamApi = defineStore("team", {
   actions: {
     getAllTeams() {
@@ -31,7 +32,14 @@ export const teamApi = defineStore("team", {
           .catch((error) => reject(error));
       });
     },
-
+    getTeamUserById(id) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`/User/GetAllUserByTeam/${id}`, null)
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
     createTeams(params) {
       return new Promise((resolve, reject) => {
         axios
@@ -72,6 +80,28 @@ export const teamApi = defineStore("team", {
               name: param.name,
             },
           })
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    createKpiEmployee(employee, IndicatorName, peroid, target) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "/Admin/CreateKPIForEmployee",
+            {
+              EmployeeId: employee,
+              IndicatorName: IndicatorName,
+              Target: target,
+              Period: peroid,
+            },
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${getAccessToken()}`,
+              },
+            }
+          )
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

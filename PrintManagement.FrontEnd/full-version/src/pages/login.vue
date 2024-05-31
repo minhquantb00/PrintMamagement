@@ -193,8 +193,8 @@ export default {
         console.log(result);
         if (result && result.status === 200) {
           const res = result.data;
-          console.log(res.accessToken);
           if (!localStorage.getItem("accessToken")) {
+            console.log(localStorage.getItem("accessToken"));
             localStorage.setItem("accessToken", res.accessToken);
             localStorage.setItem("refreshToken", res.refreshToken);
             const accessToken = localStorage.getItem("accessToken");
@@ -208,27 +208,31 @@ export default {
           if (userInfo && userInfo.Permission) {
             const allRoles = ["Admin", "Leader", "Designer", "Employee"];
             const userRoles = userInfo.Permission;
-            if (userRoles.length === allRoles.length) {
-              this.$router.push({ name: "pages-cards-card-basic" });
-              this.text = result.message;
-              this.snackbar = true;
-            } else if (userRoles.includes("Admin")) {
-              this.$router.push({ name: "pages-cards-card-basic" });
-              this.text = result.message;
-              this.snackbar = true;
-              // location.reload();
+            let routeName;
+            if (
+              userRoles.length === allRoles.length ||
+              userRoles.includes("Admin")
+            ) {
+              routeName = "pages-cards-card-basic";
             } else if (userRoles.includes("Employee")) {
-              this.$router.push({ name: "access-control" });
-              this.text = result.message;
-              this.snackbar = true;
+              routeName = "pages-dialog-examples";
             } else {
               const toPath = this.$route.query.to;
-              if (toPath) {
-                this.$router.push(toPath);
-              } else {
-                this.$router.push({ name: "defaultRouteName" });
-              }
+              routeName = toPath ? toPath : "defaultRouteName";
             }
+
+            // Check if page has been reloaded once
+            if (!localStorage.getItem("pageReloaded")) {
+              localStorage.setItem("pageReloaded", "true");
+              this.$router.push({ name: routeName }).then(() => {
+                location.reload();
+              });
+            } else {
+              this.$router.push({ name: routeName });
+            }
+
+            this.text = result.message;
+            this.snackbar = true;
           }
           this.snackbar = true;
         } else {
@@ -243,7 +247,6 @@ export default {
         this.loading = false;
       }
     },
-
     parseJwt(token) {
       var base64Url = token.split(".")[1];
       var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -274,11 +277,11 @@ export default {
     //   this.reloadPage();
     // },
   },
-  mounted() {
-    localStorage.removeItem("userInfo");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-  },
+  // mounted() {
+  //   localStorage.removeItem("userInfo");
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("refreshToken");
+  // },
 };
 </script>
 <style lang="scss">

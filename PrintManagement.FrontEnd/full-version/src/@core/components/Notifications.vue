@@ -90,7 +90,7 @@
                       {{ item.content }}
                     </v-card-text>
                     <v-card-text class="text-center">
-                      <router-link to="/wizard-examples/checkout">
+                      <router-link to="/apps/roles">
                         <v-btn variant="outlined"
                           >Xem dự án bạn được nhận</v-btn
                         >

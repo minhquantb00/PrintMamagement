@@ -16,7 +16,7 @@ fetchHeaderData();
 <template>
   <VCard>
     <VImg
-      src="https://vcdn-vnexpress.vnecdn.net/2021/03/28/2022-Mercedes-EQS-EV-Sedan-Int-2530-7511-1616932781.jpg"
+      src="https://i.pinimg.com/originals/b0/0d/0c/b00d0cdbf06fab3b2d8cc6847a014495.jpg"
       min-height="125"
       max-height="400"
       cover

@@ -1,12 +1,20 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 // Định nghĩa baseURL cho axios
-axios.defaults.baseURL = "https://localhost:7070/api";
+axios.defaults.baseURL = "https://localhost:44389/api";
 const authorization = localStorage.getItem("accessToken")
   ? localStorage.getItem("accessToken")
   : "";
 export const giaoHangApi = defineStore("giaoHang", {
   actions: {
+    getDevileryById(id) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`/User/GetDeliveryById/${id}`)
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
     getAllGiaoHang() {
       return new Promise((resolve, reject) => {
         axios
@@ -16,24 +24,12 @@ export const giaoHangApi = defineStore("giaoHang", {
       });
     },
 
-    updateSeenNotification(id) {
-      return new Promise((resolve, reject) => {
-        axios
-          .put(`/User/ConfirmIsSeenNotification/${id}`, {
-            headers: {
-              Authorization: `Bearer ${authorization}`,
-            },
-          })
-          .then((res) => resolve(res))
-          .catch((error) => reject(error));
-      });
-    },
-    updateCustomer(id, params) {
+    createDelivery(params) {
       return new Promise((resolve, reject) => {
         console.log(params);
         axios
-          .put(
-            "/Admin/UpdateCustomer",
+          .post(
+            "/Admin/CreateDelivery",
             { ...params },
             {
               headers: {
@@ -45,19 +41,38 @@ export const giaoHangApi = defineStore("giaoHang", {
           .catch((error) => reject(error));
       });
     },
-    filterCustomer(param) {
+    shipperOder(param) {
       return new Promise((resolve, reject) => {
         axios
-          .get(`/Admin/GetAllCustomers`, {
-            params: {
-              Name: param.name,
-              PhoneNumber: param.phoneNumber,
-              Address: param.address,
+          .put(
+            "/User/ShipperConfirmOrderDelivery",
+            { ...param },
+            {
+              headers: {
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
+          .then((res) => resolve(res))
+          .catch((error) => reject(error));
+      });
+    },
+    shipperConfirm(id, confirmStatus) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            "/User/ShipperConfirmDelivery",
+            {
+              DeliveryId: id,
+              ConfirmStatus: confirmStatus,
             },
-            headers: {
-              Authorization: `Bearer ${authorization}`,
-            },
-          })
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${authorization}`,
+              },
+            }
+          )
           .then((res) => resolve(res))
           .catch((error) => reject(error));
       });

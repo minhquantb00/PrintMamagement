@@ -99,7 +99,6 @@ const isCardDetailsVisible = ref(false);
                       label="Quyền hạn"
                       :items="dataRoles"
                       item-title="roleName"
-                      item-value="id"
                       :chips="true"
                       multiple
                       v-if="updateUserRoles.length > 0"
@@ -110,7 +109,7 @@ const isCardDetailsVisible = ref(false);
                       clearable
                       label="Phòng ban"
                       :items="dataTeam"
-                      v-model="updateUser.teamName"
+                      v-model="updateChangeUser.teamId"
                       item-title="name"
                       item-value="id"
                       variant="outlined"
@@ -121,7 +120,7 @@ const isCardDetailsVisible = ref(false);
                       <v-btn
                         text="Cập nhật"
                         variant="flat"
-                        @click="isActive.value = false"
+                        @click="capNhatNhanVien"
                       ></v-btn>
                       <v-btn
                         text="Thoát"
@@ -183,6 +182,19 @@ const isCardDetailsVisible = ref(false);
         rounded="circle"
       ></v-pagination>
     </div>
+    <v-snackbar
+      v-model="snackbar"
+      color="blue-grey"
+      rounded="pill"
+      class="mb-5"
+    >
+      {{ text }}
+      <template v-slot:actions>
+        <v-btn color="green" variant="text" @click="snackbar = false">
+          Đóng
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 <script>
@@ -196,12 +208,19 @@ export default {
       teamApi: teamApi(),
       authApi: authApi(),
       dataUser: [],
+      text: "",
+      snackbar: false,
       dataTeam: [],
       selectedRoles: [],
-      perPage: 8, // Number of items per page (fixed)
+      perPage: 8,
       currentPage: 1, // Current page
       dataRoles: [],
+      roleAdd: "",
       updateUser: {},
+      updateChangeUser: {
+        employeeId: "",
+        teamId: "",
+      },
       updateUserRoles: [],
       searchQuery: "",
       filterUser: {
@@ -229,16 +248,17 @@ export default {
       try {
         const res = await this.userApi.getUserById(id);
         this.updateUser = res.data;
-
+        this.updateChangeUser.employeeId = this.updateUser.id;
+        console.log(this.updateChangeUser.employeeId);
+        console.log(this.updateUser);
         const getByRolesUserId = await this.userApi.getRolesByIdUser(id);
         this.updateUserRoles = getByRolesUserId.data;
 
-        // Loop through updateUserRoles to check if each role exists in dataRoles
         this.updateUserRoles.forEach((role) => {
           const foundRole = this.dataRoles.find((item) => item.id === role.id);
           if (foundRole) {
-            // If the role exists in dataRoles, add it to selectedRoles
-            this.selectedRoles.push(foundRole.id);
+            const test = this.selectedRoles.push(foundRole);
+            console.log(test);
           }
         });
 
@@ -247,6 +267,10 @@ export default {
       } catch (error) {
         console.error("Error while fetching user data:", error);
       }
+    },
+    initializeSelectedRoles() {
+      this.selectedRoles = this.updateUserRoles.map((role) => role.id);
+      this.roleAdd = this.selectedRoles;
     },
     async getDataUser() {
       this.isLoading = true;
@@ -257,6 +281,52 @@ export default {
         console.error("fetching data failed:", error);
       } finally {
         this.isLoading = false;
+      }
+    },
+    capNhatNhanVien() {
+      this.updateChangeManagerUser();
+      // this.addRole();
+    },
+    async updateChangeManagerUser() {
+      try {
+        const res = await this.userApi.updateChangeTeamForUser(
+          this.updateChangeUser
+        );
+        await this.addRolesToUser(
+          this.updateChangeUser.employeeId,
+          this.selectedRoles
+        );
+        console.log(res);
+        if (res.status === 200) {
+          this.text = res.data;
+          this.snackbar = true;
+          // setTimeout(() => {
+          //   location.reload();
+          // }, 1500);
+        } else {
+          this.text = res.data;
+          this.snackbar = true;
+        }
+      } catch (e) {
+        this.text = "Đã xảy ra lỗi khi cập nhật";
+        this.snackbar = true;
+      }
+    },
+    async addRolesToUser(userId, roles) {
+      try {
+        const res = await this.userApi.addRoleUser(userId, roles);
+        console.log(res);
+        if (res.data.status === 200) {
+          this.text = "Cập nhật nhân viên thành công";
+          this.snackbar = true;
+        } else {
+          this.text = res.data.message;
+          this.snackbar = true;
+        }
+      } catch (error) {
+        this.text = "Đã xảy ra lỗi khi cập nhật";
+        this.snackbar = true;
+        console.error("Error adding roles:", error);
       }
     },
     async getDataTeam() {
@@ -280,6 +350,7 @@ export default {
     this.getDataUser();
     this.getDataRoles();
     this.getDataTeam();
+    this.initializeSelectedRoles();
   },
   watch: {
     updateUserRoles: {
@@ -289,6 +360,15 @@ export default {
       immediate: true,
     },
   },
+  // watch: {
+  //   updateUserRoles: {
+  //     handler(newRoles) {
+  //       this.selectedRoles = newRoles.map((role) => role.id);
+
+  //     },
+  //     immediate: true,
+  //   },
+  // },
   computed: {
     paginatedData() {
       const start = (this.currentPage - 1) * this.perPage;

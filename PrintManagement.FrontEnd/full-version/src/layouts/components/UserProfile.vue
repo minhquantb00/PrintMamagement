@@ -13,6 +13,7 @@ const logout = () => {
   localStorage.removeItem("userInfo");
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
+    localStorage.removeItem("pageReloaded");
   router.push("/login");
 };
 const startSessionTimer = () => {

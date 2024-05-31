@@ -51,9 +51,8 @@ const isPasswordVisibleOne = ref(false);
         </VCardText>
 
         <VCardText>
-          <VForm @submit.prevent="() => {}">
+          <VForm>
             <VRow>
-              <!-- email -->
               <VCol cols="12">
                 <AppTextField
                   v-model="inputConfirmUpdate.confirmCode"
@@ -62,23 +61,6 @@ const isPasswordVisibleOne = ref(false);
                   type="text"
                 />
               </VCol>
-              <!-- <VCol cols="12">
-                <AppTextField
-                  v-model="inputConfirmUpdate.password"
-                  autofocus
-                  label="A new password"
-                  type="text"
-                />
-              </VCol>
-              <VCol cols="12">
-                <AppTextField
-                  v-model="inputConfirmUpdate.confirmPassword"
-                  autofocus
-                  label="Enter a new password"
-                  type="text"
-                />
-              </VCol> -->
-
               <VCol cols="12">
                 <AppTextField
                   autofocus
@@ -105,19 +87,9 @@ const isPasswordVisibleOne = ref(false);
                   "
                 />
               </VCol>
-              <!-- Reset link -->
               <VCol cols="12">
-                <VBtn
-                  block
-                  :loading="loading"
-                  type="submit"
-                  @click="createNewPassword"
-                >
-                  Xác nhận
-                </VBtn>
+                <VBtn block @click="createNewPassword"> Xác nhận </VBtn>
               </VCol>
-
-              <!-- back to login -->
               <VCol cols="12">
                 <RouterLink
                   class="d-flex align-center justify-center"
@@ -140,11 +112,6 @@ const isPasswordVisibleOne = ref(false);
         Đóng
       </v-btn>
     </template>
-    <!-- <template v-slot:activator="{ props }">
-        <v-btn class="ma-2" color="blue-grey" rounded="pill" v-bind="props"
-          >open</v-btn
-        >
-      </template> -->
   </v-snackbar>
 </template>
 <script>
@@ -164,7 +131,7 @@ export default {
       countdownFinished: false,
       minutes: 0,
       seconds: 0,
-      endTime: new Date().getTime() + 60000, // Đếm ngược 60 giây
+      endTime: new Date().getTime() + 60000,
     };
   },
   created() {
@@ -176,8 +143,7 @@ export default {
     async createNewPassword() {
       console.log(this.inputConfirmUpdate);
       const result = await this.authApi.confirmCreateNewPassword(
-        this.inputConfirmUpdate,
-        (this.loading = true)
+        this.inputConfirmUpdate
       );
       console.log(result);
       if (result) {
@@ -199,10 +165,11 @@ export default {
       if (distance < 0) {
         clearInterval(this.countdownInterval);
         this.countdownFinished = true;
-        this.$router.push({ path: "/forgot-password" });
+        if (this.$route.path === "/update-password") {
+          this.$router.push({ path: "/forgot-password" });
+        }
       }
     },
-    
   },
 };
 </script>

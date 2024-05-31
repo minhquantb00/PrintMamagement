@@ -44,12 +44,18 @@
         <v-dialog max-width="600">
           <template v-slot:activator="{ props: activatorProps }">
             <v-btn
+              v-if="canEdit"
               v-bind="activatorProps"
               style="font-size: 20px"
               density="comfortable"
-              icon="mdi-plus"
+              icon
               class="mr-4"
-            ></v-btn>
+            >
+              <v-icon icon="mdi-plus"></v-icon>
+              <v-tooltip activator="parent" location="top"
+                >Thêm khách hàng</v-tooltip
+              >
+            </v-btn>
           </template>
 
           <template v-slot:default="{ isActive }">
@@ -59,18 +65,21 @@
                 <v-row class="mb-1">
                   <v-col>
                     <span class="obligatory">(*)</span>
-
+                    <label class="ml-1">Họ và tên</label>
                     <v-text-field
                       v-model="inputAddCustomer.fullName"
                       label="Họ và tên"
+                      class="mt-2"
                       :rules="[requiredValidator]"
                       variant="outlined"
                     ></v-text-field>
                   </v-col>
                   <v-col>
                     <span class="obligatory">(*)</span>
+                    <label class="ml-1">Số điện thoại</label>
                     <v-text-field
                       label="Số điện thoại"
+                      class="mt-2"
                       variant="outlined"
                       :rules="[requiredValidator, phoneNumberValidator]"
                       v-model="inputAddCustomer.phoneNumber"
@@ -78,22 +87,23 @@
                   </v-col>
                 </v-row>
                 <span class="obligatory">(*)</span>
+                <label class="ml-1">Email</label>
                 <v-text-field
                   label="Email"
-                  class="mb-4"
+                  class="mb-4 mt-2"
                   :rules="[requiredValidator, emailValidator]"
                   variant="outlined"
                   v-model="inputAddCustomer.email"
                 ></v-text-field>
                 <span class="obligatory">(*)</span>
-
+                <label class="ml-1">Địa chỉ</label>
                 <v-textarea
                   label="Địa chỉ"
                   variant="outlined"
                   no-resize
                   :rules="[requiredValidator]"
                   v-model="inputAddCustomer.address"
-                  class="mb-4"
+                  class="mb-4 mt-2"
                 ></v-textarea>
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -141,13 +151,19 @@
             <v-dialog max-width="600">
               <template v-slot:activator="{ props: activatorProps }">
                 <v-btn
+                  v-if="canEdit"
                   v-bind="activatorProps"
                   style="font-size: 20px"
                   density="comfortable"
-                  icon="mdi-pencil-outline"
+                  icon
                   class="mr-4"
                   @click="getByIdCustomer(item.id)"
-                ></v-btn>
+                >
+                  <v-icon icon="mdi-pencil-outline"></v-icon>
+                  <v-tooltip activator="parent" location="top"
+                    >Cập nhật khách hàng</v-tooltip
+                  >
+                </v-btn>
               </template>
 
               <template v-slot:default="{ isActive }">
@@ -159,38 +175,46 @@
                   <v-form ref="refVForm" @submit.prevent="onSubmit">
                     <v-row class="mb-4">
                       <v-col>
+                        <span class="obligatory">(*)</span>
+                        <label class="ml-1">Họ và tên</label>
                         <v-text-field
                           v-model="updateKhachHang.fullName"
                           label="Họ và tên"
+                          class="mt-2"
                           :rules="[requiredValidator]"
                           variant="outlined"
                         ></v-text-field>
                       </v-col>
                       <v-col>
+                        <span class="obligatory">(*)</span>
+                        <label class="ml-1">Số điện thoại</label>
                         <v-text-field
                           label="Số điện thoại"
+                          class="mt-2"
                           v-model="updateKhachHang.phoneNumber"
                           :rules="[requiredValidator, phoneNumberValidator]"
                           variant="outlined"
                         ></v-text-field>
                       </v-col>
                     </v-row>
-
+                    <span class="obligatory">(*)</span>
+                    <label class="ml-1">Email</label>
                     <v-text-field
                       label="Email"
-                      class="mb-8"
+                      class="mb-8 mt-2"
                       v-model="updateKhachHang.email"
                       :rules="[requiredValidator, emailValidator]"
                       variant="outlined"
                     ></v-text-field>
-
+                    <span class="obligatory">(*)</span>
+                    <label class="ml-1">Địa chỉ</label>
                     <v-textarea
                       label="Địa chỉ"
                       variant="outlined"
                       no-resize
                       :rules="[requiredValidator]"
                       v-model="updateKhachHang.address"
-                      class="mb-4"
+                      class="mb-4 mt-2"
                     ></v-textarea>
                     <v-card-actions>
                       <v-spacer></v-spacer>
@@ -214,12 +238,18 @@
             <v-dialog max-width="300">
               <template v-slot:activator="{ props: activatorProps }">
                 <v-btn
+                  v-if="isAdmin"
                   density="comfortable"
                   style="font-size: 20px"
                   v-bind="activatorProps"
                   color="error"
-                  icon="mdi-delete-outline"
-                ></v-btn>
+                  icon
+                >
+                  <v-tooltip activator="parent" location="top"
+                    >Xóa khách hàng</v-tooltip
+                  >
+                  <v-icon icon="mdi-delete-outline"></v-icon>
+                </v-btn>
               </template>
 
               <template v-slot:default="{ isActive }">
@@ -281,15 +311,19 @@ import {
 const refVForm = ref();
 </script>
 <script>
-import { customerApi } from "../../../../../api/customer/customerApi";
+import { customerApi } from "@/api/customer/customerApi";
+import { userApi } from "@/api/User/userApi";
 
 export default {
   data() {
     return {
+      isAdmin: false,
       customerApi: customerApi(),
+      userApi: userApi(),
       dataCustomers: [],
       page: 1,
       isLoading: true,
+      canEdit: false,
       loading: false,
       text: "",
       perPage: 10, // Number of items per page (fixed)
@@ -310,7 +344,37 @@ export default {
       },
     };
   },
+  async mounted() {
+    this.checkAdminPermission();
+    await this.getUserById();
+  },
   methods: {
+    checkAdminPermission() {
+      let userInfo = localStorage.getItem("userInfo");
+      if (userInfo) {
+        try {
+          userInfo = JSON.parse(userInfo);
+          if (userInfo.Permission && Array.isArray(userInfo.Permission)) {
+            this.isAdmin = userInfo.Permission.includes("Admin");
+          }
+        } catch (error) {
+          console.error("Error parsing userInfo from localStorage:", error);
+        }
+      }
+    },
+    async getUserById() {
+      const idUser = JSON.parse(localStorage.getItem("userInfo"));
+      if (idUser && idUser.Id) {
+        try {
+          const res = await this.userApi.getUserById(idUser.Id);
+          if (res && res.data.teamName === "Sales") {
+            this.canEdit = true;
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    },
     async findByCustomer() {
       const res = await this.customerApi.filterCustomer(this.fillterCustomer);
       this.dataCustomers = res.data;

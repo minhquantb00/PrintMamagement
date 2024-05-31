@@ -3,7 +3,7 @@ import { Ability } from "@casl/ability";
 export const initialAbility = [
   {
     action: "read",
-    subject: "Auth",
+    subject: "Auth", 
   },
 ];
 
@@ -15,5 +15,4 @@ const stringifiedUserAbilities = localStorage.getItem("userInfo");
 const existingAbility = stringifiedUserAbilities
   ? JSON.parse(stringifiedUserAbilities)
   : null;
-console.log(existingAbility);
 export default new Ability(existingAbility || initialAbility);

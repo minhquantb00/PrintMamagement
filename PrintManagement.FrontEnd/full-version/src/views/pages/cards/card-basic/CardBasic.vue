@@ -103,7 +103,7 @@ const isCardDetailsVisible = ref(false);
 
           <template v-slot:default="{ isActive }">
             <v-card class="pa-0">
-              <VImg :src="project.imageDescription" cover height="500" />
+              <VImg :src="project.imageDescription" cover height="400" />
               <v-card-text>
                 <h2>
                   {{ project.projectName }}
@@ -162,6 +162,7 @@ export default {
       dataUser: [],
       perPage: 6, // Number of items per page (fixed)
       currentPage: 1, // Current page
+      dataProgress: 0,
       userApi: userApi(),
       fillterProject: {
         projectName: "",
@@ -180,7 +181,7 @@ export default {
   methods: {
     async fillter() {
       const res = await this.projectApi.fillterData(this.fillterProject);
-      this.dataProject = res.data;
+      this.dataProject = res.data.filter((project) => project.progress === 100);
     },
 
     formatDate(dateString) {
@@ -203,7 +204,9 @@ export default {
       this.isLoading = true;
       try {
         const res = await this.projectApi.getAllsProject();
-        this.dataProject = res.data;
+        this.dataProject = res.data.filter(
+          (project) => project.progress === 100
+        );
       } catch (e) {
         console.error("fetching data:", e);
       } finally {

@@ -29,7 +29,7 @@ watch(selectedOption, () => {
 
 <template>
   <VRadioGroup>
-    <VRow>
+    <!-- <VRow>
       <VCol v-for="item in props.radioContent" :key="item">
         <VLabel
           class="custom-input custom-radio rounded cursor-pointer"
@@ -45,30 +45,29 @@ watch(selectedOption, () => {
                 style="width: 200px; height: 250px"
                 alt="designs"
               />
-              <!--
-                <p>
-                {{ item.src }}
-                </p> 
-              -->
+
+              <p>
+                {{ item.src }}fffff
+              </p>
             </div>
             <div class="mt-4">
               <h4 class="mb-2">
                 Người tạo:
-                <!-- {{ item.user }} -->
+                {{ item.user }}
               </h4>
               <h4 class="mb-2">
                 Ngày tạo:
-                <!-- {{ item.time }} -->
+                {{ item.time }}
               </h4>
               <h4 class="mb-2">
                 Trạng thái:
-                <!-- {{ item.status }} -->
+                {{ item.status }}
               </h4>
             </div>
           </div>
         </VLabel>
       </VCol>
-    </VRow>
+    </VRow> -->
   </VRadioGroup>
 </template>
 

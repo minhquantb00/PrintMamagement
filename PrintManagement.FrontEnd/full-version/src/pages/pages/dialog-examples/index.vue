@@ -942,7 +942,11 @@
                                   }}</span>
                                 </div>
                                 <VBtn
-                                  v-if="isLeader && !isPrintingCompleted && progress !== 100"
+                                  v-if="
+                                    isLeader &&
+                                    !isPrintingCompleted &&
+                                    progress !== 100
+                                  "
                                   block
                                   class="mt-4"
                                   @click="
@@ -1438,21 +1442,25 @@ export default {
           title: "Dự án",
           icon: "custom-trending",
           value: 0,
+          status: false,
         },
         {
           title: "Thiết kế",
           icon: "custom-address",
           value: 1,
+          status: false,
         },
         {
           title: "In ấn",
           icon: "custom-payment",
           value: 2,
+          status: false,
         },
         {
           title: "Giao hàng",
           icon: "custom-cart",
           value: 3,
+          status: false,
         },
       ],
       isDeliveryButtonDisabled: false,
@@ -1663,10 +1671,25 @@ export default {
     async getCheckHienThi() {
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       if (userInfo && userInfo.Permission) {
-        this.userHasPermission =
-          userInfo.Permission.includes("Admin") &&
-          (userInfo.Permission.includes("Leader") ||
-            userInfo.Permission.includes("Design"));
+        console.log("Permissions:", userInfo.Permission); // Kiểm tra giá trị của userInfo.Permission
+        const isAdmin = userInfo.Permission.includes("Admin");
+        const isLeader = userInfo.Permission.includes("Leader");
+        const isDesigner = userInfo.Permission.includes("Designer");
+
+        // Kiểm tra các điều kiện riêng lẻ
+        console.log("isAdmin:", isAdmin);
+        console.log("isLeader:", isLeader);
+        console.log("isDesigner:", isDesigner);
+
+        // Điều kiện để hiển thị `select`
+        if (isAdmin) {
+          // Admin phải có ít nhất một trong hai quyền là Leader hoặc Designer, hoặc cả hai
+          this.userHasPermission = isLeader || isDesigner;
+        } else {
+          // Không phải Admin, kiểm tra nếu có quyền Leader hoặc Designer
+          this.userHasPermission = isLeader || isDesigner;
+        }
+        console.log(this.userHasPermission, 46474646);
       } else {
         this.userHasPermission = false;
       }
@@ -1909,7 +1932,7 @@ export default {
       this.goToStep(3);
     },
     async initiatePrintAndConfirm(id) {
-      this.pro
+      this.pro;
       try {
         const printJobId = await this.printing(id);
         if (printJobId) {

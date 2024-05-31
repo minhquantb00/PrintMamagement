@@ -237,7 +237,7 @@ namespace PrintManagement.Application.ImplementServices
                 }
                 var user = new User
                 {
-                    Avatar = "https://scontent.xx.fbcdn.net/v/t1.15752-9/423737674_1480040725879365_4588731426501580823_n.png?stp=dst-png_s206x206&_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGxnP82_YkVFLWwGazF7yI5KZjnfOEJczUpmOd84QlzNRfr9gdH6syoper3Yh0oOyo5y2ipmbd59Dwk6Ozyz536&_nc_ohc=eJwRiZR1zw0AX94Q9w9&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdSAsCug3mmQNHjjqLBlE4vswrK6MxAOKWbXdPwaEh6CfA&oe=66109EB0",
+                    Avatar = "https://i.kym-cdn.com/entries/icons/facebook/000/017/666/avatar_default_big.jpg",
                     IsActive = true,
                     CreateTime = DateTime.Now,
                     DateOfBirth = request.DateOfBirth,

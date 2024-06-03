@@ -174,10 +174,6 @@ namespace PrintManagement.Application.ImplementServices
             {
                 throw new Exception("Người dùng chưa được xác thực");
             }
-            if(!currentUser.IsInRole("Admin") && !currentUser.IsInRole("Leader"))
-            {
-                throw new Exception("Bạn không có quyền thực hiện chức năng này");
-            }
             var query = await _baseProjectRepository.GetAllAsync(x => x.IsActive == true);
             if (!string.IsNullOrEmpty(request.ProjectName))
             {

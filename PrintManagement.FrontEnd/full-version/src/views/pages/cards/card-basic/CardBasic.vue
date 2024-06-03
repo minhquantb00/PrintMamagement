@@ -96,7 +96,7 @@ const isCardDetailsVisible = ref(false);
               </VCardItem>
               <VCardText> Trưởng nhóm: {{ project.leader }} </VCardText>
               <v-card-text>
-                Ngày tạo: {{ formatDate(project.actualEndDate) }}
+                Ngày hoàn thành: {{ formatDate(project.actualEndDate) }}
               </v-card-text>
             </VCard>
           </template>
@@ -116,7 +116,7 @@ const isCardDetailsVisible = ref(false);
                 ><h3>- <b>Khách hàng:</b> {{ project.customer }}</h3>
               </VCardText>
               <VCardText
-                ><b>- Ngày tạo:</b> {{ formatDate(project.startDate) }}
+                ><b>- Ngày hoàn thành:</b> {{ formatDate(project.startDate) }}
               </VCardText>
               <v-card-text class="text-h6">
                 <b>- Yêu cầu của khách hàng:</b>

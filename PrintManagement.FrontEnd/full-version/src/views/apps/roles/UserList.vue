@@ -5,6 +5,21 @@
     </a-space>
   </div>
   <div class="table-giao-hang" v-else>
+    <div class="mb-5">
+      <v-row>
+        <v-col cols="9"></v-col>
+        <v-col>
+          <v-select
+            clearable
+            label="Lọc theo trạng thái"
+            :items="dataFilter"
+            v-model="selectedStatus"
+            @change="handleStatusChange"
+            variant="outlined"
+          ></v-select>
+        </v-col>
+      </v-row>
+    </div>
     <v-table>
       <thead>
         <tr>
@@ -167,6 +182,7 @@ export default {
         DeliveryId: "",
         ConfirmStatus: "",
       },
+      dataFilter: ["Delivered", "Delivering", "Waiting"],
       requiredValidator: (value) =>
         !!value || "Vui lòng chọn nhân viên giao hàng",
       isLoading: true,
@@ -189,6 +205,7 @@ export default {
       ],
       currentPage: 1,
       perPage: 10,
+      selectedStatus: null,
       isConfirmed: false,
     };
   },
@@ -211,6 +228,9 @@ export default {
       } finally {
         this.isLoading = false;
       }
+    },
+    handleStatusChange() {
+      this.currentPage = 1;
     },
     async getUserById() {
       const idUser = JSON.parse(localStorage.getItem("userInfo"));
@@ -276,13 +296,21 @@ export default {
     this.getAllGiaoHang();
   },
   computed: {
+    filteredData() {
+      if (this.selectedStatus) {
+        return this.dataGiaoHang.filter(
+          (item) => item.deliveryStatus === this.selectedStatus
+        );
+      }
+      return this.dataGiaoHang;
+    },
     paginatedData() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
-      return this.dataGiaoHang.slice(start, end);
+      return this.filteredData.slice(start, end);
     },
     totalPages() {
-      return Math.ceil(this.dataGiaoHang.length / this.perPage);
+      return Math.ceil(this.filteredData.length / this.perPage);
     },
   },
 };

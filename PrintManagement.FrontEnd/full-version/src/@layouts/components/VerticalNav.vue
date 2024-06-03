@@ -87,10 +87,10 @@ const handleNavScroll = (evt) => {
     <div class="nav-header">
       <slot name="nav-header">
         <RouterLink
-          to="/"
+          to="/pages/cards/card-basic"
           class="app-logo d-flex align-center gap-x-3 app-title-wrapper"
         >
-          <VNodeRenderer :nodes="config.app.logo" width="40" height="40"/>
+          <VNodeRenderer :nodes="config.app.logo" width="40" height="40" />
 
           <Transition name="vertical-nav-app-title">
             <h1

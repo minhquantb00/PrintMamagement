@@ -644,6 +644,7 @@ export default {
         this.snackbar = true;
       } else {
         this.text = res.data.messeage;
+        console.log(this.text);
         this.snackbar = true;
       }
       console.log(res);

@@ -305,6 +305,7 @@
             Ngày tạo: {{ formatDate(project.actualEndDate) }}
           </v-card-text>
           <v-card-text v-else> Đang trong thời gian hoàn thành </v-card-text>
+          <!-- <v-card-text>{{ confirmGiaoHang }}</v-card-text> -->
           <v-card-text>
             <label
               >Tiến độ:
@@ -392,6 +393,7 @@
                                   <v-col cols="5">
                                     <div class="ma-auto pa-5">
                                       <VImg
+                                        style="border-radius: 10ypx"
                                         :src="checkoutData.imageDescription"
                                       />
                                     </div>
@@ -794,7 +796,7 @@
                                   class="date-picker-input"
                                   prepend-inner-icon="tabler-calendar"
                                   disabled
-                                  v-model="checkoutData.startDate"
+                                  v-model="formattedStartDate"
                                 />
                               </VCol>
                               <VCol cols="6">
@@ -802,6 +804,7 @@
 
                                 <VSelect
                                   clearable
+                                  v-model="selectedMachine"
                                   label="Loại máy móc"
                                   :items="resourcePropertyMachinesDetails"
                                   item-title="name"
@@ -949,6 +952,7 @@
                                   "
                                   block
                                   class="mt-4"
+                                  :disabled="!selectedMachine"
                                   @click="
                                     initiatePrintAndConfirm(
                                       designsApprove[0].id
@@ -1305,6 +1309,7 @@ export default {
         },
       ],
       dataMachines: [],
+      confirmGiaoHang: "",
       dialog: false,
       notifications: false,
       sound: true,
@@ -1319,6 +1324,7 @@ export default {
       user: null,
       dataDesign: [],
       dataResource: [],
+      stepProgressRequirements: [0, 1, 2, 3],
       updatePrj: {
         startingPrice: 0,
       },
@@ -1463,6 +1469,7 @@ export default {
           status: false,
         },
       ],
+      selectedMachine: null,
       isDeliveryButtonDisabled: false,
       dataPrint: [],
       inputAddProject: {
@@ -1680,16 +1687,11 @@ export default {
         console.log("isAdmin:", isAdmin);
         console.log("isLeader:", isLeader);
         console.log("isDesigner:", isDesigner);
-
-        // Điều kiện để hiển thị `select`
         if (isAdmin) {
-          // Admin phải có ít nhất một trong hai quyền là Leader hoặc Designer, hoặc cả hai
           this.userHasPermission = isLeader || isDesigner;
         } else {
-          // Không phải Admin, kiểm tra nếu có quyền Leader hoặc Designer
           this.userHasPermission = isLeader || isDesigner;
         }
-        console.log(this.userHasPermission, 46474646);
       } else {
         this.userHasPermission = false;
       }
@@ -1878,7 +1880,7 @@ export default {
       try {
         const res = await this.projectApi.getByIdProject(id);
         this.checkoutData = res.data;
-        this.updatePrj = res.data;
+        // this.updatePrj = res.data;
         this.dataDesign = this.checkoutData.designs;
         this.designsApprove = this.dataDesign.filter(
           (design) => design.designStatus === "HasBeenApproved"
@@ -1888,6 +1890,7 @@ export default {
         const step = this.getStepFromProgress(projectProgress);
         this.goToStep(step);
         this.getAllGiaoHang();
+        this;
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu dự án:", error);
       }
@@ -1973,7 +1976,7 @@ export default {
           step = 2;
           break;
         case progress >= 75 && progress < 100:
-          step = 2;
+          step = 3;
           break;
         case progress === 100:
           step = 3;
@@ -1984,6 +1987,12 @@ export default {
       return step;
     },
     goToStep(step) {
+      // if (this.progress < 50 && step == 2) {
+      //   console.log("vào đây rồi nhé");
+      //   this.text = "Bạn phải hoàn thành bước trước đó!";
+      //   this.snackbar = true;
+      //   return step == 2;
+      // }
       this.currentStep = step;
     },
   },
@@ -1997,6 +2006,14 @@ export default {
     // this.getAllCompareDesignPrint();
   },
   computed: {
+    formattedStartDate: {
+      get() {
+        return this.formatDate(this.checkoutData.startDate);
+      },
+      set(value) {
+        this.checkoutData.startDate = this.parseDate(value);
+      },
+    },
     isSelectDisabled() {
       return (
         !this.inputPheDuyet.designId ||

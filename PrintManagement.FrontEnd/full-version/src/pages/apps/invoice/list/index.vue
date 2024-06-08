@@ -34,6 +34,7 @@ const refVForm = ref();
           <template v-slot:activator="{ props: activatorProps }">
             <v-btn
               icon="mdi-plus"
+              v-if="isAdmin"
               active
               v-bind="activatorProps"
               density="comfortable"
@@ -200,6 +201,7 @@ const refVForm = ref();
                   <v-btn
                     class="ma-3"
                     density="comfortable"
+                    v-if="isAdmin"
                     v-bind="activatorProps"
                     @click="inputCreatePropertyResource.resourceId = item.id"
                     icon
@@ -284,6 +286,7 @@ const refVForm = ref();
                     color="info"
                     density="comfortable"
                     v-bind="activatorProps"
+                    v-if="isAdmin"
                     icon
                     @click="getByIdResource(item.id)"
                   >
@@ -448,6 +451,7 @@ const refVForm = ref();
               <v-dialog max-width="300">
                 <template v-slot:activator="{ props: activatorProps }">
                   <v-btn
+                    v-if="isAdmin"
                     density="comfortable"
                     style="font-size: 20px"
                     v-bind="activatorProps"
@@ -732,6 +736,12 @@ export default {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
       return this.dataResource.slice(start, end);
+    },
+    isAdmin() {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      return (
+        userInfo && userInfo.Permission && userInfo.Permission.includes("Admin")
+      );
     },
     totalPages() {
       return Math.ceil(this.dataResource.length / this.perPage);

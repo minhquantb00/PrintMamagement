@@ -80,9 +80,9 @@ const isCardDetailsVisible = ref(false);
                     icon
                     class="mr-4"
                   >
-                    <v-icon icon="mdi-pencil-outline"></v-icon>
+                    <v-icon icon="tabler-users-group"></v-icon>
                     <v-tooltip activator="parent" location="top">
-                      Cập nhật nhân viên
+                      Cập nhật phòng ban nhân viên
                     </v-tooltip>
                   </v-btn>
                 </template>
@@ -90,20 +90,11 @@ const isCardDetailsVisible = ref(false);
                 <template v-slot:default="{ isActive }">
                   <v-card class="pa-4">
                     <div class="text-center mb-4">
-                      <h2>Cập nhật nhân viên</h2>
+                      <h2>Cập nhật phòng ban nhân viên</h2>
+                      <h4 class="mt-3 mb-3" style="color: white">
+                        Nhân viên: {{ user.fullName }}
+                      </h4>
                     </div>
-                    <VSelect
-                      class="mb-6"
-                      clearable
-                      v-model="selectedRoles"
-                      label="Quyền hạn"
-                      :items="dataRoles"
-                      item-title="roleName"
-                      :chips="true"
-                      multiple
-                      v-if="updateUserRoles.length > 0"
-                    >
-                    </VSelect>
                     <v-select
                       class="mb-6"
                       clearable
@@ -121,6 +112,61 @@ const isCardDetailsVisible = ref(false);
                         text="Cập nhật"
                         variant="flat"
                         @click="capNhatNhanVien"
+                      ></v-btn>
+                      <v-btn
+                        text="Thoát"
+                        variant="outlined"
+                        @click="isActive.value = false"
+                      ></v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+              <v-dialog max-width="400">
+                <template v-slot:activator="{ props: activatorProps }">
+                  <v-btn
+                    v-bind="activatorProps"
+                    color="success"
+                    style="font-size: 20px"
+                    density="comfortable"
+                    @click="findByIdUser(user.id)"
+                    icon
+                    class="mr-4"
+                  >
+                    <v-icon icon="tabler-user-edit"></v-icon>
+                    <v-tooltip activator="parent" location="top">
+                      Cập nhật quyền hạn
+                    </v-tooltip>
+                  </v-btn>
+                </template>
+
+                <template v-slot:default="{ isActive }">
+                  <v-card class="pa-4">
+                    <div class="text-center mb-4">
+                      <h2>Cập nhật quyền hạn</h2>
+                      <h4 class="mt-3 mb-3" style="color: white">
+                        Nhân viên: {{ user.fullName }}
+                      </h4>
+                    </div>
+                    <VSelect
+                      class="mb-6"
+                      clearable
+                      v-model="selectedRoles"
+                      label="Quyền hạn"
+                      :items="dataRoles"
+                      item-title="roleName"
+                      :chips="true"
+                      multiple
+                      v-if="updateUserRoles.length > 0"
+                    >
+                    </VSelect>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn
+                        text="Cập nhật"
+                        variant="flat"
+                        @click="addRolesToUser(user.id)"
                       ></v-btn>
                       <v-btn
                         text="Thoát"
@@ -292,17 +338,13 @@ export default {
         const res = await this.userApi.updateChangeTeamForUser(
           this.updateChangeUser
         );
-        await this.addRolesToUser(
-          this.updateChangeUser.employeeId,
-          this.selectedRoles
-        );
         console.log(res);
         if (res.status === 200) {
           this.text = res.data;
           this.snackbar = true;
-          // setTimeout(() => {
-          //   location.reload();
-          // }, 1500);
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
         } else {
           this.text = res.data;
           this.snackbar = true;
@@ -312,12 +354,12 @@ export default {
         this.snackbar = true;
       }
     },
-    async addRolesToUser(userId, roles) {
+    async addRolesToUser(id) {
       try {
-        const res = await this.userApi.addRoleUser(userId, roles);
+        const res = await this.userApi.addRoleUser(id, this.selectedRoles);
         console.log(res);
         if (res.data.status === 200) {
-          this.text = "Cập nhật nhân viên thành công";
+          this.text = res.data.message;
           this.snackbar = true;
         } else {
           this.text = res.data.message;

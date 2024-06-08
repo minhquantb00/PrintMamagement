@@ -31,11 +31,16 @@ axiosIns.interceptors.request.use((config) => {
 // ℹ️ Add response interceptor to handle 401 response
 axiosIns.interceptors.response.use(
   (response) => {
+    console.log(response);
     return response;
   },
   (error) => {
+    // Capture the response object
+    const response = error.response;
+
+    console.log(response);
     // Handle error
-    if (error.response.status === 401) {
+    if (response.status === 401) {
       // ℹ️ Logout user and redirect to login page
       // Remove "userData" from localStorage
       localStorage.removeItem("userInfo");

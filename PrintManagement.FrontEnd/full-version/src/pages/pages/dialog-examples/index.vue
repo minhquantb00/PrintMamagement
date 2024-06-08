@@ -890,13 +890,13 @@
                                 <h6 class="text-base font-weight-medium mb-4">
                                   Thông tin dự án
                                 </h6>
-                                <div class="text-center">
+                                <div class="text-center room">
                                   <v-img
                                     width="200"
                                     height="300"
                                     aspect-ratio="1/1"
                                     cover
-                                    class="mb-4 box-shadow"
+                                    class="mb-4 box-shadow roomImg"
                                     :src="designsApprove[0].designImage"
                                   />
                                 </div>
@@ -1626,6 +1626,12 @@ export default {
         this.resourcePropertyMachines.flatMap(
           (property) => property.resourcePropertyDetails || []
         );
+      // console.log(this.resourceProperty);
+      // this.resourcePropertyDetails.forEach((item) => {
+      //   this.$set(item, "quantity", item.quantity || 0);
+      //   this.$set(item, "maxQuantity", item.maxQuantity || 0); // Set maxQuantity for each item
+      // });
+
       // this.resourcePropertyDetails.forEach((item) => {
       //   this.$set(item, "quantity", item.quantity || 0);
       // });
@@ -1633,12 +1639,12 @@ export default {
     },
     increment(index) {
       this.resourcePropertyDetails[index].quantity++;
-      this.calculateTotalPrice();
+      // this.calculateTotalPrice();
     },
     decrement(index) {
       if (this.resourcePropertyDetails[index].quantity > 0) {
         this.resourcePropertyDetails[index].quantity--;
-        this.calculateTotalPrice();
+        // this.calculateTotalPrice();
       }
     },
     // calculateTotalPrice() {
@@ -2040,6 +2046,14 @@ export default {
         this.user.Permission.includes("Admin")
       );
     },
+    isEmployee() {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      return (
+        userInfo &&
+        userInfo.Permission &&
+        userInfo.Permission.includes("Employee")
+      );
+    },
     buttonText() {
       return this.inputPheDuyet.DesignApproval === "Agree"
         ? " Phê duyệt"
@@ -2079,6 +2093,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.room .roomImg {
+  display: block;
+  transition: all 0.4s ease;
+}
+.room .roomImg:hover {
+  transform: scale(1.1);
+  box-shadow: 1px 1px 15px 2px rgb(39, 39, 39);
+}
 .avatar-center {
   position: absolute;
   border: 3px solid rgb(var(--v-theme-surface));
@@ -2100,7 +2122,6 @@ export default {
   }
 }
 .box-shadow {
-  box-shadow: 1px 1px 15px 2px rgb(122, 122, 122);
   border-radius: 10px;
 }
 .checkout-stepper {

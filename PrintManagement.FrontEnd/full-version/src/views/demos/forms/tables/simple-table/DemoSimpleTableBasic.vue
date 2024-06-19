@@ -7,7 +7,7 @@
 
   <div v-else>
     <v-row class="mb-1">
-      <v-col>
+      <v-col cols="12" md="3">
         <v-text-field
           v-model="fillterCustomer.name"
           label="Tìm kiếm theo tên"
@@ -17,7 +17,7 @@
           single-line
         ></v-text-field>
       </v-col>
-      <v-col>
+      <v-col cols="12" md="3">
         <v-text-field
           v-model="fillterCustomer.phoneNumber"
           label="Tìm kiếm theo số điện thoại"
@@ -27,7 +27,7 @@
           single-line
         ></v-text-field>
       </v-col>
-      <v-col cols="">
+      <v-col cols="12" md="3">
         <v-text-field
           v-model="fillterCustomer.address"
           label="Tìm kiếm theo địa chỉ"
@@ -37,7 +37,7 @@
           single-line
         ></v-text-field>
       </v-col>
-      <v-col cols="1">
+      <v-col cols="12" md="3">
         <v-btn @click="findByCustomer">Tìm kiếm</v-btn>
       </v-col>
       <v-col class="text-right" cols="1">

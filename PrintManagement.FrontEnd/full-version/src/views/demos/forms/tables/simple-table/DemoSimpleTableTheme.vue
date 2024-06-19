@@ -25,7 +25,7 @@ const isCardDetailsVisible = ref(false);
   <div v-else>
     <div class="mb-4">
       <v-row>
-        <v-col cols="7">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="filterUser.name"
             label="Tìm kiếm nhân viên"
@@ -35,7 +35,7 @@ const isCardDetailsVisible = ref(false);
             single-line
           ></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-select
             clearable
             label="Lọc theo phòng ban"
@@ -47,7 +47,7 @@ const isCardDetailsVisible = ref(false);
           >
           </v-select>
         </v-col>
-        <v-col cols="1">
+        <v-col cols="12" md="2">
           <v-btn @click="filterUsers">Tìm kiếm</v-btn>
         </v-col>
       </v-row>

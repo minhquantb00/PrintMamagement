@@ -19,7 +19,7 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
   </div>
   <div v-else>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12" md="4">
         <v-text-field
           label="Tìm kiếm phòng ban"
           prepend-inner-icon="mdi-magnify"
@@ -29,10 +29,10 @@ import ApexChartStocksPrices from "@/views/charts/apex-chart/ApexChartStocksPric
           single-line
         ></v-text-field>
       </v-col>
-      <v-col cols="5">
+      <v-col cols="10" md="4">
         <v-btn @click="filter">Tìm kiếm</v-btn>
       </v-col>
-      <v-col cols="1" class="text-right">
+      <v-col cols="2" md="4" class="text-right">
         <v-dialog max-width="500">
           <template v-slot:activator="{ props: activatorProps }">
             <v-btn density="comfortable" icon v-bind="activatorProps">

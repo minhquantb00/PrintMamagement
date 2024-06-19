@@ -1,7 +1,6 @@
 <template>
   <VRow class="match-height">
-    <v-col cols="7"></v-col>
-    <VCol cols="2">
+    <VCol cols="12" md="3">
       <AppDateTimePicker
         clearable
         :format="dateFormat"
@@ -12,7 +11,7 @@
         class="date-picker-input"
       ></AppDateTimePicker>
     </VCol>
-    <VCol cols="2">
+    <VCol cols="12" md="3">
       <AppDateTimePicker
         clearable
         :format="dateFormat"
@@ -23,13 +22,14 @@
         class="date-picker-input"
       ></AppDateTimePicker>
     </VCol>
-    <VCol cols="1">
+    <VCol cols="12" md="1">
       <v-btn block @click="thongKeSales"
         ><v-icon icon="mdi-filter-outline" class="text-h2"></v-icon>
         <v-tooltip activator="parent" location="top">Thống kê</v-tooltip></v-btn
       >
     </VCol>
     <v-col cols="12">
+      <h2 class="mb-4">Thống kê doanh thu</h2>
       <div class="heightChart">
         <ECharts ref="chart" :option="chartOption" autoresize />
       </div>
@@ -67,7 +67,7 @@ const endDateRule = (value) => {
 };
 const chartOption = ref({
   title: {
-    text: "Thống kê doanh thu",
+    text: "",
   },
   tooltip: {
     trigger: "axis",

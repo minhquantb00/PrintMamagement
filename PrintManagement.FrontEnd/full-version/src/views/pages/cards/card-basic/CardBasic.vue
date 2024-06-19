@@ -23,9 +23,9 @@ const isCardDetailsVisible = ref(false);
   </div>
   <div v-else>
     <v-row>
-      <v-col>
+      <v-col cols="12">
         <v-row>
-          <v-col cols="4">
+          <v-col cols="12" md="4">
             <v-text-field
               clearable
               label="Tìm kiếm project"
@@ -36,7 +36,7 @@ const isCardDetailsVisible = ref(false);
               single-line
             ></v-text-field>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="12" md="3">
             <v-select
               clearable
               label="Lọc leader"
@@ -47,7 +47,7 @@ const isCardDetailsVisible = ref(false);
               :items="dataUser"
             ></v-select>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="12" md="2">
             <AppDateTimePicker
               clearable
               :format="dateFormat"
@@ -58,7 +58,7 @@ const isCardDetailsVisible = ref(false);
             >
             </AppDateTimePicker>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="12" md="2">
             <AppDateTimePicker
               clearable
               :format="dateFormat"
@@ -70,7 +70,7 @@ const isCardDetailsVisible = ref(false);
             >
             </AppDateTimePicker>
           </v-col>
-          <v-col cols="1">
+          <v-col cols="12" md="1">
             <v-btn @click="fillter">Tìm kiếm</v-btn>
           </v-col>
         </v-row>

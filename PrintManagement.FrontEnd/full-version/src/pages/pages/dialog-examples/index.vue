@@ -6,9 +6,9 @@
   </div>
   <div v-else>
     <v-row>
-      <v-col>
+      <v-col cols="12">
         <v-row>
-          <v-col cols="3">
+          <v-col cols="12" md="2">
             <v-text-field
               clearable
               label="Tìm kiếm project"
@@ -19,7 +19,7 @@
               single-line
             ></v-text-field>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="12" md="2">
             <v-select
               clearable
               label="Lọc leader"
@@ -30,7 +30,7 @@
               :items="dataUser"
             ></v-select>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="12" md="2">
             <AppDateTimePicker
               clearable
               :format="dateFormat"
@@ -42,7 +42,7 @@
             >
             </AppDateTimePicker>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="12" md="2">
             <AppDateTimePicker
               clearable
               :format="dateFormat"
@@ -54,7 +54,7 @@
             >
             </AppDateTimePicker>
           </v-col>
-          <v-col cols="2">
+          <v-col cols="12" md="2">
             <v-select
               clearable
               label="Lọc tiến độ"
@@ -66,41 +66,33 @@
               @change="currentPage = 1"
             ></v-select>
           </v-col>
-          <v-col cols="1">
+          <v-col cols="10" md="1">
             <v-btn @click="fillter">Tìm kiếm</v-btn>
           </v-col>
-        </v-row>
-      </v-col>
-      <!-- 
-              v-if="hasSaleRole"
-              nếu muốn hiển thị btn cho nhân viên phòng sale với quyền là employee
-       -->
-      <v-col cols="1" class="text-right">
-        <v-dialog max-width="700" persistent>
-          <template v-slot:activator="{ props: activatorProps }">
-            <v-btn
-              icon
-              v-if="userCheckRole.teamName === 'Sales' && userEmployee"
-              v-bind="activatorProps"
-              density="comfortable"
-              variant="flat"
-            >
-              <v-icon icon="mdi-plus"></v-icon>
-              <v-tooltip activator="parent" location="top">
-                Thêm dự án
-              </v-tooltip>
-            </v-btn>
-          </template>
+          <v-col cols="2" md="1" class="text-right">
+            <v-dialog max-width="700" persistent>
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn
+                  icon
+                  v-if="userCheckRole.teamName === 'Sales' && userEmployee"
+                  v-bind="activatorProps"
+                  density="comfortable"
+                  variant="flat"
+                >
+                  <v-icon icon="mdi-plus"></v-icon>
+                  <v-tooltip activator="parent" location="top">
+                    Thêm dự án
+                  </v-tooltip>
+                </v-btn>
+              </template>
 
-          <template v-slot:default="{ isActive }">
-            <v-card>
-              <h2 class="text-center mt-3">Thêm dự án</h2>
-              <v-form ref="refVForm" @submit.prevent="onSubmit">
-                <div class="pa-4">
-                  <v-row class="mb-5">
-                    <v-col cols="12">
-                      <v-row>
-                        <v-col cols="3">
+              <template v-slot:default="{ isActive }">
+                <v-card>
+                  <h2 class="text-center mt-3">Thêm dự án</h2>
+                  <v-form ref="refVForm" @submit.prevent="onSubmit">
+                    <div class="pa-4">
+                      <v-row class="mb-5">
+                        <v-col cols="12" md="3">
                           <label
                             for="fileInput"
                             style="
@@ -148,8 +140,7 @@
                             </div>
                           </label>
                         </v-col>
-                        <span class="red">(*)</span>
-                        <v-col>
+                        <v-col cols="12" md="9">
                           <v-text-field
                             type="file"
                             id="fileInput"
@@ -158,134 +149,119 @@
                             :rules="[requiredValidator]"
                             @change="handleImageChange"
                             accept="image/*"
-                        /></v-col>
+                          />
+                        </v-col>
                       </v-row>
-                    </v-col>
-                    <v-col cols="6">
-                      <div class="mb-3">
-                        <span class="red">(*)</span> <span>Tên dự án</span>
-                      </div>
-
-                      <v-text-field
-                        label="Tên dự án"
-                        :rules="[requiredValidator]"
-                        v-model="inputAddProject.projectName"
-                        variant="outlined"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <div class="mb-3">
-                        <span class="red">(*)</span> <span>Ngày dự kiến</span>
-                      </div>
-                      <AppDateTimePicker
-                        :format="dateFormat"
-                        v-model="inputAddProject.expectedEndDate"
-                        placeholder="Ngày dự kiến"
-                        :rules="[requiredValidator, dateValidator]"
-                        prepend-inner-icon="tabler-calendar"
-                        class="date-picker-input"
-                      >
-                      </AppDateTimePicker>
-                    </v-col>
-                    <v-col cols="6">
-                      <div class="mb-3">
-                        <span class="red">(*)</span>
-                        <span>Người nhận dự án</span>
-                      </div>
-                      <v-select
-                        clearable
-                        v-model="inputAddProject.leaderId"
-                        :rules="[requiredValidator]"
-                        label="Người nhận dự án"
-                        item-value="id"
-                        item-title="fullName"
-                        :items="dataUser"
-                        variant="outlined"
-                      ></v-select>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <div class="mb-3">
-                        <span class="red">(*)</span> <span>Khách hàng</span>
-                      </div>
-                      <v-select
-                        clearable
-                        v-model="inputAddProject.customerId"
-                        item-value="id"
-                        :rules="[requiredValidator]"
-                        item-title="fullName"
-                        label="Khách hàng"
-                        :items="dataCustomer"
-                        variant="outlined"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                      <div class="mb-3">
-                        <span class="red">(*)</span> <span>Giá dự án</span>
-                      </div>
-
-                      <v-text-field
-                        label="Giá dự án"
-                        :rules="[requiredValidator]"
-                        v-model="inputAddProject.startingPrice"
-                        type="number"
-                        variant="outlined"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
+                      <v-row>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Tên dự án"
+                            :rules="[requiredValidator]"
+                            v-model="inputAddProject.projectName"
+                            variant="outlined"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <AppDateTimePicker
+                            :format="dateFormat"
+                            v-model="inputAddProject.expectedEndDate"
+                            placeholder="Ngày dự kiến"
+                            :rules="[requiredValidator, dateValidator]"
+                            prepend-inner-icon="tabler-calendar"
+                            class="date-picker-input"
+                          >
+                          </AppDateTimePicker>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-select
+                            clearable
+                            v-model="inputAddProject.leaderId"
+                            :rules="[requiredValidator]"
+                            label="Người nhận dự án"
+                            item-value="id"
+                            item-title="fullName"
+                            :items="dataUser"
+                            variant="outlined"
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-select
+                            clearable
+                            v-model="inputAddProject.customerId"
+                            item-value="id"
+                            :rules="[requiredValidator]"
+                            item-title="fullName"
+                            label="Khách hàng"
+                            :items="dataCustomer"
+                            variant="outlined"
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Giá dự án"
+                            :rules="[requiredValidator]"
+                            v-model="inputAddProject.startingPrice"
+                            type="number"
+                            variant="outlined"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field
+                            label="Phần trăm hoa hồng nhân viên"
+                            :rules="[
+                              requiredValidator,
+                              minValidator,
+                              maxValidator,
+                            ]"
+                            type="number"
+                            v-model="inputAddProject.commissionPercentage"
+                            variant="outlined"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
                       <div class="mb-3">
                         <span class="red">(*)</span>
-                        <span>Phần trăm hoa hồng</span>
+                        <span>Yêu cầu khách hàng</span>
                       </div>
-
-                      <v-text-field
-                        label="Phần trăm hoa hồng nhân viên"
-                        :rules="[requiredValidator, minValidator, maxValidator]"
-                        type="number"
-                        v-model="inputAddProject.commissionPercentage"
+                      <v-textarea
+                        v-model="inputAddProject.requestDescriptionFromCustomer"
                         variant="outlined"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                  <div class="mb-3">
-                    <span class="red">(*)</span> <span>Yêu cầu khách hàng</span>
-                  </div>
-                  <v-textarea
-                    v-model="inputAddProject.requestDescriptionFromCustomer"
-                    variant="outlined"
-                    :rules="[requiredValidator]"
-                    class="mb-5"
-                  ></v-textarea>
-                  <div class="mb-3">
-                    <span class="red">(*)</span> <span>Mô tả dự án</span>
-                  </div>
-                  <v-textarea
-                    v-model="inputAddProject.description"
-                    :rules="[requiredValidator]"
-                    variant="outlined"
-                  ></v-textarea>
-                </div>
+                        :rules="[requiredValidator]"
+                        class="mb-5"
+                      ></v-textarea>
+                      <div class="mb-3">
+                        <span class="red">(*)</span> <span>Mô tả dự án</span>
+                      </div>
+                      <v-textarea
+                        v-model="inputAddProject.description"
+                        :rules="[requiredValidator]"
+                        variant="outlined"
+                      ></v-textarea>
+                    </div>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    variant="flat"
-                    text="Thêm mới"
-                    type="submit"
-                    @click="saveProject"
-                  ></v-btn>
-                  <v-btn
-                    variant="outlined"
-                    text="Thoát"
-                    @click="isActive.value = false"
-                  ></v-btn>
-                </v-card-actions>
-              </v-form>
-            </v-card>
-          </template>
-        </v-dialog>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        variant="flat"
+                        text="Thêm mới"
+                        type="submit"
+                        @click="saveProject"
+                      ></v-btn>
+                      <v-btn
+                        variant="outlined"
+                        text="Thoát"
+                        @click="isActive.value = false"
+                      ></v-btn>
+                    </v-card-actions>
+                  </v-form>
+                </v-card>
+              </template>
+            </v-dialog>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
+
     <VRow>
       <VCol
         cols="12"

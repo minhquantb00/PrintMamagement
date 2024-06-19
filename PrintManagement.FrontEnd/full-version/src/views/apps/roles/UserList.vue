@@ -7,8 +7,7 @@
   <div class="table-giao-hang" v-else>
     <div class="mb-5">
       <v-row>
-        <v-col cols="9"></v-col>
-        <v-col>
+        <v-col cols="12" md="3">
           <v-select
             clearable
             label="Lọc theo trạng thái"

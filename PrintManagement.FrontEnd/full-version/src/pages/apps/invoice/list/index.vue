@@ -16,7 +16,7 @@ const refVForm = ref();
   </div>
   <div v-else>
     <v-row>
-      <v-col>
+      <v-col cols="12" md="4">
         <v-text-field
           label="Tìm kiếm theo tên"
           prepend-inner-icon="mdi-magnify"

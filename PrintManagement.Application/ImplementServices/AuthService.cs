@@ -336,6 +336,7 @@ namespace PrintManagement.Application.ImplementServices
                     UserId = user.Id
                 };
                 confirmEmail = await _confirmEmailRepository.CreateAsync(confirmEmail);
+                
                 var message = new EmailMessage(new string[] { email }, "Nhận mã xác nhận tại đây: ", $"Mã xác nhận: {confirmEmail.ConfirmCode}");
                 var responseMessage = _emailService.SendEmail(message);
                 return "Mã xác nhận đã được gửi về email của bạn! Vui lòng check Email";
